@@ -42,8 +42,17 @@
       entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) { io.observe(el); });
-    // anything already in view on load
-    setTimeout(function () { document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < window.innerHeight) el.classList.add('in'); }); }, 50);
+    // Fallbacks so content can never stay hidden: check positions on load and on scroll,
+    // and reveal everything if the observer has not fired within a few seconds.
+    var revealByPosition = function () {
+      document.querySelectorAll('.reveal:not(.in), .reveal-stagger:not(.in)').forEach(function (el) {
+        var r = el.getBoundingClientRect(); if (r.top < window.innerHeight * 0.95) el.classList.add('in');
+      });
+    };
+    setTimeout(revealByPosition, 50);
+    var ticking = false;
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(function () { revealByPosition(); ticking = false; }); } }, { passive: true });
+    setTimeout(function () { if (document.visibilityState !== 'visible') document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) { el.classList.add('in'); }); }, 4000);
   }
 
   // Lightbox for figures (a.zoom)
