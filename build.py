@@ -224,7 +224,7 @@ def build():
         "{{PEOPLE_CURRENT}}": "\n".join(person_card(m) for m in people["current"]),
         "{{PEOPLE_ALUMNI}}": "\n".join(alum_card(m) for m in people["alumni"]),
         "{{PEOPLE_MASCOTS}}": "\n".join(f'<div class="mascot"><img src="assets/people/{esc(m["image"])}" alt="{esc(m["name"])}" loading="lazy"><span>{esc(m["name"])}</span></div>' for m in people["mascots"]),
-        "{{NEWS}}": news_items(sorted(news, key=lambda it: it["date"] if len(it["date"]) > 4 else it["date"] + "-12")),
+        "{{NEWS}}": news_items(news),
         "{{NEWS_RECENT}}": news_items(news[:3]),
         "{{RESOURCES}}": resource_groups(resources),
         "{{FUNDERS}}": "\n".join(f'<img src="assets/funders/{f}" alt="{esc(n)}" loading="lazy">' for f, n in FUNDERS),

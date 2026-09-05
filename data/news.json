@@ -1,29 +1,35 @@
 {
- "_note": "Add items at the top. 'date' is YYYY-MM or YYYY-MM-DD. Items below were seeded from the PubMed record; add awards, arrivals, talks, and funding.",
+ "_note": "Newest first. Link to news coverage (press releases, institutional news, trade press), not to papers. Dates YYYY-MM or YYYY-MM-DD.",
  "items": [
-  {
-   "date": "2026",
-   "title": "Plasma cell-free metagenomic sequencing predicts bloodstream infection",
-   "text": "A prospective study with collaborators at St. Jude, published in The Lancet Microbe, evaluates plasma microbial cell-free DNA sequencing for predicting bloodstream infection in children with cancer.",
-   "link": "https://pubmed.ncbi.nlm.nih.gov/41780551/"
-  },
   {
    "date": "2026-08",
    "title": "Bill Evans becomes CEO of BioSkryb Genomics",
-   "text": "William E. Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, becomes Chief Executive Officer of BioSkryb Genomics, the company founded to bring PTA to researchers and clinics.",
-   "link": "https://www.bioskryb.com/news/"
+   "text": "William E. Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, is named Chief Executive Officer of BioSkryb Genomics, the company founded to bring PTA to researchers and clinics.",
+   "link": "https://www.contractpharma.com/breaking-news/bioskryb-genomics-names-dr-william-evans-as-ceo/"
+  },
+  {
+   "date": "2026-03",
+   "title": "Cell-free DNA offers early warning for bloodstream infections in kids with leukemia",
+   "text": "St. Jude announces results of a prospective study, with Chuck Gawad among the authors, showing that plasma microbial cell-free DNA sequencing can detect bloodstream infections in children with high-risk leukemia days before symptoms appear.",
+   "link": "https://www.stjude.org/media-resources/news-releases/2026-medicine-science-news/cell-free-dna-offers-early-warning-for-bloodstream-infections-in-kids-with-leukemia.html"
   },
   {
    "date": "2025-09",
-   "title": "Somatic mitochondrial DNA mutations shape cellular heterogeneity",
-   "text": "Work led with the Kundu lab, published in Science Advances, shows that intermediate-heteroplasmy mtDNA mutations are a source of functional heterogeneity among primary cells.",
-   "link": "https://pubmed.ncbi.nlm.nih.gov/40929251/"
+   "title": "Mitochondrial DNA mutations shape how leukemia starts and progresses",
+   "text": "A St. Jude release describes work with Veronica Gonzalez-Pena and Chuck Gawad showing that somatic mitochondrial DNA mutations at intermediate heteroplasmy are selected during leukemia development and may contribute to therapy resistance.",
+   "link": "https://www.stjude.org/media-resources/news-releases/2025-medicine-science-news/new-multi-disciplinary-approach-sheds-light-on-role-of-mitochondrial-dna-mutations-in-cancer.html"
   },
   {
-   "date": "2025-04",
-   "title": "Longitudinal single-cell clonal evolution of pediatric ALL",
-   "text": "A preprint from the lab measures genome-wide clonal evolution in pediatric acute lymphoblastic leukemia across diagnosis, treatment, and relapse at single-cell resolution.",
-   "link": "https://pubmed.ncbi.nlm.nih.gov/40166290/"
+   "date": "2025-04-24",
+   "title": "1Cell.Ai and BioSkryb partner on rare-cell multiomics",
+   "text": "The partnership pairs PTA-based single-cell chemistry with 1Cell.Ai's circulating tumor cell platform to characterize DNA, RNA, and protein from individual rare cells.",
+   "link": "https://www.biospace.com/press-releases/1cell-ai-and-bioskryb-announce-strategic-partnership-to-advance-single-cell-multi-omics-innovation"
+  },
+  {
+   "date": "2025-04-18",
+   "title": "DOE Joint Genome Institute adopts PTA for single-microbe genomes",
+   "text": "A JGI science story explains how the lab's collaboration with JGI showed that PTA recovers bacterial genomes from water and soil communities that are at least 80% complete, versus under 30% with the standard method, and that JGI users can now request the capability.",
+   "link": "https://jgi.doe.gov/user-science/science-stories/revamped-amplification-method-enables-nearly-complete-single-cell"
   },
   {
    "date": "2025-04",
@@ -32,22 +38,10 @@
    "link": "https://www.bioskryb.com/news/tecan-single-cell-flow/"
   },
   {
-   "date": "2025-04",
-   "title": "1Cell.Ai and BioSkryb to co-develop single-cell multiomic solutions",
-   "text": "1Cell.Ai joins forces with BioSkryb Genomics, the company founded to commercialize PTA, to co-develop and commercialize next-generation single-cell multiomic products.",
-   "link": "https://www.bioskryb.com/news/"
-  },
-  {
    "date": "2025-01",
    "title": "Residual leukemia cells, sequenced one at a time, offered as a service",
-   "text": "ResolveSEQ MRD pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
-   "link": "https://www.biospace.com/press-releases/bioskryb-genomics-launches-resolveseq-mrd-a-next-generation-measurable-residual-disease-mrd-discovery-solution"
-  },
-  {
-   "date": "2024-09",
-   "title": "Cellular phenotype dynamics in Nature Genetics",
-   "text": "A collaboration with the Landau lab defines heritability, plasticity, and transition dynamics of cellular phenotypes using single-cell multi-omics.",
-   "link": "https://pubmed.ncbi.nlm.nih.gov/39317739/"
+   "text": "The North Carolina Biotechnology Center reports on ResolveSEQ MRD, which pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
+   "link": "https://www.ncbiotech.org/news/bioskryb-genomics-new-single-cell-analysis-service-offers-deeper-insights-blood-cancers"
   },
   {
    "date": "2024-09",
@@ -56,15 +50,9 @@
    "link": "https://www.businesswire.com/news/home/20240926626387/en/BioSkryb-Genomics-Partners-with-the-Human-Cell-Atlas-to-Advance-Access-to-the-Next-Generation-of-Single-Cell-Technology"
   },
   {
-   "date": "2024-07",
-   "title": "scMicrobe PTA: near-complete genomes from single bacterial cells",
-   "text": "With the DOE Joint Genome Institute, the lab shows that PTA recovers near-complete genomes from individual bacterial cells, published in ISME Communications.",
-   "link": "https://pubmed.ncbi.nlm.nih.gov/39021442/"
-  },
-  {
    "date": "2024-03",
    "title": "Whole genome and transcriptome core kits released",
-   "text": "BioSkryb releases ResolveDNA and ResolveOME core kits, making PTA-based single-cell whole genome and paired genome-plus-transcriptome amplification available as standard reagents.",
+   "text": "ResolveDNA and ResolveOME core kits make PTA-based single-cell whole genome and paired genome-plus-transcriptome amplification available as standard reagents.",
    "link": "https://www.businesswire.com/news/home/20240313621916/en/BioSkryb-Launches-New-Whole-Genome-and-Transcriptome-Core-Kits-to-Accelerate-Single-Cell-Multiomics"
   },
   {
@@ -75,15 +63,27 @@
   },
   {
    "date": "2022-10",
+   "title": "Somatic mutations in single human neurons cluster in regulatory DNA",
+   "text": "GenomeWeb covers the Nature Genetics study with the Walsh and Park labs that used PTA to sequence individual human neurons and found somatic indels enriched in enhancers and promoters, accumulating with age.",
+   "link": "https://www.genomeweb.com/sequencing/regulatory-alterations-overrepresented-single-cell-sequence-data-individual-neurons"
+  },
+  {
+   "date": "2022-10",
    "title": "PTA licensed for preimplantation genetic testing",
    "text": "CooperSurgical's genomics division signs a multi-year exclusive license to BioSkryb's PTA chemistry for preimplantation genetic testing and women's reproductive health worldwide.",
    "link": "https://www.biospace.com/bioskryb-genomics-and-cooper-surgical-ink-multi-year-deal-to-accelerate-clinical-discovery-and-diagnostics-in-women-s-reproductive-health"
   },
   {
-   "date": "2021-06",
-   "title": "PTA published in PNAS",
-   "text": "Primary template-directed amplification, the lab's method for accurate single-cell genome amplification, is published in the Proceedings of the National Academy of Sciences.",
-   "link": "https://pubmed.ncbi.nlm.nih.gov/34099548/"
+   "date": "2019-10",
+   "title": "Chuck Gawad named a Chan Zuckerberg Biohub Investigator",
+   "text": "The Chan Zuckerberg Biohub welcomes Chuck Gawad to its Investigator program, which provides unrestricted funding for early-stage, high-risk biomedical research at Stanford, UCSF, and UC Berkeley.",
+   "link": "https://www.czbiohub.org/life-science/welcoming-university-nominated-investigators/"
+  },
+  {
+   "date": "2018-11",
+   "title": "NIH Director's New Innovator Award",
+   "text": "The ASCO Post reports on Chuck Gawad's NIH Director's New Innovator Award, a five-year grant to build single-cell genome sequencing tools that catalog leukemia clones and their drug sensitivities.",
+   "link": "https://ascopost.com/issues/november-25-2018/charles-gawad-receives-new-innovator-award/"
   }
  ]
 }
