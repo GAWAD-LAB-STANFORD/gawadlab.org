@@ -161,6 +161,7 @@ p { margin: 0 0 1em; }
 .pillar + .pillar { padding-left: 2rem; border-left: 1px solid var(--border); }
 .pillar .num { font-family: var(--future); font-size: 4rem; line-height: 1; color: var(--amber); letter-spacing: -.03em; font-weight: 700; display: block; margin-bottom: .9rem; }
 .pillar h3 { font-family: var(--display); font-weight: 600; font-size: 1.5rem; margin-top: 0; }
+.pillar h3 .accent { font-size: 1.05em; }
 .pillar p { color: var(--ink-soft); margin: 0; font-size: .98rem; }
 @media (max-width: 800px) { .pillars { grid-template-columns: 1fr; } .pillar { padding: 1.5rem 0; border-bottom: 1px solid var(--border); } .pillar + .pillar { padding-left: 0; border-left: 0; } }
 
