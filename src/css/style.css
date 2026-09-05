@@ -38,7 +38,7 @@ a { color: var(--primary); text-decoration: none; }
 a:hover { color: var(--cardinal); }
 h1, h2 { font-family: var(--display); font-weight: 500; line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 .5em; color: var(--ink); font-variation-settings: "opsz" 144, "SOFT" 40; }
 h3, h4 { line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 .5em; color: var(--ink); }
-em.accent { font-style: italic; color: var(--amber); font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; }
+em.accent { font-family: "Space Grotesk", var(--font); font-style: normal; font-weight: 600; letter-spacing: -0.01em; color: var(--amber); }
 h1 { font-size: clamp(2.4rem, 5.2vw, 4.1rem); }
 h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); }
 h3 { font-size: 1.2rem; font-weight: 700; }
@@ -341,3 +341,14 @@ p { margin: 0 0 1em; }
 .growing li::before { content: "\2192"; color: var(--cardinal); font-weight: 700; }
 @media (max-width: 800px) { .growing .container { grid-template-columns: 1fr; gap: 1.5rem; } }
 .img-credit { font-size: .75rem; color: var(--muted); margin-top: .5rem; }
+
+/* ---------- Translation (BioSkryb) ---------- */
+.translate-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.translate { padding-top: 1.25rem; border-top: 2px solid var(--ink); }
+.translate .eyebrow { color: var(--primary); }
+.translate h3 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; margin: 0 0 .4rem; }
+.translate p { font-size: .96rem; color: var(--ink-soft); margin: 0 0 .5rem; }
+.translate .when { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cardinal); }
+blockquote.pull { margin: 2rem 0 0; padding: 0 0 0 1.25rem; border-left: 3px solid var(--amber); font-family: var(--display); font-size: 1.25rem; line-height: 1.4; color: var(--ink); }
+blockquote.pull cite { display: block; font-family: var(--font); font-style: normal; font-size: .85rem; color: var(--muted); margin-top: .5rem; }
+@media (max-width: 860px) { .translate-grid { grid-template-columns: 1fr; gap: 1.25rem; } }

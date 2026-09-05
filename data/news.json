@@ -1,10 +1,59 @@
 {
-  "_note": "Add items at the top. 'date' is YYYY-MM or YYYY-MM-DD. Items below were seeded from the PubMed record; add awards, arrivals, talks, and funding.",
-  "items": [
-    {"date": "2026", "title": "Plasma cell-free metagenomic sequencing predicts bloodstream infection", "text": "A prospective study with collaborators at St. Jude, published in The Lancet Microbe, evaluates plasma microbial cell-free DNA sequencing for predicting bloodstream infection in children with cancer.", "link": "https://pubmed.ncbi.nlm.nih.gov/41780551/"},
-    {"date": "2025-09", "title": "Somatic mitochondrial DNA mutations shape cellular heterogeneity", "text": "Work led with the Kundu lab, published in Science Advances, shows that intermediate-heteroplasmy mtDNA mutations are a source of functional heterogeneity among primary cells.", "link": "https://pubmed.ncbi.nlm.nih.gov/40929251/"},
-    {"date": "2025-04", "title": "Longitudinal single-cell clonal evolution of pediatric ALL", "text": "A preprint from the lab measures genome-wide clonal evolution in pediatric acute lymphoblastic leukemia across diagnosis, treatment, and relapse at single-cell resolution.", "link": "https://pubmed.ncbi.nlm.nih.gov/40166290/"},
-    {"date": "2024-09", "title": "Cellular phenotype dynamics in Nature Genetics", "text": "A collaboration with the Landau lab defines heritability, plasticity, and transition dynamics of cellular phenotypes using single-cell multi-omics.", "link": "https://pubmed.ncbi.nlm.nih.gov/39317739/"},
-    {"date": "2024-07", "title": "scMicrobe PTA: near-complete genomes from single bacterial cells", "text": "With the DOE Joint Genome Institute, the lab shows that PTA recovers near-complete genomes from individual bacterial cells, published in ISME Communications.", "link": "https://pubmed.ncbi.nlm.nih.gov/39021442/"}
-  ]
+ "_note": "Add items at the top. 'date' is YYYY-MM or YYYY-MM-DD. Items below were seeded from the PubMed record; add awards, arrivals, talks, and funding.",
+ "items": [
+  {
+   "date": "2026",
+   "title": "Plasma cell-free metagenomic sequencing predicts bloodstream infection",
+   "text": "A prospective study with collaborators at St. Jude, published in The Lancet Microbe, evaluates plasma microbial cell-free DNA sequencing for predicting bloodstream infection in children with cancer.",
+   "link": "https://pubmed.ncbi.nlm.nih.gov/41780551/"
+  },
+  {
+   "date": "2026-08",
+   "title": "William E. Evans named CEO of BioSkryb Genomics",
+   "text": "Bill Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, becomes Chief Executive Officer of BioSkryb Genomics, the company Chuck co-founded to commercialize PTA.",
+   "link": "https://www.bioskryb.com/news/"
+  },
+  {
+   "date": "2025-09",
+   "title": "Somatic mitochondrial DNA mutations shape cellular heterogeneity",
+   "text": "Work led with the Kundu lab, published in Science Advances, shows that intermediate-heteroplasmy mtDNA mutations are a source of functional heterogeneity among primary cells.",
+   "link": "https://pubmed.ncbi.nlm.nih.gov/40929251/"
+  },
+  {
+   "date": "2025-04",
+   "title": "Longitudinal single-cell clonal evolution of pediatric ALL",
+   "text": "A preprint from the lab measures genome-wide clonal evolution in pediatric acute lymphoblastic leukemia across diagnosis, treatment, and relapse at single-cell resolution.",
+   "link": "https://pubmed.ncbi.nlm.nih.gov/40166290/"
+  },
+  {
+   "date": "2025-04",
+   "title": "ResolveOME scales to thousands of cells",
+   "text": "BioSkryb and Tecan introduce a 384-well ResolveOME workflow with the Uno Single Cell Dispenser, and BioSkryb announces a collaboration with Ultima Genomics to accelerate single-cell oncology research.",
+   "link": "https://www.bioskryb.com/news/tecan-single-cell-flow/"
+  },
+  {
+   "date": "2025-01",
+   "title": "ResolveSEQ MRD launches",
+   "text": "BioSkryb launches ResolveSEQ MRD, a service that pairs flow-sorted residual leukemia cells with single-cell genome and transcriptome sequencing to understand why some cells survive therapy, an approach that grew out of this lab's work.",
+   "link": "https://www.biospace.com/press-releases/bioskryb-genomics-launches-resolveseq-mrd-a-next-generation-measurable-residual-disease-mrd-discovery-solution"
+  },
+  {
+   "date": "2024-09",
+   "title": "Cellular phenotype dynamics in Nature Genetics",
+   "text": "A collaboration with the Landau lab defines heritability, plasticity, and transition dynamics of cellular phenotypes using single-cell multi-omics.",
+   "link": "https://pubmed.ncbi.nlm.nih.gov/39317739/"
+  },
+  {
+   "date": "2024-07",
+   "title": "scMicrobe PTA: near-complete genomes from single bacterial cells",
+   "text": "With the DOE Joint Genome Institute, the lab shows that PTA recovers near-complete genomes from individual bacterial cells, published in ISME Communications.",
+   "link": "https://pubmed.ncbi.nlm.nih.gov/39021442/"
+  },
+  {
+   "date": "2022-10",
+   "title": "PTA licensed for preimplantation genetic testing",
+   "text": "CooperSurgical's genomics division signs a multi-year exclusive license to BioSkryb's PTA chemistry for preimplantation genetic testing and women's reproductive health worldwide.",
+   "link": "https://www.biospace.com/bioskryb-genomics-and-cooper-surgical-ink-multi-year-deal-to-accelerate-clinical-discovery-and-diagnostics-in-women-s-reproductive-health"
+  }
+ ]
 }
