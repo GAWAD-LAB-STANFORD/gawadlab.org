@@ -20,6 +20,12 @@
    "link": "https://www.stjude.org/media-resources/news-releases/2025-medicine-science-news/new-multi-disciplinary-approach-sheds-light-on-role-of-mitochondrial-dna-mutations-in-cancer.html"
   },
   {
+   "date": "2025-08-20",
+   "title": "Methylation and genome variants from the same single cell, licensed for commercial development",
+   "text": "A method invented in the lab at Stanford for reading DNA methylation and genomic variants from the same single cell without destroying the DNA, co-owned with the Chan Zuckerberg Biohub, is licensed exclusively to BioSkryb Genomics to become a five-base single-cell genome product.",
+   "link": "https://www.bioskryb.com/news/exclusive-license/"
+  },
+  {
    "date": "2025-04-24",
    "title": "1Cell.Ai and BioSkryb partner on rare-cell multiomics",
    "text": "The partnership pairs PTA-based single-cell chemistry with 1Cell.Ai's circulating tumor cell platform to characterize DNA, RNA, and protein from individual rare cells.",
@@ -40,32 +46,26 @@
   {
    "date": "2025-01",
    "title": "Residual leukemia cells, sequenced one at a time, offered as a service",
-   "text": "The North Carolina Biotechnology Center reports on ResolveSEQ MRD, which pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
-   "link": "https://www.ncbiotech.org/news/bioskryb-genomics-new-single-cell-analysis-service-offers-deeper-insights-blood-cancers"
+   "text": "ResolveSEQ MRD pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
+   "link": "https://www.biospace.com/press-releases/bioskryb-genomics-launches-resolveseq-mrd-a-next-generation-measurable-residual-disease-mrd-discovery-solution"
   },
   {
    "date": "2024-09",
    "title": "PTA-based single-cell technology joins the Human Cell Atlas",
    "text": "BioSkryb Genomics partners with the Human Cell Atlas to broaden access to single-cell genome and transcriptome sequencing for atlas-building projects.",
-   "link": "https://www.businesswire.com/news/home/20240926626387/en/BioSkryb-Genomics-Partners-with-the-Human-Cell-Atlas-to-Advance-Access-to-the-Next-Generation-of-Single-Cell-Technology"
+   "link": "https://www.biospace.com/press-releases/bioskryb-genomics-partners-with-the-human-cell-atlas-to-advance-access-to-the-next-generation-of-single-cell-technology"
   },
   {
    "date": "2024-03",
    "title": "Whole genome and transcriptome core kits released",
    "text": "ResolveDNA and ResolveOME core kits make PTA-based single-cell whole genome and paired genome-plus-transcriptome amplification available as standard reagents.",
-   "link": "https://www.businesswire.com/news/home/20240313621916/en/BioSkryb-Launches-New-Whole-Genome-and-Transcriptome-Core-Kits-to-Accelerate-Single-Cell-Multiomics"
+   "link": "https://www.bioskryb.com/news/bioskryb-launches-new-whole-genome-and-transcriptome-core-kits/"
   },
   {
    "date": "2023-02",
    "title": "Genome plus transcriptome from the same single cell goes commercial",
    "text": "The paired single-cell genome and full-length transcriptome method developed with PTA launches commercially as ResolveOME, together with the BaseJumper analysis platform, at the AGBT meeting.",
-   "link": "https://www.businesswire.com/news/home/20230207005497/en/BioSkryb-Announces-Commercial-Launch-of-ResolveOME-System-and-BaseJumper-Bioinformatics-Platform"
-  },
-  {
-   "date": "2022-10",
-   "title": "Somatic mutations in single human neurons cluster in regulatory DNA",
-   "text": "GenomeWeb covers the Nature Genetics study with the Walsh and Park labs that used PTA to sequence individual human neurons and found somatic indels enriched in enhancers and promoters, accumulating with age.",
-   "link": "https://www.genomeweb.com/sequencing/regulatory-alterations-overrepresented-single-cell-sequence-data-individual-neurons"
+   "link": "https://www.bioskryb.com/news/bioskryb-announces-commercial-launch-of-resolveome-system-and-basejumper-bioinformatics-platform/"
   },
   {
    "date": "2022-10",
@@ -74,10 +74,16 @@
    "link": "https://www.biospace.com/bioskryb-genomics-and-cooper-surgical-ink-multi-year-deal-to-accelerate-clinical-discovery-and-diagnostics-in-women-s-reproductive-health"
   },
   {
+   "date": "2022-09",
+   "title": "Somatic mutations in single human neurons cluster in regulatory DNA",
+   "text": "GenomeWeb covers the Nature Genetics study with the Walsh and Park labs that used PTA to sequence individual human neurons and found somatic indels enriched in enhancers and promoters, accumulating with age.",
+   "link": "https://www.genomeweb.com/sequencing/regulatory-alterations-overrepresented-single-cell-sequence-data-individual-neurons"
+  },
+  {
    "date": "2019-10",
    "title": "Chuck Gawad named a Chan Zuckerberg Biohub Investigator",
    "text": "The Chan Zuckerberg Biohub welcomes Chuck Gawad to its Investigator program, which provides unrestricted funding for early-stage, high-risk biomedical research at Stanford, UCSF, and UC Berkeley.",
-   "link": "https://www.czbiohub.org/life-science/welcoming-university-nominated-investigators/"
+   "link": "https://biohub.org/blog/welcoming-university-nominated-investigators/"
   },
   {
    "date": "2018-11",
