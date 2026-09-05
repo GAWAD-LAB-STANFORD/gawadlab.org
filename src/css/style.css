@@ -125,7 +125,7 @@ p { margin: 0 0 1em; }
 /* ---------- Hero ---------- */
 .hero {
   position: relative; color: #fff; overflow: hidden;
-  background: var(--ink) url("../assets/hero.jpg") center 40% / cover no-repeat;
+  background: var(--ink) url("../assets/hero.jpg") center 62% / cover no-repeat;
   min-height: min(78vh, 720px); display: flex; align-items: center;
 }
 .hero::before {
@@ -134,7 +134,7 @@ p { margin: 0 0 1em; }
 }
 .hero .container { position: relative; padding: clamp(3.5rem, 9vw, 6.5rem) 0; }
 .hero h1 { color: #fff; max-width: 14ch; text-wrap: balance; margin-bottom: 1.1rem; }
-.hero .lede { color: rgba(255,255,255,.86); font-size: clamp(1.05rem, 1.6vw, 1.3rem); max-width: 56ch; }
+.hero .lede { color: rgba(255,255,255,.86); font-size: clamp(1.05rem, 1.6vw, 1.3rem); max-width: 46ch; }
 .hero .eyebrow { color: var(--amber); font-size: 1.05rem; letter-spacing: .14em; margin-bottom: 1rem; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
 .hero-credit { position: absolute; right: 1rem; bottom: .6rem; font-size: .72rem; color: rgba(255,255,255,.6); }
