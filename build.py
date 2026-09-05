@@ -116,7 +116,7 @@ def footer():
       <button class="btn btn-primary btn-sm" type="button" id="copy-email">Copy email</button>
       <a class="btn btn-outline btn-sm" href="{SUPPORT_MAILTO}">Open in my email app</a>
     </div>
-    <p class="modal-note">Gifts to Stanford are tax-deductible in the United States. Chuck can connect you with Stanford Medicine's development office for a gift agreement or a named fund.</p>
+    <p class="modal-note">Gifts are tax-deductible in the United States. Chuck can connect you with our partners at the Lucile Packard Foundation for Children's Health for a gift agreement or a named fund.</p>
   </div>
 </div>
 <script src="js/main.js?v={_v("js/main.js")}"></script>
