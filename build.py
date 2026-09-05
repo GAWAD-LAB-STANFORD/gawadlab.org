@@ -8,13 +8,16 @@ comment with the page title and description. Placeholders such as
 {{LATEST_PUBS}} are filled from the JSON files in data/. publications.html is
 generated entirely from data/publications.json.
 """
-import html, json, re, shutil, datetime
+import html, json, re, shutil, datetime, hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SRC, DATA, OUT = ROOT / "src", ROOT / "data", ROOT / "site"
 SITE_URL = "https://gawadlab.org"
 YEAR = datetime.date.today().year
+def _v(rel):
+    """Short content hash so browsers fetch changed CSS/JS immediately."""
+    return hashlib.md5((SRC / rel).read_bytes()).hexdigest()[:8]
 
 # Lab members whose names get bolded in author lists (surname + initials as PubMed writes them).
 LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", "Aragon A", "Cai B",
@@ -54,7 +57,7 @@ def head(title, desc, page, og_image="assets/og-image.jpg"):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v={_v("css/style.css")}">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"ResearchOrganization","name":"Gawad Lab","url":"{SITE_URL}","parentOrganization":{{"@type":"CollegeOrUniversity","name":"Stanford University School of Medicine"}},"address":{{"@type":"PostalAddress","streetAddress":"240 Pasteur Dr, BMI Building RM2200","addressLocality":"Palo Alto","addressRegion":"CA","postalCode":"94304","addressCountry":"US"}},"email":"cgawad@stanford.edu"}}</script>
 </head>
 <body>
@@ -100,7 +103,7 @@ def footer():
     </div>
   </div>
 </footer>
-<script src="js/main.js"></script>
+<script src="js/main.js?v={_v("js/main.js")}"></script>
 </body>
 </html>
 """
