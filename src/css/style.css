@@ -451,10 +451,12 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 /* ---------- Photo bands ---------- */
 .photo-band { position: relative; overflow: hidden; min-height: clamp(320px, 46vw, 560px); display: flex; align-items: flex-end; color: #fff; background: var(--ink); }
 .photo-band .bg { position: absolute; inset: -4%; background-size: cover; background-position: center; animation: heroDrift 40s ease-in-out infinite alternate; }
-.photo-band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,24,34,0) 40%, rgba(14,24,34,.75) 100%); z-index: 1; }
-.photo-band .container { position: relative; z-index: 2; padding: 2rem 0 2rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
-.photo-band h2 { color: #fff; margin: 0; font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
-.photo-band p { margin: .35rem 0 0; color: rgba(255,255,255,.85); max-width: 56ch; }
+.photo-band::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(14,24,34,.08) 0%, rgba(14,24,34,.42) 45%, rgba(14,24,34,.90) 100%), linear-gradient(90deg, rgba(14,24,34,.45) 0%, rgba(14,24,34,0) 60%); }
+.photo-band .container { position: relative; z-index: 2; padding: 2.5rem 0 2.25rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.25rem; }
+.photo-band .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.photo-band .eyebrow { color: var(--amber); }
+.photo-band h2 { color: #fff; margin: 0; font-size: clamp(1.7rem, 3.2vw, 2.6rem); max-width: 22ch; text-wrap: balance; }
+.photo-band p { margin: .6rem 0 0; color: rgba(255,255,255,.88); max-width: 58ch; font-size: 1.05rem; }
 .photo-band .credit { font-size: .74rem; color: rgba(255,255,255,.6); }
 .photo-duo { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; }
 .photo-duo figure { margin: 0; position: relative; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); }
