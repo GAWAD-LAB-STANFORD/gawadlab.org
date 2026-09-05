@@ -238,12 +238,12 @@ p { margin: 0 0 1em; }
 /* ---------- People ---------- */
 .people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0 2.5rem; }
 .person { padding: 0 0 1.5rem; text-align: left; border-top: 1px solid var(--ink); padding-top: 1.5rem; }
-.person .portrait { position: relative; width: 150px; height: 150px; margin: 0 0 1.1rem; }
+.person .portrait { position: relative; width: 175px; height: 175px; margin: 0 0 1.1rem; }
 .person .portrait::before { content: ""; position: absolute; inset: -8px 8px 8px -8px; border-radius: 42% 58% 55% 45% / 50% 40% 60% 50%; background: var(--amber-tint); transition: transform .3s ease; }
 .person:nth-child(3n+2) .portrait::before { background: var(--primary-tint); }
 .person:nth-child(3n+3) .portrait::before { background: #F5E2E2; }
 .person:hover .portrait::before { transform: rotate(-12deg) scale(1.04); }
-.person img { position: relative; width: 150px; height: 150px; border-radius: 50%; object-fit: cover; background: #eee; }
+.person img { position: relative; width: 175px; height: 175px; border-radius: 50%; object-fit: cover; background: #eee; }
 .person h3 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin-bottom: .15rem; }
 .person .role { color: var(--cardinal); font-weight: 650; font-size: .88rem; margin-bottom: .75rem; }
 .person .bio { font-size: .92rem; color: var(--ink-soft); margin: 0; text-align: left; }
@@ -251,9 +251,9 @@ p { margin: 0 0 1em; }
 .person .links a { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--primary-tint); color: var(--primary); }
 .person .links a:hover { background: var(--primary); color: #fff; }
 .person .links svg { width: 16px; height: 16px; }
-.alumni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 0 2.5rem; border-top: 1px solid var(--ink); }
-.alum { display: grid; grid-template-columns: 160px 1fr; gap: 1.5rem; align-items: start; padding: 1.75rem 0; border-bottom: 1px solid var(--border); }
-.alum img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-tint); }
+.alumni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 0 3rem; border-top: 1px solid var(--ink); }
+.alum { display: grid; grid-template-columns: 200px 1fr; gap: 1.75rem; align-items: start; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+.alum img { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-tint); }
 .alum h3 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; margin: 0; }
 .alum .now { font-size: 1rem; color: var(--cardinal); font-weight: 700; margin: .15rem 0 .2rem; line-height: 1.35; }
 .alum .now span { display: inline-block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; background: var(--amber-tint); color: #8a5a00; padding: .1rem .45rem; border-radius: 4px; margin-right: .35rem; vertical-align: 2px; }
@@ -448,7 +448,7 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
   .funders-track .funders { flex-wrap: wrap; justify-content: center; width: auto; }
 }
 
-@media (max-width: 480px) { .alum { grid-template-columns: 120px 1fr; } .alum img { width: 120px; height: 120px; } }
+@media (max-width: 480px) { .alum { grid-template-columns: 130px 1fr; } .alum img, .alum .portrait-link { width: 130px; height: 130px; } }
 
 /* ---------- Photo bands ---------- */
 .photo-band { position: relative; overflow: hidden; min-height: clamp(320px, 46vw, 560px); display: flex; align-items: flex-end; color: #fff; background: var(--ink); }
@@ -471,8 +471,8 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 
 /* ---------- LinkedIn portrait links ---------- */
 .portrait-link { position: relative; display: block; text-decoration: none; }
-.person .portrait-link { width: 150px; height: 150px; margin: 0 0 1.1rem; }
-.alum .portrait-link { width: 160px; height: 160px; }
+.person .portrait-link { width: 175px; height: 175px; margin: 0 0 1.1rem; }
+.alum .portrait-link { width: 200px; height: 200px; }
 .li-badge { position: absolute; right: 4px; bottom: 4px; width: 30px; height: 30px; border-radius: 50%; background: #0A66C2; color: #fff; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); border: 2px solid #fff; transition: transform .2s ease; z-index: 2; }
 .li-badge svg { width: 14px; height: 14px; }
 .portrait-link:hover .li-badge { transform: scale(1.12); }
