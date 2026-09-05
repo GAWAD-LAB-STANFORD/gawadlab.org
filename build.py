@@ -25,7 +25,8 @@ LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", 
                "Youssef S", "Agarwal V", "Cherian A"}
 
 NAV = [("index.html", "Home"), ("research.html", "Research"), ("people.html", "People"),
-       ("publications.html", "Publications"), ("news.html", "News"), ("resources.html", "Resources")]
+       ("publications.html", "Publications"), ("news.html", "News"), ("resources.html", "Resources"), ("join.html", "Join")]
+SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
 
 ICONS = {
     "mail": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
@@ -67,7 +68,7 @@ def head(title, desc, page, og_image="assets/og-image.jpg"):
     <a class="brand" href="index.html" aria-label="Gawad Lab home"><img src="assets/logo.png" alt="Stanford Medicine · Gawad Lab" width="592" height="164"></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
-""" + "".join(f'      <li><a href="{h}"{" class=\"active\"" if h == page else ""}>{t}</a></li>\n' for h, t in NAV) + """      <li class="nav-cta"><a href="join.html">Join the lab</a></li>
+""" + "".join(f'      <li><a href="{h}"{" class=\"active\"" if h == page else ""}>{t}</a></li>\n' for h, t in NAV) + f"""      <li class="nav-cta"><a href="{SUPPORT_MAILTO}" title="Email Chuck Gawad about supporting the lab">Support our work</a></li>
     </ul>
   </div>
 </header>
@@ -90,7 +91,7 @@ def footer():
       </div>
       <div>
         <h4>Explore</h4>
-        <ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t in NAV)}<li><a href="join.html">Join the lab</a></li></ul>
+        <ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t in NAV)}<li><a href="{SUPPORT_MAILTO}">Support our work</a></li></ul>
       </div>
       <div>
         <h4>Contact</h4>
