@@ -1,40 +1,170 @@
 {
-  "_note": "Roster carried over from gawadlab.org (last updated 2022). VERIFY before publishing: move people who have left to 'alumni', add new members, and update titles. Images live in src/assets/people/.",
-  "current": [
-    {"name": "Charles Gawad, MD, PhD", "role": "Principal Investigator", "image": "charles-gawad.jpg",
-     "bio": "Chuck is an Associate Professor of Pediatrics at Stanford Medicine and a practicing pediatric oncologist. He invented primary template-directed amplification (PTA) and co-founded BioSkryb Genomics. Outside of work he enjoys anything outdoors in the Bay Area and spending time with his family.",
-     "links": {"email": "cgawad@stanford.edu", "scholar": "https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ", "github": "https://github.com/GAWAD-LAB-STANFORD"}},
-    {"name": "Veronica Gonzalez-Pena, PhD", "role": "Basic Life Research Scientist", "image": "veronica-gonzalez-pena.jpg",
-     "bio": "Veronica received her PhD in Pharmacology and Toxicology from the University of Arizona. In the lab she is passionate about working out the details of new biotechnology methods. In her free time she enjoys gardening and spending time with her family."},
-    {"name": "Yakun Pang, PhD", "role": "Postdoctoral Fellow", "image": "yakun-pang.png",
-     "bio": "Yakun received her PhD in Internal Medicine (Hematology) from Peking Union Medical College in 2016 and joined the lab in 2018. She studies pediatric acute leukemia with single-cell genomic and transcriptomic sequencing, with a focus on the mechanisms of leukemia development and treatment resistance."},
-    {"name": "Kartika Wardhani, PhD", "role": "Postdoctoral Fellow", "image": "kartika-wardhani.png",
-     "bio": "Kartika received her PhD in Chemistry from the University of Sydney. She is passionate about discoveries that advance science and human health, and about working with other researchers and students to solve big challenges. She loves traveling to meet local people and learn about new cultures."},
-    {"name": "David Klein", "role": "Research Data Analyst", "image": "david-klein.jpg",
-     "bio": "David received a BA in Biology from NYU and an MS in Biomedical Sciences from Tufts, and is now a medical student at the California University of Science and Medicine. He is passionate about computational biology and creating new knowledge, tools, and therapies. He loves hiking, running, rock climbing, and backpacking."},
-    {"name": "Athena Aragon", "role": "Life Science Research Professional", "image": "athena-aragon.jpg",
-     "bio": "Athena joined the lab in 2021 after earning her bachelor's in Human Biology at UC Santa Cruz. She is interested in using single-cell sequencing to learn more about neurodegenerative diseases and pediatric leukemia. When she's not in lab, she plays guitar and discovers new places to eat."},
-    {"name": "Brandon Cai", "role": "Life Science Research Professional", "image": "brandon-cai.png",
-     "bio": "Brandon studied Molecular and Cell Biology and Public Health at UC Berkeley. He is passionate about single-cell data analysis, innovative thinking in research, and question-driven analysis. He loves listening to and making music, exploring nature, and playing basketball."},
-    {"name": "Shawn Schulz", "role": "Research Data Analyst", "image": "shawn-schulz.jpg",
-     "bio": "Shawn majored in Molecular and Cell Biology at UC Berkeley. He applies data science and computational analysis to medical research, contributing to personalized treatment of diseases like cancer using -omic data. He loves rock climbing, history, and tabletop games."}
-  ],
-  "alumni": [
-    {"name": "Syahmi Ali Mohd Rizal", "role": "Undergraduate Researcher", "years": "", "image": "syahmi-ali.png", "bio": "Stanford undergraduate in engineering who worked on emerging medical technologies in the lab."},
-    {"name": "Vibhu Agarwal, PhD", "role": "Computational Scientist", "years": "2020–2021", "image": "vibhu-agarwal.png", "bio": "Vibhu received his PhD in Biostatistics from Stanford. He developed the e-nose AI analytics in the lab before becoming Senior Director of Data Science at Medidata Solutions."},
-    {"name": "Yuntao Xia, PhD", "role": "Postdoctoral Fellow", "years": "2019–2021", "image": "yuntao-xia.png", "bio": "Yuntao received his PhD in Chemical and Biomolecular Engineering from UPenn. He developed single-cell and cell-free sequencing protocols and pipelines before becoming a Senior Scientist at Orchid Health."},
-    {"name": "Sivaraman Natarajan, PhD", "role": "Postdoctoral Fellow", "years": "2015–2019", "image": "sivaraman-natarajan.png", "bio": "Siva received his PhD in Neuroscience from Universität des Saarlandes. He helped develop several new single-cell and cell-free DNA sequencing protocols before becoming a Staff Scientist at St. Jude."},
-    {"name": "Rob Carter, PhD", "role": "Computational Scientist", "years": "2016–2019", "image": "rob-carter.png", "bio": "Rob received his PhD in Biology from the University of Ottawa. He led the development of the lab's computational pipelines, then joined BioSkryb Genomics as Director of Bioinformatics."},
-    {"name": "Anju Cherian", "role": "Research Technologist", "years": "2019", "image": "anju-cherian.png", "bio": "Anju received her MS in Biomedical Research from the Morehouse School of Medicine and worked on single-cell sequencing methods. She continued as a technician at St. Jude when the lab moved to Stanford."},
-    {"name": "Ousman Mahmud, PhD", "role": "Postdoctoral Fellow", "years": "2017–2018", "image": "ousman-mahmud.png", "bio": "Ousman received his PhD in Genetics from the University of Georgia. He built computational pipelines for cell-free and single-cell sequencing before becoming a Genomics Bioinformatician at IBM Watson Health."},
-    {"name": "Yuki Inaba", "role": "Research Technologist", "years": "2017–2018", "image": "yuki-inaba.png", "bio": "Yuki received a BS from Brown and worked on cell-free DNA sequencing before entering the MD/PhD program at UT Southwestern."},
-    {"name": "Morgan Carter", "role": "Pediatric Oncology Education Program", "years": "2016", "image": "morgan-carter.png", "bio": "Morgan developed methods for single-cell mitochondrial sequencing as an undergraduate at the University of Virginia, then received an NCI Cancer Research Training Award to continue at NIH."},
-    {"name": "Ian Nykaza", "role": "Pediatric Oncology Education Program", "years": "2017", "image": "ian-nykaza.png", "bio": "Ian learned single-cell sequencing as an undergraduate at the University of Minnesota, worked as a clinical coordinator at UCSF, and entered medical school at Cornell."},
-    {"name": "Sarah Youssef", "role": "MS Student", "years": "2016–2018", "image": "placeholder.png", "bio": "Sarah completed her MS in Pharmacology as a Fulbright Scholar studying cell-free DNA sequencing, then returned to Cairo as a lead pharmacist at the Children's Cancer Hospital Egypt."},
-    {"name": "Greg Schwing", "role": "Pediatric Oncology Education Program", "years": "2015", "image": "greg-schwing.png", "bio": "Greg studied barcoding and single-cell sequencing of leukemia samples as an undergraduate at the University of New Orleans before entering the MD/PhD program at Wayne State University."},
-    {"name": "Shelby Lane", "role": "Medical Student Researcher", "years": "2015", "image": "shelby-lane.jpg", "bio": "Shelby studied single-cell sequencing of leukemia samples before starting medical school at the University of Tennessee Health Science Center."}
-  ],
-  "mascots": [
-    {"name": "Tesla", "image": "tesla.jpg"}, {"name": "Momo", "image": "momo.png"}, {"name": "Ube", "image": "ube.png"}
-  ]
+ "_note": "Roster carried over from gawadlab.org (last updated 2022). VERIFY before publishing: move people who have left to 'alumni', add new members, and update titles. Images live in src/assets/people/.",
+ "current": [
+  {
+   "name": "Charles Gawad, MD, PhD",
+   "role": "Principal Investigator",
+   "image": "charles-gawad.jpg",
+   "bio": "Chuck is an Associate Professor of Pediatrics at Stanford Medicine and a practicing pediatric oncologist. He invented primary template-directed amplification (PTA) and co-founded BioSkryb Genomics. Outside of work he enjoys anything outdoors in the Bay Area and spending time with his family.",
+   "links": {
+    "email": "cgawad@stanford.edu",
+    "scholar": "https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ",
+    "github": "https://github.com/GAWAD-LAB-STANFORD"
+   }
+  },
+  {
+   "name": "Veronica Gonzalez-Pena, PhD",
+   "role": "Basic Life Research Scientist",
+   "image": "veronica-gonzalez-pena.jpg",
+   "bio": "Veronica received her PhD in Pharmacology and Toxicology from the University of Arizona. In the lab she is passionate about working out the details of new biotechnology methods. In her free time she enjoys gardening and spending time with her family."
+  },
+  {
+   "name": "Athena Aragon",
+   "role": "Life Science Research Professional",
+   "image": "athena-aragon.jpg",
+   "bio": "Athena joined the lab in 2021 after earning her bachelor's in Human Biology at UC Santa Cruz. She is interested in using single-cell sequencing to learn more about neurodegenerative diseases and pediatric leukemia. When she's not in lab, she plays guitar and discovers new places to eat."
+  }
+ ],
+ "alumni": [
+  {
+   "name": "Yakun Pang, PhD",
+   "role": "Postdoctoral Fellow",
+   "years": "2018–2024",
+   "image": "yakun-pang.png",
+   "bio": "Yakun received her PhD in Internal Medicine (Hematology) from Peking Union Medical College. In the lab she studied pediatric acute leukemia with single-cell genomic and transcriptomic sequencing and led the longitudinal clonal evolution study of pediatric ALL. She is now a Staff Scientist at UT San Antonio."
+  },
+  {
+   "name": "Kartika Wardhani, PhD",
+   "role": "Postdoctoral Fellow",
+   "years": "",
+   "image": "kartika-wardhani.png",
+   "bio": "Kartika received her PhD in Chemistry from the University of Sydney and worked on new single-cell chemistry in the lab. She is now a Staff Scientist at Sandia National Laboratories."
+  },
+  {
+   "name": "David Klein",
+   "role": "Research Data Analyst",
+   "years": "",
+   "image": "david-klein.jpg",
+   "bio": "David received a BA in Biology from NYU and an MS in Biomedical Sciences from Tufts, then worked on computational analysis of single-cell and cell-free sequencing data. After medical school at the California University of Science and Medicine, he is now an internal medicine resident at Santa Clara Valley Medical Center."
+  },
+  {
+   "name": "Brandon Cai",
+   "role": "Life Science Research Professional",
+   "years": "",
+   "image": "brandon-cai.png",
+   "bio": "Brandon studied Molecular and Cell Biology and Public Health at UC Berkeley and worked on single-cell data analysis in the lab. He is now an MD/PhD student at NYU."
+  },
+  {
+   "name": "Shawn Schulz",
+   "role": "Research Data Analyst",
+   "years": "",
+   "image": "shawn-schulz.jpg",
+   "bio": "Shawn majored in Molecular and Cell Biology at UC Berkeley and applied data science to the lab's -omic data. He is now an MS student in Computational Biology at UC Berkeley."
+  },
+  {
+   "name": "Syahmi Ali Mohd Rizal",
+   "role": "Undergraduate Researcher",
+   "years": "",
+   "image": "syahmi-ali.png",
+   "bio": "Stanford undergraduate in engineering who worked on emerging medical technologies in the lab."
+  },
+  {
+   "name": "Vibhu Agarwal, PhD",
+   "role": "Computational Scientist",
+   "years": "2020–2021",
+   "image": "vibhu-agarwal.png",
+   "bio": "Vibhu received his PhD in Biostatistics from Stanford. He developed the e-nose AI analytics in the lab before becoming Senior Director of Data Science at Medidata Solutions."
+  },
+  {
+   "name": "Yuntao Xia, PhD",
+   "role": "Postdoctoral Fellow",
+   "years": "2019–2021",
+   "image": "yuntao-xia.png",
+   "bio": "Yuntao received his PhD in Chemical and Biomolecular Engineering from UPenn. He developed single-cell and cell-free sequencing protocols and pipelines before becoming a Senior Scientist at Orchid Health."
+  },
+  {
+   "name": "Sivaraman Natarajan, PhD",
+   "role": "Postdoctoral Fellow",
+   "years": "2015–2019",
+   "image": "sivaraman-natarajan.png",
+   "bio": "Siva received his PhD in Neuroscience from Universität des Saarlandes. He helped develop several new single-cell and cell-free DNA sequencing protocols before becoming a Staff Scientist at St. Jude."
+  },
+  {
+   "name": "Rob Carter, PhD",
+   "role": "Computational Scientist",
+   "years": "2016–2019",
+   "image": "rob-carter.png",
+   "bio": "Rob received his PhD in Biology from the University of Ottawa. He led the development of the lab's computational pipelines, then joined BioSkryb Genomics as Director of Bioinformatics."
+  },
+  {
+   "name": "Anju Cherian",
+   "role": "Research Technologist",
+   "years": "2019",
+   "image": "anju-cherian.png",
+   "bio": "Anju received her MS in Biomedical Research from the Morehouse School of Medicine and worked on single-cell sequencing methods. She continued as a technician at St. Jude when the lab moved to Stanford."
+  },
+  {
+   "name": "Ousman Mahmud, PhD",
+   "role": "Postdoctoral Fellow",
+   "years": "2017–2018",
+   "image": "ousman-mahmud.png",
+   "bio": "Ousman received his PhD in Genetics from the University of Georgia. He built computational pipelines for cell-free and single-cell sequencing before becoming a Genomics Bioinformatician at IBM Watson Health."
+  },
+  {
+   "name": "Yuki Inaba",
+   "role": "Research Technologist",
+   "years": "2017–2018",
+   "image": "yuki-inaba.png",
+   "bio": "Yuki received a BS from Brown and worked on cell-free DNA sequencing before entering the MD/PhD program at UT Southwestern."
+  },
+  {
+   "name": "Morgan Carter",
+   "role": "Pediatric Oncology Education Program",
+   "years": "2016",
+   "image": "morgan-carter.png",
+   "bio": "Morgan developed methods for single-cell mitochondrial sequencing as an undergraduate at the University of Virginia, then received an NCI Cancer Research Training Award to continue at NIH."
+  },
+  {
+   "name": "Ian Nykaza",
+   "role": "Pediatric Oncology Education Program",
+   "years": "2017",
+   "image": "ian-nykaza.png",
+   "bio": "Ian learned single-cell sequencing as an undergraduate at the University of Minnesota, worked as a clinical coordinator at UCSF, and entered medical school at Cornell."
+  },
+  {
+   "name": "Sarah Youssef",
+   "role": "MS Student",
+   "years": "2016–2018",
+   "image": "placeholder.png",
+   "bio": "Sarah completed her MS in Pharmacology as a Fulbright Scholar studying cell-free DNA sequencing, then returned to Cairo as a lead pharmacist at the Children's Cancer Hospital Egypt."
+  },
+  {
+   "name": "Greg Schwing",
+   "role": "Pediatric Oncology Education Program",
+   "years": "2015",
+   "image": "greg-schwing.png",
+   "bio": "Greg studied barcoding and single-cell sequencing of leukemia samples as an undergraduate at the University of New Orleans before entering the MD/PhD program at Wayne State University."
+  },
+  {
+   "name": "Shelby Lane",
+   "role": "Medical Student Researcher",
+   "years": "2015",
+   "image": "shelby-lane.jpg",
+   "bio": "Shelby studied single-cell sequencing of leukemia samples before starting medical school at the University of Tennessee Health Science Center."
+  }
+ ],
+ "mascots": [
+  {
+   "name": "Tesla",
+   "image": "tesla.jpg"
+  },
+  {
+   "name": "Momo",
+   "image": "momo.png"
+  },
+  {
+   "name": "Ube",
+   "image": "ube.png"
+  }
+ ]
 }
