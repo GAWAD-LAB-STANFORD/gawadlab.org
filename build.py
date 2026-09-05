@@ -121,9 +121,10 @@ def author_html(authors):
             + f'<button class="link-btn" type="button" data-count="{n}">show all {n} authors</button>')
 
 def pub_item(p, compact=False):
-    doi = f"https://doi.org/{p['doi']}" if p.get("doi") else f"https://pubmed.ncbi.nlm.nih.gov/{p['pmid']}/"
+    doi = p.get("url") or (f"https://doi.org/{p['doi']}" if p.get("doi") else f"https://pubmed.ncbi.nlm.nih.gov/{p['pmid']}/")
     lab = "1" if any(a in LAB_AUTHORS for a in p["authors"][:1] + p["authors"][-1:]) else "0"
     links = [f'<a href="https://pubmed.ncbi.nlm.nih.gov/{p["pmid"]}/">PubMed</a>']
+    if p.get("url"): links.append(f'<a href="{esc(p["url"])}">bioRxiv</a>')
     if p.get("doi"): links.append(f'<a href="https://doi.org/{esc(p["doi"])}">DOI</a>')
     if p.get("pmc"): links.append(f'<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/{p["pmc"]}/">Free full text</a>')
     badge = ' <span class="badge">Preprint</span>' if p.get("preprint") else ""

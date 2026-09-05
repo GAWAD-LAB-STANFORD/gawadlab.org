@@ -74,7 +74,7 @@
   "doi": "10.1101/2025.03.19.644196",
   "pmc": "PMC11957134",
   "year": 2025,
-  "title": "Measuring Longitudinal Genome-wide Clonal Evolution of Pediatric Acute Lymphoblastic Leukemia at Single-Cell Resolution",
+  "title": "Single-Cell Sequencing Reveals Extensive Genetic Diversity Underlying Pediatric ALL Treatment Complexity",
   "journal": "bioRxiv",
   "journal_full": "bioRxiv : the preprint server for biology",
   "authors": [
@@ -88,8 +88,9 @@
    "Zinno J",
    "Quentin J",
    "Laval J",
-   "Yuan D",
-   "Omans N",
+   "Yuan DJ",
+   "Omans ND",
+   "Potenski C",
    "Klein D",
    "MacKay M",
    "De Vlaminck I",
@@ -100,7 +101,8 @@
   ],
   "preprint": true,
   "highlight": true,
-  "note": ""
+  "note": "bioRxiv v2, posted 14 November 2025",
+  "url": "https://www.biorxiv.org/content/10.1101/2025.03.19.644196v2"
  },
  {
   "pmid": "39317739",
