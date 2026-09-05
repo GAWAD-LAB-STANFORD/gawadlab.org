@@ -146,7 +146,7 @@ p { margin: 0 0 1em; }
 .hero .container { position: relative; padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(4rem, 9vw, 7rem); }
 .hero h1 { color: #fff; max-width: 14ch; text-wrap: balance; margin-bottom: 1.1rem; }
 .hero .lede { color: rgba(255,255,255,.86); font-size: clamp(1.05rem, 1.6vw, 1.3rem); max-width: 46ch; }
-.hero .eyebrow { color: var(--amber); font-family: var(--future); font-size: clamp(1.1rem, 2.1vw, 1.75rem); font-weight: 700; letter-spacing: .1em; margin-bottom: 1.1rem; }
+.hero .eyebrow { color: var(--amber); font-family: var(--future); font-size: clamp(1.3rem, 2.8vw, 2.4rem); font-weight: 700; letter-spacing: .08em; line-height: 1.2; margin-bottom: 1.2rem; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
 .hero-credit { position: absolute; right: 1rem; bottom: .6rem; font-size: .72rem; color: rgba(255,255,255,.6); }
 
