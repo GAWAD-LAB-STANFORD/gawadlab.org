@@ -83,21 +83,21 @@ p { margin: 0 0 1em; }
   -webkit-backdrop-filter: saturate(160%) blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav { display: flex; align-items: center; justify-content: space-between; min-height: 112px; gap: 1rem; }
-.brand img { height: 92px; width: auto; }
-@media (max-width: 900px) { .brand img { height: 60px; } }
+.nav { display: flex; align-items: center; justify-content: space-between; min-height: 132px; gap: 1rem; }
+.brand img { height: 112px; width: auto; }
+@media (max-width: 900px) { .brand img { height: 68px; } }
 .nav-links { display: flex; align-items: center; gap: .25rem; list-style: none; margin: 0; padding: 0; }
 .nav-links a {
-  display: block; padding: .5rem .85rem; border-radius: 999px; font-weight: 600; font-size: .95rem; color: var(--ink-soft);
+  display: block; padding: .6rem 1rem; border-radius: 999px; font-weight: 600; font-size: 1.15rem; color: var(--ink-soft);
 }
 .nav-links a:hover { background: var(--primary-tint); color: var(--primary); }
 .nav-links a.active { color: var(--cardinal); }
 .nav-links a.active::after { content: ""; display: block; height: 2px; background: var(--cardinal); border-radius: 2px; margin: 2px .1rem 0; }
-.nav-links .nav-cta a { background: var(--cardinal); color: #fff; margin-left: .5rem; }
+.nav-links .nav-cta a { background: var(--cardinal); color: #fff; margin-left: .75rem; padding: .65rem 1.25rem; }
 .nav-links .nav-cta a:hover { background: var(--cardinal-dark); }
 .nav-toggle {
   display: none; background: none; border: 1.5px solid var(--border); border-radius: 10px;
-  width: 44px; height: 44px; cursor: pointer; align-items: center; justify-content: center;
+  width: 50px; height: 50px; cursor: pointer; align-items: center; justify-content: center;
 }
 .nav-toggle span, .nav-toggle span::before, .nav-toggle span::after {
   display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; position: relative; transition: transform .2s ease, opacity .2s ease;
@@ -153,7 +153,7 @@ p { margin: 0 0 1em; }
 
 /* ---------- Research index (was cards) ---------- */
 .research-layout { display: grid; grid-template-columns: minmax(240px, 1fr) 2fr; gap: 4rem; align-items: start; }
-.research-layout .section-head { position: sticky; top: 130px; margin: 0; }
+.research-layout .section-head { position: sticky; top: 150px; margin: 0; }
 .research-index { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .research-index li { border-bottom: 1px solid var(--border); }
 .research-index a { display: grid; grid-template-columns: 4.5rem 1fr auto; gap: 1.25rem; align-items: baseline; padding: 1.5rem 0; color: inherit; position: relative; }
