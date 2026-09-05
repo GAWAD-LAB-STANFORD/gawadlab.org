@@ -360,3 +360,14 @@ blockquote.pull cite { display: block; font-family: var(--font); font-style: nor
 .figure-wide img { display: block; width: 100%; max-width: 780px; margin: 0 auto; border-radius: var(--radius); box-shadow: var(--shadow); background: #fff; }
 .figure-wide figcaption { margin: .75rem auto 0; }
 .figure-wide figcaption { max-width: 80ch; }
+
+/* ---------- Lightbox ---------- */
+a.zoom { display: block; cursor: zoom-in; }
+a.zoom img { transition: transform .2s ease, box-shadow .2s ease; }
+a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(10,16,22,.92); display: flex; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
+.lightbox[hidden] { display: none; }
+.lightbox img { max-width: 100%; max-height: 100%; width: auto; height: auto; border-radius: 6px; background: #fff; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.lightbox .close { position: absolute; top: 1rem; right: 1rem; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.15); color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.lightbox .close:hover { background: rgba(255,255,255,.3); }
+.lightbox .cap { position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%); color: rgba(255,255,255,.75); font-size: .85rem; max-width: 80ch; text-align: center; }

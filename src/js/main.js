@@ -24,6 +24,26 @@
     });
   });
 
+  // Lightbox for figures (a.zoom)
+  var zooms = document.querySelectorAll('a.zoom');
+  if (zooms.length) {
+    var lb = document.createElement('div'); lb.className = 'lightbox'; lb.hidden = true;
+    lb.innerHTML = '<button class="close" aria-label="Close">&times;</button><img alt=""><div class="cap"></div>';
+    document.body.appendChild(lb);
+    var lbImg = lb.querySelector('img'), lbCap = lb.querySelector('.cap');
+    function closeLb() { lb.hidden = true; lbImg.src = ''; document.body.style.overflow = ''; }
+    zooms.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        lbImg.src = a.getAttribute('href'); lbImg.alt = a.querySelector('img').alt;
+        lbCap.textContent = a.querySelector('img').alt;
+        lb.hidden = false; document.body.style.overflow = 'hidden';
+      });
+    });
+    lb.addEventListener('click', closeLb);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) closeLb(); });
+  }
+
   // Publications search + filter
   var search = document.getElementById('pub-search');
   if (!search) return;
