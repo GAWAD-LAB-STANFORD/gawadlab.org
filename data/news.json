@@ -9,8 +9,8 @@
   },
   {
    "date": "2026-08",
-   "title": "William E. Evans named CEO of BioSkryb Genomics",
-   "text": "Bill Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, becomes Chief Executive Officer of BioSkryb Genomics, the company Chuck co-founded to commercialize PTA.",
+   "title": "Bill Evans becomes CEO of BioSkryb Genomics",
+   "text": "William E. Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, becomes Chief Executive Officer of BioSkryb Genomics, the company founded to bring PTA to researchers and clinics.",
    "link": "https://www.bioskryb.com/news/"
   },
   {
@@ -27,14 +27,20 @@
   },
   {
    "date": "2025-04",
-   "title": "ResolveOME scales to thousands of cells",
-   "text": "BioSkryb and Tecan introduce a 384-well ResolveOME workflow with the Uno Single Cell Dispenser, and BioSkryb announces a collaboration with Ultima Genomics to accelerate single-cell oncology research.",
+   "title": "Single-cell multiomics scales to thousands of cells per run",
+   "text": "A 384-well ResolveOME workflow with Tecan's Uno Single Cell Dispenser, and a collaboration with Ultima Genomics, bring paired genome and transcriptome sequencing to thousands of cells per experiment.",
    "link": "https://www.bioskryb.com/news/tecan-single-cell-flow/"
   },
   {
+   "date": "2025-04",
+   "title": "1Cell.Ai and BioSkryb to co-develop single-cell multiomic solutions",
+   "text": "1Cell.Ai joins forces with BioSkryb Genomics, the company founded to commercialize PTA, to co-develop and commercialize next-generation single-cell multiomic products.",
+   "link": "https://www.bioskryb.com/news/"
+  },
+  {
    "date": "2025-01",
-   "title": "ResolveSEQ MRD launches",
-   "text": "BioSkryb launches ResolveSEQ MRD, a service that pairs flow-sorted residual leukemia cells with single-cell genome and transcriptome sequencing to understand why some cells survive therapy, an approach that grew out of this lab's work.",
+   "title": "Residual leukemia cells, sequenced one at a time, offered as a service",
+   "text": "ResolveSEQ MRD pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
    "link": "https://www.biospace.com/press-releases/bioskryb-genomics-launches-resolveseq-mrd-a-next-generation-measurable-residual-disease-mrd-discovery-solution"
   },
   {
@@ -44,16 +50,40 @@
    "link": "https://pubmed.ncbi.nlm.nih.gov/39317739/"
   },
   {
+   "date": "2024-09",
+   "title": "PTA-based single-cell technology joins the Human Cell Atlas",
+   "text": "BioSkryb Genomics partners with the Human Cell Atlas to broaden access to single-cell genome and transcriptome sequencing for atlas-building projects.",
+   "link": "https://www.businesswire.com/news/home/20240926626387/en/BioSkryb-Genomics-Partners-with-the-Human-Cell-Atlas-to-Advance-Access-to-the-Next-Generation-of-Single-Cell-Technology"
+  },
+  {
    "date": "2024-07",
    "title": "scMicrobe PTA: near-complete genomes from single bacterial cells",
    "text": "With the DOE Joint Genome Institute, the lab shows that PTA recovers near-complete genomes from individual bacterial cells, published in ISME Communications.",
    "link": "https://pubmed.ncbi.nlm.nih.gov/39021442/"
   },
   {
+   "date": "2024-03",
+   "title": "Whole genome and transcriptome core kits released",
+   "text": "BioSkryb releases ResolveDNA and ResolveOME core kits, making PTA-based single-cell whole genome and paired genome-plus-transcriptome amplification available as standard reagents.",
+   "link": "https://www.businesswire.com/news/home/20240313621916/en/BioSkryb-Launches-New-Whole-Genome-and-Transcriptome-Core-Kits-to-Accelerate-Single-Cell-Multiomics"
+  },
+  {
+   "date": "2023-02",
+   "title": "Genome plus transcriptome from the same single cell goes commercial",
+   "text": "The paired single-cell genome and full-length transcriptome method developed with PTA launches commercially as ResolveOME, together with the BaseJumper analysis platform, at the AGBT meeting.",
+   "link": "https://www.businesswire.com/news/home/20230207005497/en/BioSkryb-Announces-Commercial-Launch-of-ResolveOME-System-and-BaseJumper-Bioinformatics-Platform"
+  },
+  {
    "date": "2022-10",
    "title": "PTA licensed for preimplantation genetic testing",
    "text": "CooperSurgical's genomics division signs a multi-year exclusive license to BioSkryb's PTA chemistry for preimplantation genetic testing and women's reproductive health worldwide.",
    "link": "https://www.biospace.com/bioskryb-genomics-and-cooper-surgical-ink-multi-year-deal-to-accelerate-clinical-discovery-and-diagnostics-in-women-s-reproductive-health"
+  },
+  {
+   "date": "2021-06",
+   "title": "PTA published in PNAS",
+   "text": "Primary template-directed amplification, the lab's method for accurate single-cell genome amplification, is published in the Proceedings of the National Academy of Sciences.",
+   "link": "https://pubmed.ncbi.nlm.nih.gov/34099548/"
   }
  ]
 }
