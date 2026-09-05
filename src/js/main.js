@@ -24,6 +24,28 @@
     });
   });
 
+  // Header compacts after scrolling
+  var header = document.querySelector('.site-header');
+  if (header) {
+    var onScroll = function () { header.classList.toggle('scrolled', window.scrollY > 60); };
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  }
+
+  // Scroll reveal
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    var singles = document.querySelectorAll('.section-head, .feature, .figure-wide, .prose, .contact-card, .cta-band .container, .growing .container, .pub-year, .page-hero .container');
+    var groups = document.querySelectorAll('.pillars, .research-index, .pub-compact, .timeline, .people-grid, .alumni-grid, .info-grid, .why-grid, .resource-groups, .funders, .openings, .mascots');
+    singles.forEach(function (el) { el.classList.add('reveal'); });
+    groups.forEach(function (el) { el.classList.add('reveal-stagger'); });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) { io.observe(el); });
+    // anything already in view on load
+    setTimeout(function () { document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < window.innerHeight) el.classList.add('in'); }); }, 50);
+  }
+
   // Lightbox for figures (a.zoom)
   var zooms = document.querySelectorAll('a.zoom');
   if (zooms.length) {

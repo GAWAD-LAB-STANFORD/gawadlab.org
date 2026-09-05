@@ -26,6 +26,12 @@
    "link": "https://www.bioskryb.com/news/exclusive-license/"
   },
   {
+   "date": "2025-06-09",
+   "title": "BioSkryb named among the top five emerging single-cell sequencing startups",
+   "text": "Inside Precision Medicine profiles five startups shaping single-cell sequencing and includes BioSkryb Genomics, founded in 2018 on the PTA chemistry invented in the lab, noting that PTA captures more than 95% of a single cell's genome.",
+   "link": "https://www.insideprecisionmedicine.com/topics/molecular-dx/the-top-five-emerging-startups-harnessing-single-cell-sequencing/"
+  },
+  {
    "date": "2025-04-24",
    "title": "1Cell.Ai and BioSkryb partner on rare-cell multiomics",
    "text": "The partnership pairs PTA-based single-cell chemistry with 1Cell.Ai's circulating tumor cell platform to characterize DNA, RNA, and protein from individual rare cells.",
@@ -84,6 +90,30 @@
    "title": "Somatic mutations in single human neurons cluster in regulatory DNA",
    "text": "GenomeWeb covers the Nature Genetics study with the Walsh and Park labs that used PTA to sequence individual human neurons and found somatic indels enriched in enhancers and promoters, accumulating with age.",
    "link": "https://www.genomeweb.com/sequencing/regulatory-alterations-overrepresented-single-cell-sequence-data-individual-neurons"
+  },
+  {
+   "date": "2020-06-22",
+   "title": "BioSkryb and St. Jude partner on diagnostics for resistant cancer cells",
+   "text": "BioSkryb expands its license with St. Jude Children's Research Hospital to develop a first-in-class clinical diagnostic that detects and defines heterogeneous cancer cell populations as patients undergo treatment, the clinical goal at the heart of this lab's leukemia program.",
+   "link": "https://www.prnewswire.com/news-releases/single-cell-genome-sequencing-company-bioskryb-and-st-jude-childrens-research-hospital-partner-to-develop-clinical-diagnostic-solutions-to-identify-resistant-cancer-cells-as-patients-undergo-treatment-301080792.html"
+  },
+  {
+   "date": "2020-01-23",
+   "title": "GenomeWeb: startup BioSkryb eyes oncology applications for single-cell DNA sequencing",
+   "text": "GenomeWeb profiles the North Carolina startup built on PTA and its plan to bring whole-genome amplification from single cells to cancer research.",
+   "link": "https://www.genomeweb.com/sequencing/startup-bioskryb-eyes-oncology-applications-single-cell-dna-sequencing"
+  },
+  {
+   "date": "2020-01-09",
+   "title": "BioSkryb raises $11.5 million to commercialize PTA",
+   "text": "Eighteen months after Chuck Gawad and Jay West founded the company to commercialize PTA, BioSkryb closes an $11.5 million seed round led by Anzu Partners to accelerate product development.",
+   "link": "https://www.bioskryb.com/news/single-cell-genome-sequencing-company-bio-skryb-raises-11-5-m-in-seed-funding-round/"
+  },
+  {
+   "date": "2019-12-19",
+   "title": "Diagnostic test helps find bloodstream infections before they appear",
+   "text": "St. Jude reports the JAMA Oncology study, with Veronica Gonzalez-Pena and Chuck Gawad among the authors, showing that microbial cell-free DNA in plasma identified bloodstream infections in children with relapsed leukemia days before symptoms appeared.",
+   "link": "https://www.stjude.org/media-resources/news-releases/2019-medicine-science-news/diagnostic-test-helps-find-bloodstream-infections-before-they-appear.html"
   },
   {
    "date": "2019-10",
