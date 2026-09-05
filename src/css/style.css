@@ -400,3 +400,6 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
   .hero-bg { animation: none; }
   .hero .eyebrow, .hero h1, .hero .lede, .hero-actions { animation: none; }
 }
+
+/* ---------- Feature video ---------- */
+.feature-video { display: block; width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--shadow); background: #000; }
