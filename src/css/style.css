@@ -171,7 +171,7 @@ p { margin: 0 0 1em; }
 
 /* Feature (image + text) rows */
 .feature { display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: center; }
-.feature img { border-radius: var(--radius); box-shadow: var(--shadow); }
+.feature img { border-radius: var(--radius); box-shadow: var(--shadow); max-height: 640px; width: auto; max-width: 100%; margin-inline: auto; }
 .feature.reverse > :first-child { order: 2; }
 @media (max-width: 860px) { .feature { grid-template-columns: 1fr; gap: 1.5rem; } .feature.reverse > :first-child { order: 0; } }
 
