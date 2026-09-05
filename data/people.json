@@ -17,15 +17,16 @@
    "role": "Basic Life Research Scientist",
    "image": "veronica-gonzalez-pena.jpg",
    "bio": "Veronica received her PhD in Pharmacology and Toxicology from the University of Arizona. In the lab she is passionate about working out the details of new biotechnology methods. In her free time she enjoys gardening and spending time with her family."
-  },
-  {
-   "name": "Athena Aragon",
-   "role": "Life Science Research Professional",
-   "image": "athena-aragon.jpg",
-   "bio": "Athena joined the lab in 2021 after earning her bachelor's in Human Biology at UC Santa Cruz. She is interested in using single-cell sequencing to learn more about neurodegenerative diseases and pediatric leukemia. When she's not in lab, she plays guitar and discovers new places to eat."
   }
  ],
  "alumni": [
+  {
+   "name": "Athena Aragon",
+   "role": "Life Science Research Professional",
+   "years": "",
+   "image": "athena-aragon.jpg",
+   "bio": "Athena joined the lab in 2021 after earning her bachelor's in Human Biology at UC Santa Cruz and worked on single-cell sequencing of pediatric leukemia and neural tissue. She is now a PhD student at UC Davis."
+  },
   {
    "name": "Yakun Pang, PhD",
    "role": "Postdoctoral Fellow",
