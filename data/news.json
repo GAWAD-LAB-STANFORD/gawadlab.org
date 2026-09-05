@@ -1,0 +1,10 @@
+{
+  "_note": "Add items at the top. 'date' is YYYY-MM or YYYY-MM-DD. Items below were seeded from the PubMed record; add awards, arrivals, talks, and funding.",
+  "items": [
+    {"date": "2026", "title": "Plasma cell-free metagenomic sequencing predicts bloodstream infection", "text": "A prospective study with collaborators at St. Jude, published in The Lancet Microbe, evaluates plasma microbial cell-free DNA sequencing for predicting bloodstream infection in children with cancer.", "link": "https://pubmed.ncbi.nlm.nih.gov/41780551/"},
+    {"date": "2025-09", "title": "Somatic mitochondrial DNA mutations shape cellular heterogeneity", "text": "Work led with the Kundu lab, published in Science Advances, shows that intermediate-heteroplasmy mtDNA mutations are a source of functional heterogeneity among primary cells.", "link": "https://pubmed.ncbi.nlm.nih.gov/40929251/"},
+    {"date": "2025-04", "title": "Longitudinal single-cell clonal evolution of pediatric ALL", "text": "A preprint from the lab measures genome-wide clonal evolution in pediatric acute lymphoblastic leukemia across diagnosis, treatment, and relapse at single-cell resolution.", "link": "https://pubmed.ncbi.nlm.nih.gov/40166290/"},
+    {"date": "2024-09", "title": "Cellular phenotype dynamics in Nature Genetics", "text": "A collaboration with the Landau lab defines heritability, plasticity, and transition dynamics of cellular phenotypes using single-cell multi-omics.", "link": "https://pubmed.ncbi.nlm.nih.gov/39317739/"},
+    {"date": "2024-07", "title": "scMicrobe PTA: near-complete genomes from single bacterial cells", "text": "With the DOE Joint Genome Institute, the lab shows that PTA recovers near-complete genomes from individual bacterial cells, published in ISME Communications.", "link": "https://pubmed.ncbi.nlm.nih.gov/39021442/"}
+  ]
+}

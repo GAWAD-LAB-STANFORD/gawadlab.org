@@ -1,0 +1,21 @@
+{
+  "groups": [
+    {"title": "Computational Biology", "links": [
+      ["Python", "https://www.python.org/"], ["Jupyter Notebooks", "https://jupyter.org/"], ["Introduction to Bash Scripting", "https://linuxconfig.org/bash-scripting-tutorial-for-beginners"],
+      ["RStudio", "https://posit.co/products/open-source/rstudio/"], ["Shiny", "https://shiny.rstudio.com/"], ["Scanpy", "https://scanpy.readthedocs.io/en/stable/"], ["Seurat", "https://satijalab.org/seurat/"],
+      ["Key Numbers for Cell Biologists", "https://bionumbers.hms.harvard.edu/keynumbers.aspx"], ["Gawad Lab on GitHub", "https://github.com/GAWAD-LAB-STANFORD"]]},
+    {"title": "Databases", "links": [
+      ["St. Jude PCGP", "https://www.stjude.org/research/pediatric-cancer-genome-project.html"], ["TCGA", "https://www.cancer.gov/ccg/research/genome-sequencing/tcga"], ["CellSeek", "https://cellseek.stjude.org/cerebellum/"],
+      ["Tabula Sapiens", "https://tabula-sapiens-portal.ds.czbiohub.org/"], ["Human Cell Atlas", "https://www.humancellatlas.org/"], ["Connectivity Map", "https://clue.io/about"],
+      ["NIST Mass Spec Data Center", "https://chemdata.nist.gov/"], ["OpenCell", "https://opencell.czbiohub.org/"], ["JGI Integrated Microbial Genomes", "https://img.jgi.doe.gov/"], ["JGI Genomes Online Database", "https://gold.jgi.doe.gov/index"]]},
+    {"title": "Genomics 101", "links": [
+      ["NIH: Introduction to Genomics", "https://www.genome.gov/About-Genomics/Introduction-to-Genomics"], ["Coursera: Introduction to Genomics", "https://www.coursera.org/learn/introduction-genomics"],
+      ["NIH: Precision Medicine", "https://www.genome.gov/genetics-glossary/Precision-Medicine"], ["Stanford Center for Genomics and Personalized Medicine", "https://med.stanford.edu/scgpm.html"],
+      ["UCSC Genome Browser", "https://genome.ucsc.edu/"], ["NCBI BLAST", "https://blast.ncbi.nlm.nih.gov/Blast.cgi"]]},
+    {"title": "Instrument Reservations & Cores", "links": [
+      ["SU BMI Shared Instrument Reservation Calendar", "https://docs.google.com/spreadsheets/d/1nk6YWb4usqaepjUYn20KPFUPZakPEyOkP3epxFZCXVg/edit#gid=576310209"],
+      ["SU Shared Scientific Facilities (iLab)", "https://stanford.ilabsolutions.com/landing/7#/cores"], ["FACS Core", "https://med.stanford.edu/stemcell/facs.html"],
+      ["Canary Center Shared Resource Facilities", "https://canarycenter.stanford.edu/core-facilities.html"], ["CZ Biohub Genomics", "https://www.czbiohub.org/sf/platforms/genomics/"],
+      ["Stanford Functional Genomics Facility", "https://med.stanford.edu/sfgf.html"]]}
+  ]
+}
