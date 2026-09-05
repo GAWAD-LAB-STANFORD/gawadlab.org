@@ -68,7 +68,7 @@ def head(title, desc, page, og_image="assets/og-image.jpg"):
     <a class="brand" href="index.html" aria-label="Gawad Lab home"><img src="assets/logo.png" alt="Stanford Medicine · Gawad Lab" width="592" height="164"></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
-""" + "".join(f'      <li><a href="{h}"{" class=\"active\"" if h == page else ""}>{t}</a></li>\n' for h, t in NAV) + f"""      <li class="nav-cta"><a href="{SUPPORT_MAILTO}" title="Email Chuck Gawad about supporting the lab">Support our work</a></li>
+""" + "".join(f'      <li><a href="{h}"{" class=\"active\"" if h == page else ""}>{t}</a></li>\n' for h, t in NAV) + f"""      <li class="nav-cta"><a href="{SUPPORT_MAILTO}" class="support-link" title="Support the lab">Support our work</a></li>
     </ul>
   </div>
 </header>
@@ -91,7 +91,7 @@ def footer():
       </div>
       <div>
         <h4>Explore</h4>
-        <ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t in NAV)}<li><a href="{SUPPORT_MAILTO}">Support our work</a></li></ul>
+        <ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t in NAV)}<li><a href="{SUPPORT_MAILTO}" class="support-link">Support our work</a></li></ul>
       </div>
       <div>
         <h4>Contact</h4>
@@ -104,6 +104,21 @@ def footer():
     </div>
   </div>
 </footer>
+<div class="modal" id="support-modal" hidden role="dialog" aria-modal="true" aria-labelledby="support-title">
+  <div class="modal-card">
+    <button class="modal-close" type="button" aria-label="Close">&times;</button>
+    <span class="eyebrow">Support our work</span>
+    <h2 id="support-title">Thank you for thinking of us</h2>
+    <p>Gifts to the lab fund the early, high-risk experiments that grants rarely cover: a new single-cell method, a pilot cohort, a student's first project. Every contribution, of any size, goes directly to research on childhood cancer.</p>
+    <p>The simplest first step is a note to Chuck. He reads every message and will reply personally to talk about what you would like to support.</p>
+    <div class="modal-email">
+      <span class="modal-address" id="support-address">cgawad@stanford.edu</span>
+      <button class="btn btn-primary btn-sm" type="button" id="copy-email">Copy email</button>
+      <a class="btn btn-outline btn-sm" href="{SUPPORT_MAILTO}">Open in my email app</a>
+    </div>
+    <p class="modal-note">Gifts to Stanford are tax-deductible in the United States. Chuck can connect you with Stanford Medicine's development office for a gift agreement or a named fund.</p>
+  </div>
+</div>
 <script src="js/main.js?v={_v("js/main.js")}"></script>
 </body>
 </html>

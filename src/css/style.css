@@ -478,3 +478,16 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .portrait-link:hover .li-badge { transform: scale(1.12); }
 .alum h3 a { color: var(--ink); } .alum h3 a:hover { color: var(--cardinal); }
 @media (max-width: 480px) { .alum .portrait-link { width: 120px; height: 120px; } }
+
+/* ---------- Support modal ---------- */
+.modal { position: fixed; inset: 0; z-index: 300; background: rgba(10,16,22,.7); display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.modal[hidden] { display: none; }
+.modal-card { position: relative; background: var(--surface); color: var(--ink); border-radius: var(--radius); max-width: 560px; width: 100%; padding: 2.25rem 2.25rem 2rem; box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: riseIn .35s cubic-bezier(.2,.7,.2,1) both; }
+.modal-card h2 { font-size: 1.8rem; margin: .2rem 0 .8rem; }
+.modal-card p { color: var(--ink-soft); font-size: .98rem; }
+.modal-close { position: absolute; top: .9rem; right: .9rem; width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--bg); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.modal-close:hover { background: var(--primary-tint); }
+.modal-email { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem .8rem; margin: 1.25rem 0 1rem; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.modal-address { font-family: var(--future); font-weight: 700; font-size: 1.15rem; color: var(--cardinal); flex: 1 1 auto; user-select: all; }
+.modal-note { font-size: .85rem; color: var(--muted); margin: 0; }
+@media (max-width: 520px) { .modal-card { padding: 1.6rem 1.25rem; } }
