@@ -53,7 +53,7 @@ def head(title, desc, page, og_image="assets/og-image.jpg"):
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"ResearchOrganization","name":"Gawad Lab","url":"{SITE_URL}","parentOrganization":{{"@type":"CollegeOrUniversity","name":"Stanford University School of Medicine"}},"address":{{"@type":"PostalAddress","streetAddress":"240 Pasteur Dr, BMI Building RM2200","addressLocality":"Palo Alto","addressRegion":"CA","postalCode":"94304","addressCountry":"US"}},"email":"cgawad@stanford.edu"}}</script>
 </head>
@@ -137,7 +137,7 @@ def pub_item(p, compact=False):
 def publications_page(pubs):
     body = [f"""<section class="page-hero"><div class="container">
   <span class="eyebrow">Publications</span>
-  <h1>Papers from the lab and our collaborators</h1>
+  <h1>Papers from the lab and our <em class="accent">collaborators</em></h1>
   <p class="lede">Peer-reviewed articles and preprints, newest first. Lab members are shown in bold. The list is generated from PubMed; see <a href="https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ">Google Scholar</a> for citation metrics.</p>
 </div></section>
 <section class="section"><div class="container">
@@ -174,7 +174,7 @@ def person_card(m):
         if L.get("linkedin"): parts.append(f'<a href="{esc(L["linkedin"])}" aria-label="LinkedIn">{ICONS["linkedin"]}</a>')
         links = '<div class="links">' + "".join(parts) + "</div>"
     return f"""<article class="person">
-  <img src="assets/people/{esc(m['image'])}" alt="{esc(m['name'])}" width="140" height="140" loading="lazy">
+  <div class="portrait"><img src="assets/people/{esc(m['image'])}" alt="{esc(m['name'])}" width="150" height="150" loading="lazy"></div>
   <h3>{esc(m['name'])}</h3>
   <p class="role">{esc(m['role'])}</p>
   <p class="bio">{esc(m['bio'])}</p>{links}
