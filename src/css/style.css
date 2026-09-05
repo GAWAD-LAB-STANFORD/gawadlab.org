@@ -126,13 +126,13 @@ p { margin: 0 0 1em; }
 .hero {
   position: relative; color: #fff; overflow: hidden;
   background: var(--ink) url("../assets/hero.jpg") center 62% / cover no-repeat;
-  min-height: min(78vh, 720px); display: flex; align-items: center;
+  min-height: min(82vh, 780px); display: flex; align-items: center;
 }
 .hero::before {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(100deg, rgba(14,24,34,.88) 0%, rgba(14,24,34,.62) 45%, rgba(14,24,34,.18) 100%);
 }
-.hero .container { position: relative; padding: clamp(3.5rem, 9vw, 6.5rem) 0; }
+.hero .container { position: relative; padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(4rem, 9vw, 7rem); }
 .hero h1 { color: #fff; max-width: 14ch; text-wrap: balance; margin-bottom: 1.1rem; }
 .hero .lede { color: rgba(255,255,255,.86); font-size: clamp(1.05rem, 1.6vw, 1.3rem); max-width: 46ch; }
 .hero .eyebrow { color: var(--amber); font-size: 1.05rem; letter-spacing: .14em; margin-bottom: 1rem; }
