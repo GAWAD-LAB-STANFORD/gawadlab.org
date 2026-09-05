@@ -49,7 +49,7 @@
    "role": "Research Data Analyst",
    "years": "",
    "image": "david-klein.jpg",
-   "bio": "David received a BA in Biology from NYU and an MS in Biomedical Sciences from Tufts, then worked on computational analysis of single-cell and cell-free sequencing data.",
+   "bio": "David received a BA in Biology from NYU and an MS in Biomedical Sciences from Tufts, then worked on computational analysis of single-cell and cell-free sequencing data before medical school at the California University of Science and Medicine.",
    "now": "Internal medicine resident, Santa Clara Valley Medical Center"
   },
   {
@@ -81,7 +81,7 @@
    "role": "Computational Scientist",
    "years": "2020–2021",
    "image": "vibhu-agarwal.png",
-   "bio": "Vibhu received his PhD in Biostatistics from Stanford.",
+   "bio": "Vibhu received his PhD in Biostatistics from Stanford and developed the e-nose AI analytics in the lab.",
    "now": "Senior Director of Data Science, Medidata Solutions"
   },
   {
@@ -89,7 +89,7 @@
    "role": "Postdoctoral Fellow",
    "years": "2019–2021",
    "image": "yuntao-xia.png",
-   "bio": "Yuntao received his PhD in Chemical and Biomolecular Engineering from UPenn.",
+   "bio": "Yuntao received his PhD in Chemical and Biomolecular Engineering from UPenn and developed single-cell and cell-free sequencing protocols and computational pipelines in the lab.",
    "now": "Senior Scientist, Orchid Health"
   },
   {
@@ -97,7 +97,7 @@
    "role": "Postdoctoral Fellow",
    "years": "2015–2019",
    "image": "sivaraman-natarajan.png",
-   "bio": "Siva received his PhD in Neuroscience from Universität des Saarlandes. He helped develop several new single-cell and cell-free DNA sequencing protocols before becoming a Staff Scientist at St. Jude.",
+   "bio": "Siva received his PhD in Neuroscience from Universität des Saarlandes and helped develop several new single-cell and cell-free DNA sequencing protocols.",
    "now": "Staff Scientist, St. Jude Children's Research Hospital"
   },
   {
@@ -105,7 +105,7 @@
    "role": "Computational Scientist",
    "years": "2016–2019",
    "image": "rob-carter.png",
-   "bio": "Rob received his PhD in Biology from the University of Ottawa.",
+   "bio": "Rob received his PhD in Biology from the University of Ottawa and led the development of the lab's computational pipelines.",
    "now": "Director of Bioinformatics, BioSkryb Genomics"
   },
   {
@@ -113,7 +113,7 @@
    "role": "Research Technologist",
    "years": "2019",
    "image": "anju-cherian.png",
-   "bio": "Anju received her MS in Biomedical Research from the Morehouse School of Medicine and worked on single-cell sequencing methods. She continued as a technician at St. Jude when the lab moved to Stanford.",
+   "bio": "Anju received her MS in Biomedical Research from the Morehouse School of Medicine and worked on single-cell sequencing methods, staying on at St. Jude when the lab moved to Stanford.",
    "now": "Research technician, St. Jude Children's Research Hospital"
   },
   {
@@ -121,7 +121,7 @@
    "role": "Postdoctoral Fellow",
    "years": "2017–2018",
    "image": "ousman-mahmud.png",
-   "bio": "Ousman received his PhD in Genetics from the University of Georgia.",
+   "bio": "Ousman received his PhD in Genetics from the University of Georgia and built computational pipelines for cell-free and single-cell sequencing.",
    "now": "Genomics Bioinformatician, IBM Watson Health"
   },
   {
@@ -129,7 +129,7 @@
    "role": "Research Technologist",
    "years": "2017–2018",
    "image": "yuki-inaba.png",
-   "bio": ".",
+   "bio": "Yuki received a BS from Brown and worked on cell-free DNA sequencing in the lab for a year.",
    "now": "MD/PhD student, UT Southwestern"
   },
   {
@@ -137,7 +137,7 @@
    "role": "Pediatric Oncology Education Program",
    "years": "2016",
    "image": "morgan-carter.png",
-   "bio": ".",
+   "bio": "Morgan developed methods for single-cell mitochondrial sequencing as an undergraduate at the University of Virginia.",
    "now": "NCI Cancer Research Training Award fellow, NIH"
   },
   {
@@ -145,7 +145,7 @@
    "role": "Pediatric Oncology Education Program",
    "years": "2017",
    "image": "ian-nykaza.png",
-   "bio": "Ian learned single-cell sequencing as an undergraduate at the University of Minnesota, worked as a clinical coordinator at UCSF, and entered medical school at Cornell.",
+   "bio": "Ian learned single-cell sequencing as an undergraduate at the University of Minnesota and worked as a clinical coordinator at UCSF before medical school.",
    "now": "Medical student, Weill Cornell"
   },
   {
@@ -153,7 +153,7 @@
    "role": "MS Student",
    "years": "2016–2018",
    "image": "placeholder.png",
-   "bio": ".",
+   "bio": "Sarah completed her MS in Pharmacology as a Fulbright Scholar while studying cell-free DNA sequencing in the lab.",
    "now": "Lead pharmacist, Children's Cancer Hospital Egypt, Cairo"
   },
   {
@@ -161,7 +161,7 @@
    "role": "Pediatric Oncology Education Program",
    "years": "2015",
    "image": "greg-schwing.png",
-   "bio": ".",
+   "bio": "Greg studied barcoding and single-cell sequencing of leukemia samples as an undergraduate at the University of New Orleans.",
    "now": "MD/PhD student, Wayne State University"
   },
   {
@@ -169,7 +169,7 @@
    "role": "Medical Student Researcher",
    "years": "2015",
    "image": "shelby-lane.jpg",
-   "bio": ".",
+   "bio": "Shelby studied single-cell sequencing of leukemia samples as a medical student researcher.",
    "now": "Medical student, University of Tennessee Health Science Center"
   }
  ],
