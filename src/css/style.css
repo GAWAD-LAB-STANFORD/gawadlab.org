@@ -468,3 +468,13 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .photo-duo figcaption small { display: block; color: rgba(255,255,255,.65); font-size: .72rem; margin-top: .2rem; }
 @media (max-width: 800px) { .photo-duo { grid-template-columns: 1fr; } .photo-duo img { min-height: 240px; } }
 @media (prefers-reduced-motion: reduce) { .photo-band .bg { animation: none; } .photo-duo figure:hover img { transform: none; } }
+
+/* ---------- LinkedIn portrait links ---------- */
+.portrait-link { position: relative; display: block; text-decoration: none; }
+.person .portrait-link { width: 150px; height: 150px; margin: 0 0 1.1rem; }
+.alum .portrait-link { width: 160px; height: 160px; }
+.li-badge { position: absolute; right: 4px; bottom: 4px; width: 30px; height: 30px; border-radius: 50%; background: #0A66C2; color: #fff; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); border: 2px solid #fff; transition: transform .2s ease; z-index: 2; }
+.li-badge svg { width: 14px; height: 14px; }
+.portrait-link:hover .li-badge { transform: scale(1.12); }
+.alum h3 a { color: var(--ink); } .alum h3 a:hover { color: var(--cardinal); }
+@media (max-width: 480px) { .alum .portrait-link { width: 120px; height: 120px; } }

@@ -1,21 +1,250 @@
 {
-  "groups": [
-    {"title": "Computational Biology", "links": [
-      ["Python", "https://www.python.org/"], ["Jupyter Notebooks", "https://jupyter.org/"], ["Introduction to Bash Scripting", "https://linuxconfig.org/bash-scripting-tutorial-for-beginners"],
-      ["RStudio", "https://posit.co/products/open-source/rstudio/"], ["Shiny", "https://shiny.rstudio.com/"], ["Scanpy", "https://scanpy.readthedocs.io/en/stable/"], ["Seurat", "https://satijalab.org/seurat/"],
-      ["Key Numbers for Cell Biologists", "https://bionumbers.hms.harvard.edu/keynumbers.aspx"], ["Gawad Lab on GitHub", "https://github.com/GAWAD-LAB-STANFORD"]]},
-    {"title": "Databases", "links": [
-      ["St. Jude PCGP", "https://www.stjude.org/research/pediatric-cancer-genome-project.html"], ["TCGA", "https://www.cancer.gov/ccg/research/genome-sequencing/tcga"], ["CellSeek", "https://cellseek.stjude.org/cerebellum/"],
-      ["Tabula Sapiens", "https://tabula-sapiens-portal.ds.czbiohub.org/"], ["Human Cell Atlas", "https://www.humancellatlas.org/"], ["Connectivity Map", "https://clue.io/about"],
-      ["NIST Mass Spec Data Center", "https://chemdata.nist.gov/"], ["OpenCell", "https://opencell.czbiohub.org/"], ["JGI Integrated Microbial Genomes", "https://img.jgi.doe.gov/"], ["JGI Genomes Online Database", "https://gold.jgi.doe.gov/index"]]},
-    {"title": "Genomics 101", "links": [
-      ["NIH: Introduction to Genomics", "https://www.genome.gov/About-Genomics/Introduction-to-Genomics"], ["Coursera: Introduction to Genomics", "https://www.coursera.org/learn/introduction-genomics"],
-      ["NIH: Precision Medicine", "https://www.genome.gov/genetics-glossary/Precision-Medicine"], ["Stanford Center for Genomics and Personalized Medicine", "https://med.stanford.edu/scgpm.html"],
-      ["UCSC Genome Browser", "https://genome.ucsc.edu/"], ["NCBI BLAST", "https://blast.ncbi.nlm.nih.gov/Blast.cgi"]]},
-    {"title": "Instrument Reservations & Cores", "links": [
-      ["SU BMI Shared Instrument Reservation Calendar", "https://docs.google.com/spreadsheets/d/1nk6YWb4usqaepjUYn20KPFUPZakPEyOkP3epxFZCXVg/edit#gid=576310209"],
-      ["SU Shared Scientific Facilities (iLab)", "https://stanford.ilabsolutions.com/landing/7#/cores"], ["FACS Core", "https://med.stanford.edu/stemcell/facs.html"],
-      ["Canary Center Shared Resource Facilities", "https://canarycenter.stanford.edu/core-facilities.html"], ["CZ Biohub Genomics", "https://www.czbiohub.org/sf/platforms/genomics/"],
-      ["Stanford Functional Genomics Facility", "https://med.stanford.edu/sfgf.html"]]}
-  ]
+ "groups": [
+  {
+   "title": "AI models for biology (open)",
+   "links": [
+    [
+     "AlphaFold 3 Server (protein and complex structure)",
+     "https://alphafoldserver.com/"
+    ],
+    [
+     "AlphaFold Protein Structure Database",
+     "https://alphafold.ebi.ac.uk/"
+    ],
+    [
+     "ESM (Evolutionary Scale Modeling, protein language models)",
+     "https://github.com/evolutionaryscale/esm"
+    ],
+    [
+     "Evo 2 (DNA foundation model, Arc Institute)",
+     "https://github.com/ArcInstitute/evo2"
+    ],
+    [
+     "Nucleotide Transformer (InstaDeep)",
+     "https://github.com/instadeepai/nucleotide-transformer"
+    ],
+    [
+     "scGPT (single-cell foundation model)",
+     "https://github.com/bowang-lab/scGPT"
+    ],
+    [
+     "Geneformer (single-cell transformer)",
+     "https://huggingface.co/ctheodoris/Geneformer"
+    ],
+    [
+     "Boltz (open biomolecular structure prediction)",
+     "https://github.com/jwohlwend/boltz"
+    ],
+    [
+     "Hugging Face: biology and chemistry models",
+     "https://huggingface.co/models?other=biology"
+    ]
+   ]
+  },
+  {
+   "title": "AI assistants and compute",
+   "links": [
+    [
+     "Claude (Anthropic)",
+     "https://claude.ai/"
+    ],
+    [
+     "Claude Code, for analysis pipelines and code",
+     "https://claude.com/claude-code"
+    ],
+    [
+     "ChatGPT (OpenAI)",
+     "https://chatgpt.com/"
+    ],
+    [
+     "Ollama: run open models locally",
+     "https://ollama.com/"
+    ],
+    [
+     "Google Colab (free GPU notebooks)",
+     "https://colab.research.google.com/"
+    ],
+    [
+     "Stanford Sherlock HPC",
+     "https://www.sherlock.stanford.edu/"
+    ],
+    [
+     "Nextflow and nf-core pipelines",
+     "https://nf-co.re/"
+    ]
+   ]
+  },
+  {
+   "title": "Single-cell analysis toolkits",
+   "links": [
+    [
+     "Scanpy",
+     "https://scanpy.readthedocs.io/en/stable/"
+    ],
+    [
+     "Seurat",
+     "https://satijalab.org/seurat/"
+    ],
+    [
+     "scvi-tools (deep generative models for single cells)",
+     "https://scvi-tools.org/"
+    ],
+    [
+     "CELLxGENE (explore and annotate atlases)",
+     "https://cellxgene.cziscience.com/"
+    ],
+    [
+     "SCAN2 (somatic SNV and indel calling in PTA single cells)",
+     "https://github.com/parklab/SCAN2"
+    ],
+    [
+     "PTATO (PTA analysis toolbox)",
+     "https://github.com/ToolsVanBox/PTATO"
+    ],
+    [
+     "SigProfiler (mutational signatures)",
+     "https://github.com/AlexandrovLab/SigProfilerExtractor"
+    ],
+    [
+     "MutationalPatterns (R)",
+     "https://bioconductor.org/packages/MutationalPatterns/"
+    ],
+    [
+     "Jupyter Notebooks",
+     "https://jupyter.org/"
+    ],
+    [
+     "RStudio",
+     "https://posit.co/products/open-source/rstudio/"
+    ]
+   ]
+  },
+  {
+   "title": "Databases",
+   "links": [
+    [
+     "St. Jude PCGP",
+     "https://www.stjude.org/research/pediatric-cancer-genome-project.html"
+    ],
+    [
+     "TCGA",
+     "https://www.cancer.gov/ccg/research/genome-sequencing/tcga"
+    ],
+    [
+     "Human Cell Atlas",
+     "https://www.humancellatlas.org/"
+    ],
+    [
+     "Tabula Sapiens",
+     "https://tabula-sapiens-portal.ds.czbiohub.org/"
+    ],
+    [
+     "COSMIC mutational signatures",
+     "https://cancer.sanger.ac.uk/signatures/"
+    ],
+    [
+     "gnomAD",
+     "https://gnomad.broadinstitute.org/"
+    ],
+    [
+     "CellSeek",
+     "https://cellseek.stjude.org/cerebellum/"
+    ],
+    [
+     "Connectivity Map",
+     "https://clue.io/about"
+    ],
+    [
+     "JGI Integrated Microbial Genomes",
+     "https://img.jgi.doe.gov/"
+    ],
+    [
+     "JGI Genomes Online Database",
+     "https://gold.jgi.doe.gov/index"
+    ],
+    [
+     "NIST Mass Spec Data Center",
+     "https://chemdata.nist.gov/"
+    ],
+    [
+     "OpenCell",
+     "https://opencell.czbiohub.org/"
+    ]
+   ]
+  },
+  {
+   "title": "Learning genomics and machine learning",
+   "links": [
+    [
+     "NIH: Introduction to Genomics",
+     "https://www.genome.gov/About-Genomics/Introduction-to-Genomics"
+    ],
+    [
+     "Coursera: Introduction to Genomics",
+     "https://www.coursera.org/learn/introduction-genomics"
+    ],
+    [
+     "fast.ai Practical Deep Learning",
+     "https://course.fast.ai/"
+    ],
+    [
+     "Stanford CS229 Machine Learning (lectures)",
+     "https://cs229.stanford.edu/"
+    ],
+    [
+     "Introduction to Bash scripting",
+     "https://linuxconfig.org/bash-scripting-tutorial-for-beginners"
+    ],
+    [
+     "Key Numbers for Cell Biologists",
+     "https://bionumbers.hms.harvard.edu/keynumbers.aspx"
+    ],
+    [
+     "UCSC Genome Browser",
+     "https://genome.ucsc.edu/"
+    ],
+    [
+     "NCBI BLAST",
+     "https://blast.ncbi.nlm.nih.gov/Blast.cgi"
+    ],
+    [
+     "Gawad Lab on GitHub",
+     "https://github.com/GAWAD-LAB-STANFORD"
+    ]
+   ]
+  },
+  {
+   "title": "Stanford cores and reservations",
+   "links": [
+    [
+     "SU BMI Shared Instrument Reservation Calendar",
+     "https://docs.google.com/spreadsheets/d/1nk6YWb4usqaepjUYn20KPFUPZakPEyOkP3epxFZCXVg/edit#gid=576310209"
+    ],
+    [
+     "SU Shared Scientific Facilities (iLab)",
+     "https://stanford.ilabsolutions.com/landing/7#/cores"
+    ],
+    [
+     "FACS Core",
+     "https://med.stanford.edu/stemcell/facs.html"
+    ],
+    [
+     "Canary Center Shared Resource Facilities",
+     "https://canarycenter.stanford.edu/core-facilities.html"
+    ],
+    [
+     "CZ Biohub Genomics",
+     "https://www.czbiohub.org/sf/platforms/genomics/"
+    ],
+    [
+     "Stanford Functional Genomics Facility",
+     "https://med.stanford.edu/sfgf.html"
+    ],
+    [
+     "Stanford Center for Genomics and Personalized Medicine",
+     "https://med.stanford.edu/scgpm.html"
+    ]
+   ]
+  }
+ ]
 }

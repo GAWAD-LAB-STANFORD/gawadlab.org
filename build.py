@@ -177,8 +177,11 @@ def person_card(m):
         if L.get("github"): parts.append(f'<a href="{esc(L["github"])}" aria-label="GitHub">{ICONS["github"]}</a>')
         if L.get("linkedin"): parts.append(f'<a href="{esc(L["linkedin"])}" aria-label="LinkedIn">{ICONS["linkedin"]}</a>')
         links = '<div class="links">' + "".join(parts) + "</div>"
+    lk = (m.get("links") or {}).get("linkedin")
+    img = f'<img src="assets/people/{esc(m["image"])}" alt="{esc(m["name"])}" width="150" height="150" loading="lazy">'
+    portrait = f'<a class="portrait portrait-link" href="{esc(lk)}" target="_blank" rel="noopener" aria-label="{esc(m["name"])} on LinkedIn">{img}<span class="li-badge">{ICONS["linkedin"]}</span></a>' if lk else f'<div class="portrait">{img}</div>'
     return f"""<article class="person">
-  <div class="portrait"><img src="assets/people/{esc(m['image'])}" alt="{esc(m['name'])}" width="150" height="150" loading="lazy"></div>
+  {portrait}
   <h3>{esc(m['name'])}</h3>
   <p class="role">{esc(m['role'])}</p>
   <p class="bio">{esc(m['bio'])}</p>{links}
@@ -187,9 +190,13 @@ def person_card(m):
 def alum_card(m):
     yrs = f" · {esc(m['years'])}" if m.get("years") else ""
     now = f'<p class="now"><span>Now</span> {esc(m["now"])}</p>' if m.get("now") else ""
+    lk = (m.get("links") or {}).get("linkedin")
+    img = f'<img src="assets/people/{esc(m["image"])}" alt="" width="64" height="64" loading="lazy">'
+    portrait = f'<a class="portrait-link" href="{esc(lk)}" target="_blank" rel="noopener" aria-label="{esc(m["name"])} on LinkedIn">{img}<span class="li-badge">{ICONS["linkedin"]}</span></a>' if lk else img
+    name = f'<a href="{esc(lk)}" target="_blank" rel="noopener">{esc(m["name"])}</a>' if lk else esc(m["name"])
     return f"""<article class="alum">
-  <img src="assets/people/{esc(m['image'])}" alt="" width="64" height="64" loading="lazy">
-  <div><h3>{esc(m['name'])}</h3>{now}<p class="role">In the lab: {esc(m['role'])}{yrs}</p><p class="bio">{esc(m['bio'])}</p></div>
+  {portrait}
+  <div><h3>{name}</h3>{now}<p class="role">In the lab: {esc(m['role'])}{yrs}</p><p class="bio">{esc(m['bio'])}</p></div>
 </article>"""
 
 def news_items(items):
