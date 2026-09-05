@@ -251,10 +251,10 @@ p { margin: 0 0 1em; }
 .person .links a { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--primary-tint); color: var(--primary); }
 .person .links a:hover { background: var(--primary); color: #fff; }
 .person .links svg { width: 16px; height: 16px; }
-.alumni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0 2.5rem; border-top: 1px solid var(--ink); }
-.alum { display: grid; grid-template-columns: 110px 1fr; gap: 1.25rem; align-items: start; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
-.alum img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-tint); }
-.alum h3 { font-family: var(--display); font-weight: 600; font-size: 1.2rem; margin: 0; }
+.alumni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 0 2.5rem; border-top: 1px solid var(--ink); }
+.alum { display: grid; grid-template-columns: 160px 1fr; gap: 1.5rem; align-items: start; padding: 1.75rem 0; border-bottom: 1px solid var(--border); }
+.alum img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-tint); }
+.alum h3 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; margin: 0; }
 .alum .role { font-size: .88rem; color: var(--cardinal); font-weight: 650; margin: 0 0 .4rem; }
 .alum .bio { font-size: .93rem; color: var(--ink-soft); margin: 0; }
 .mascots { display: flex; flex-wrap: wrap; gap: 1.5rem; }
@@ -445,3 +445,5 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
   .page-hero .eyebrow, .page-hero h1, .page-hero .lede, .pub-year::after, .cta-band, .funders-track .funders { animation: none; }
   .funders-track .funders { flex-wrap: wrap; justify-content: center; width: auto; }
 }
+
+@media (max-width: 480px) { .alum { grid-template-columns: 120px 1fr; } .alum img { width: 120px; height: 120px; } }
