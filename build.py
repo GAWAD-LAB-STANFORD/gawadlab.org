@@ -186,9 +186,10 @@ def person_card(m):
 
 def alum_card(m):
     yrs = f" · {esc(m['years'])}" if m.get("years") else ""
+    now = f'<p class="now"><span>Now</span> {esc(m["now"])}</p>' if m.get("now") else ""
     return f"""<article class="alum">
   <img src="assets/people/{esc(m['image'])}" alt="" width="64" height="64" loading="lazy">
-  <div><h3>{esc(m['name'])}</h3><p class="role">{esc(m['role'])}{yrs}</p><p class="bio">{esc(m['bio'])}</p></div>
+  <div><h3>{esc(m['name'])}</h3>{now}<p class="role">In the lab: {esc(m['role'])}{yrs}</p><p class="bio">{esc(m['bio'])}</p></div>
 </article>"""
 
 def news_items(items):
