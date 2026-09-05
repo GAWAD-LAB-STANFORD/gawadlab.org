@@ -34,7 +34,7 @@
   // Scroll reveal
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduce && 'IntersectionObserver' in window) {
-    var singles = document.querySelectorAll('.section-head, .feature, .figure-wide, .prose, .contact-card, .cta-band .container, .growing .container, .pub-year, .page-hero .container');
+    var singles = document.querySelectorAll('.section-head, .feature, .figure-wide, .prose, .contact-card, .cta-band .container, .growing .container, .photo-band .container, .photo-duo, .pub-year, .page-hero .container');
     var groups = document.querySelectorAll('.pillars, .research-index, .pub-compact, .timeline, .people-grid, .alumni-grid, .info-grid, .why-grid, .resource-groups, .openings, .mascots, .pub-list, .translate-grid');
     singles.forEach(function (el) { el.classList.add('reveal'); });
     groups.forEach(function (el) { el.classList.add('reveal-stagger'); });

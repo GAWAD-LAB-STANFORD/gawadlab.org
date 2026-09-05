@@ -447,3 +447,20 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 }
 
 @media (max-width: 480px) { .alum { grid-template-columns: 120px 1fr; } .alum img { width: 120px; height: 120px; } }
+
+/* ---------- Photo bands ---------- */
+.photo-band { position: relative; overflow: hidden; min-height: clamp(320px, 46vw, 560px); display: flex; align-items: flex-end; color: #fff; background: var(--ink); }
+.photo-band .bg { position: absolute; inset: -4%; background-size: cover; background-position: center; animation: heroDrift 40s ease-in-out infinite alternate; }
+.photo-band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,24,34,0) 40%, rgba(14,24,34,.75) 100%); z-index: 1; }
+.photo-band .container { position: relative; z-index: 2; padding: 2rem 0 2rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.photo-band h2 { color: #fff; margin: 0; font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
+.photo-band p { margin: .35rem 0 0; color: rgba(255,255,255,.85); max-width: 56ch; }
+.photo-band .credit { font-size: .74rem; color: rgba(255,255,255,.6); }
+.photo-duo { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; }
+.photo-duo figure { margin: 0; position: relative; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); }
+.photo-duo img { display: block; width: 100%; height: 100%; min-height: 320px; object-fit: cover; transition: transform 1.2s ease; }
+.photo-duo figure:hover img { transform: scale(1.04); }
+.photo-duo figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.5rem 1.25rem 1rem; color: #fff; font-size: .92rem; background: linear-gradient(180deg, rgba(14,24,34,0), rgba(14,24,34,.8)); }
+.photo-duo figcaption small { display: block; color: rgba(255,255,255,.65); font-size: .72rem; margin-top: .2rem; }
+@media (max-width: 800px) { .photo-duo { grid-template-columns: 1fr; } .photo-duo img { min-height: 240px; } }
+@media (prefers-reduced-motion: reduce) { .photo-band .bg { animation: none; } .photo-duo figure:hover img { transform: none; } }
