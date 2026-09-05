@@ -87,13 +87,13 @@ p { margin: 0 0 1em; }
 }
 .nav { display: flex; align-items: center; justify-content: space-between; min-height: 132px; gap: 1rem; transition: min-height .25s ease; }
 .brand { flex: 0 0 auto; }
-.brand img { height: 112px; width: auto; max-width: none; transition: height .25s ease; }
+.brand img { height: 100px; width: auto; max-width: none; transition: height .25s ease; }
 .site-header.scrolled .brand img { height: 76px; }
 .site-header.scrolled .nav { min-height: 96px; }
-@media (max-width: 1260px) { .brand img { height: 68px; } }
-.nav-links { display: flex; align-items: center; gap: .25rem; list-style: none; margin: 0; padding: 0; }
+@media (max-width: 1200px) { .brand img { height: 68px; } }
+.nav-links { display: flex; align-items: center; gap: .1rem; list-style: none; margin: 0; padding: 0; flex-wrap: nowrap; }
 .nav-links a {
-  display: block; padding: .6rem .8rem; border-radius: 999px; font-weight: 600; font-size: 1.08rem; color: var(--ink-soft); white-space: nowrap;
+  display: block; padding: .55rem .7rem; border-radius: 999px; font-weight: 600; font-size: 1.02rem; color: var(--ink-soft); white-space: nowrap;
 }
 .nav-links a { position: relative; }
 .nav-links a::after { content: ""; position: absolute; left: 1rem; right: 1rem; bottom: .3rem; height: 2px; background: var(--cardinal); border-radius: 2px; transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
@@ -101,7 +101,7 @@ p { margin: 0 0 1em; }
 .nav-links a:hover { color: var(--cardinal); }
 .nav-links a.active { color: var(--cardinal); }
 .nav-links a.active::after { transform: scaleX(1); }
-.nav-links .nav-cta a { background: var(--cardinal); color: #fff; margin-left: .75rem; padding: .65rem 1.25rem; }
+.nav-links .nav-cta a { background: var(--cardinal); color: #fff; margin-left: .5rem; padding: .6rem 1.1rem; }
 .nav-links .nav-cta a:hover { background: var(--cardinal-dark); }
 .nav-toggle {
   display: none; background: none; border: 1.5px solid var(--border); border-radius: 10px;
@@ -116,7 +116,7 @@ p { margin: 0 0 1em; }
 .nav-toggle[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
 
-@media (max-width: 1260px) {
+@media (max-width: 1200px) {
   .nav-toggle { display: inline-flex; }
   .nav-links {
     display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch;
