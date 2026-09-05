@@ -403,3 +403,45 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 
 /* ---------- Feature video ---------- */
 .feature-video { display: block; width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--shadow); background: #000; }
+
+/* ---------- Motion across pages ---------- */
+.page-hero .eyebrow, .page-hero h1, .page-hero .lede { animation: riseIn .8s cubic-bezier(.2,.7,.2,1) both; }
+.page-hero h1 { animation-delay: .08s; } .page-hero .lede { animation-delay: .18s; }
+.link-arrow { display: inline-block; transition: color .2s; }
+.link-arrow::after { display: inline-block; transition: transform .25s ease; }
+.link-arrow:hover::after { transform: translateX(5px); }
+.btn-primary, .btn-outline, .btn-ghost { transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease; }
+.btn:active { transform: translateY(0) scale(.98); }
+.pub { transition: background .2s ease, padding-left .25s ease; border-radius: 8px; }
+.pub:hover { background: var(--surface); padding-left: 1.6rem; }
+.pub:hover::before { background: var(--amber); box-shadow: 0 0 0 4px var(--amber-tint); }
+.pub::before { transition: background .2s, box-shadow .2s; }
+.pub-year::after { transform-origin: left; animation: growRule .8s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes growRule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.timeline li { transition: transform .25s ease; }
+.timeline li:hover { transform: translateX(4px); }
+.timeline li::before { transition: transform .25s ease, box-shadow .25s ease; }
+.timeline li:hover::before { transform: scale(1.35); box-shadow: 0 0 0 5px var(--amber-tint); }
+.person img { transition: transform .35s ease; }
+.person:hover img { transform: translateY(-3px); }
+.alum img { transition: transform .3s ease; }
+.alum:hover img { transform: scale(1.06); }
+.resource-group li a, .info-card a.btn { transition: transform .2s ease, color .2s; display: inline-block; }
+.resource-group li a:hover { transform: translateX(4px); }
+.why { transition: border-color .25s ease, transform .25s ease; }
+.why:hover { border-color: var(--amber); transform: translateY(-3px); }
+.opening { transition: background .2s ease, padding-left .25s ease; border-radius: 8px; }
+.opening:hover { background: var(--surface); padding-left: .75rem; }
+.cta-band { background-size: 200% 200%; animation: bandShift 18s ease-in-out infinite alternate; }
+@keyframes bandShift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+.contact-card img { transition: transform .4s ease; }
+.contact-card:hover img { transform: scale(1.02); }
+/* funders: gentle continuous marquee, pauses on hover */
+.funders-track { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.funders-track .funders { flex-wrap: nowrap; justify-content: flex-start; width: max-content; gap: 4rem; animation: marquee 48s linear infinite; }
+.funders-track:hover .funders { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .page-hero .eyebrow, .page-hero h1, .page-hero .lede, .pub-year::after, .cta-band, .funders-track .funders { animation: none; }
+  .funders-track .funders { flex-wrap: wrap; justify-content: center; width: auto; }
+}
