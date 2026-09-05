@@ -137,7 +137,7 @@ def pub_item(p, compact=False):
 def publications_page(pubs):
     body = [f"""<section class="page-hero"><div class="container">
   <span class="eyebrow">Publications</span>
-  <h1>Papers from the lab and our <em class="accent">collaborators</em></h1>
+  <h1>Papers from the lab and with our <em class="accent">collaborators</em></h1>
   <p class="lede">Peer-reviewed articles and preprints, newest first. Lab members are shown in bold. The list is generated from PubMed; see <a href="https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ">Google Scholar</a> for citation metrics.</p>
 </div></section>
 <section class="section"><div class="container">
