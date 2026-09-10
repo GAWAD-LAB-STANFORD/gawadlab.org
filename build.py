@@ -109,7 +109,7 @@ def footer():
     <button class="modal-close" type="button" aria-label="Close">&times;</button>
     <span class="eyebrow">Support our work</span>
     <h2 id="support-title">Thank you for thinking of us</h2>
-    <p>Gifts to the lab fund the early, high-risk experiments that grants rarely cover: a new single-cell method, a pilot cohort, a student's first project. Every contribution, of any size, goes directly to research on childhood cancer.</p>
+    <p>Gifts to the lab fund the early, high-risk experiments that grants rarely cover: a new single-cell method, a pilot cohort, a student's first project. Every contribution, of any size, goes directly to the lab's research programs.</p>
     <p>The simplest first step is a note to Chuck. He reads every message and will reply personally to talk about what you would like to support.</p>
     <div class="modal-email">
       <span class="modal-address" id="support-address">cgawad@stanford.edu</span>
