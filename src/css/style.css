@@ -493,3 +493,8 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .modal-address { font-family: var(--future); font-weight: 700; font-size: 1.15rem; color: var(--cardinal); flex: 1 1 auto; user-select: all; }
 .modal-note { font-size: .85rem; color: var(--muted); margin: 0; }
 @media (max-width: 520px) { .modal-card { padding: 1.6rem 1.25rem; } }
+
+/* ---------- Program status line ---------- */
+.feature p.status { font-size: .9rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: .8rem; margin-top: 1.1rem; }
+.feature p.status strong { color: var(--ink-soft); font-weight: 700; }
+.feature p.status .link-arrow { display: inline; margin-left: .35rem; }
