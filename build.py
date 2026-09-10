@@ -230,12 +230,30 @@ def resource_groups(groups):
     return "\n".join(out)
 
 
+def _image_size(path):
+    """Read width/height from a PNG or JPEG header without any image library."""
+    import struct
+    with open(path, "rb") as f:
+        head = f.read(26)
+        if head[:8] == b"\x89PNG\r\n\x1a\n":
+            return struct.unpack(">II", head[16:24])
+        f.seek(2)
+        while True:
+            marker = f.read(2)
+            if len(marker) < 2 or marker[0] != 0xFF:
+                break
+            if marker[1] in (0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
+                f.read(3)
+                h, w = struct.unpack(">HH", f.read(4))
+                return w, h
+            seg = struct.unpack(">H", f.read(2))[0]
+            f.seek(seg - 2, 1)
+    return (200, 84)
+
 def _dims(fname, _cache={}):
     """Width/height scaled to an 84px-tall row so the link has size before the image loads."""
     if fname not in _cache:
-        from PIL import Image
-        with Image.open(SRC / "assets" / "funders" / fname) as im:
-            w, h = im.size
+        w, h = _image_size(SRC / "assets" / "funders" / fname)
         _cache[fname] = (round(w * 84 / h), 84)
     return _cache[fname]
 
