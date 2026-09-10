@@ -12,15 +12,36 @@
 
 
 
-<section class="section" id="leukemia">
+
+
+
+
+<section class="section" id="emergin<section class="section" id="technology">
   <div class="container feature">
     <div>
-      <span class="eyebrow">Program 1 · Leukemia clonal evolution and treatment resistance</span>
+      <span class="eyebrow">Program 1 · Single-cell and cell-free genomics technologies</span>
+      <h2>Reading a whole cell at once</h2>
+      <p>Every program below depends on measurements that did not exist a few years ago. This program builds them, and each of the others is an application of it.</p>
+      <p>The lab invented primary template-directed amplification (PTA), which amplifies the genome of a single cell far more uniformly than earlier methods and lets us call roughly 90 percent of small variants in a cell with high precision. We then paired PTA with full-length transcript capture so that genomic variants and transcript abundance are read from the same cell, and we are now adding DNA methylation, through a 5-methylcytosine-selective deaminase applied before amplification, and surface proteins. The aim is a single cell that yields its genome, transcriptome, methylome, and surface proteome together, at a cost that allows thousands of cells per patient. In parallel, we build wet-lab and computational methods to detect mutations, methylation changes, and microbial DNA in cell-free DNA from blood.</p>
+      <p>This is where a chemist, an engineer, or a computational biologist joining the lab makes the largest difference. A new chemistry here changes what every other program can see.</p>
+      <p class="status"><strong>Where we are:</strong> PTA and same-cell genome plus transcriptome sequencing are in use by laboratories worldwide and are available commercially as ResolveDNA and ResolveOME; the methylation readout is in development.</p>
+    </div>
+    <div>
+      <a class="zoom" href="assets/pta-figure.jpg" title="Click to enlarge"><img src="assets/pta-figure.jpg" alt="Overview of PTA: schematic comparing MDA and PTA amplification, amplification kinetics, and chromosome 1 coverage uniformity for MDA versus PTA" loading="lazy"></a>
+      <p class="img-credit">How PTA works. In MDA, exponential amplification from the first primed sites over-represents random loci; in PTA, exonuclease-resistant terminators keep amplification quasi-linear from the original template, giving far more uniform coverage. From Gonzalez-Pena et al., PNAS 2021.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="leukemia">
+  <div class="container feature reverse">
+    <div>
+      <span class="eyebrow">Program 2 · Leukemia clonal evolution and treatment resistance</span>
       <h2>Outrunning relapse in childhood leukemia</h2>
       <p>Most children with acute lymphoblastic leukemia are cured, but 10 to 15 percent are not, and only about half of the children who relapse survive. Bulk sequencing of their leukemia finds little to explain why, because the cells that survive months of chemotherapy are a tiny minority hidden among millions.</p>
       <p>We sequence those cells one at a time. With PTA we found that individual leukemia cells carry 3.7 times more mutations than bulk sequencing detects, that patients thought to have a single RAS mutation carry a median of five in separate clones, and that the clones which persist after induction therapy can be traced by their genomes and surface markers. We are now testing whether noncoding mutations in regulatory DNA change the state of individual cells in ways that let them survive treatment, in a cohort of children with measurable residual disease, and validating candidate mutations with pooled CRISPR screens. The same approach is being extended to acute myeloid leukemia.</p>
       <p>The goal is a single-cell test that flags relapse months before it is clinically visible, and a catalog of resistance mutations that guides each child to the most effective, least toxic therapy.</p>
-      <p class="status"><strong>Collaborators:</strong> Dan Landau (Weill Cornell), William Evans and John Easton (St. Jude Children's Research Hospital).</p>
+      <p class="status"><strong>Where we are:</strong> patient samples come from clinical trials at St. Jude Children's Research Hospital and Stanford; collaborators Dan Landau (Weill Cornell), William Evans and John Easton (St. Jude).</p>
     </div>
     <div>
       <a class="zoom" href="assets/clonal-evolution.jpg" title="Click to enlarge"><img src="assets/clonal-evolution.jpg" alt="Schematic of leukemia sequencing at increasing resolution, from deep bulk to single clones to single cells, and a bar chart of RAS mutations per patient found by error-corrected sequencing" loading="lazy"></a>
@@ -29,10 +50,10 @@
   </div>
 </section>
 
-<section class="section section-alt" id="viral">
-  <div class="container feature reverse">
+<section class="section" id="viral">
+  <div class="container feature">
     <div>
-      <span class="eyebrow">Program 2 · Viral origins of childhood leukemia</span>
+      <span class="eyebrow">Program 3 · Viral origins of childhood leukemia</span>
       <h2>Do common childhood viruses cause leukemia?</h2>
       <p>The most common initiating lesion in childhood acute lymphoblastic leukemia, the ETV6-RUNX1 fusion, arises before birth in about one in a hundred newborns, yet only about one in a hundred of those children ever develops leukemia. Something after birth supplies the second hits. Mel Greaves' delayed-infection hypothesis has long pointed at childhood infections, and mouse models confirm that pathogen exposure is required, but no one has shown how an infection damages the genome of a human preleukemic cell.</p>
       <p>The genomes of these leukemias carry two tell-tale scars: point mutations with the signature of the antiviral enzyme APOBEC3A, and deletions with the signature of RAG, the enzyme that rearranges antibody genes. We are testing whether common respiratory viruses such as influenza infect B-cell precursors directly and, through interferon signaling, switch on APOBEC3A while RAG is active, producing exactly the mutations seen in patients. Using cord-blood precursors carrying ETV6-RUNX1, staged B-cell differentiation, and same-cell genome and transcriptome sequencing, we can read viral infection, interferon response, mutational signatures, and deletions in the same single cells.</p>
@@ -46,15 +67,15 @@
   </div>
 </section>
 
-<section class="section" id="mosaicism">
-  <div class="container feature">
+<section class="section section-alt" id="mosaicism">
+  <div class="container feature reverse">
     <div>
-      <span class="eyebrow">Program 3 · Somatic mosaicism and precancer</span>
+      <span class="eyebrow">Program 4 · Somatic mosaicism and precancer</span>
       <h2>When a disease lives in only some of a child's cells</h2>
       <p>Every one of us is a mosaic. From the first cell division onward, each cell acquires its own mutations, so no two cells in the body carry exactly the same genome. Usually that is harmless. But when a mutation arises early in development and lands in the wrong cells, it can cause epilepsy, overgrowth of one part of the body, vascular or lymphatic malformations, or other conditions that standard genetic testing never finds, because the mutation is absent from the blood sample the test was run on.</p>
       <p>We built our single-cell methods for exactly this problem. By sequencing the genomes of individual cells from the affected tissue, we can find a mutation that is present in only some cells, learn which tissues carry it and when in development it arose, and give a family an answer that a normal blood test could not. In a child with severe epilepsy, we sequenced single neuronal nuclei recovered from the tips of stereo-EEG electrodes placed for surgical planning, to look for mutations confined to the part of the brain that was seizing.</p>
       <p>The same mosaicism, accumulated over a lifetime, is where cancer begins. We use the same tools on normal and precancerous tissue to date when a clone arose, measure how quickly it gathers genetic and epigenetic damage, and ask what the immune system does about it, with the aim of catching cancer before it starts. A related effort measures directly, in human blood stem cells and without animals, how much genomic damage a chemical exposure causes.</p>
-      <p class="status"><strong>Collaborators:</strong> Gerald Grant (Duke Neurosurgery), Christopher Walsh and Peter Park (Harvard), and Stanford's programs for undiagnosed diseases.</p>
+      <p class="status"><strong>Collaborators:</strong> Gerald Grant (Duke Neurosurgery), Christopher Walsh and Peter Park (Harvard).</p>
     </div>
     <div>
       <video class="feature-video" autoplay muted loop playsinline preload="metadata" poster="assets/mosaicism.jpg" aria-label="Animation of stereo-EEG electrodes mapped onto a child's brain">
@@ -65,24 +86,7 @@
   </div>
 </section>
 
-<section class="section section-alt" id="technology">
-  <div class="container feature reverse">
-    <div>
-      <span class="eyebrow">Program 4 · Single-cell and cell-free genomics technologies</span>
-      <h2>Reading a whole cell at once</h2>
-      <p>Every program above depends on measurements that did not exist a few years ago. This program builds them.</p>
-      <p>The lab invented primary template-directed amplification (PTA), which amplifies the genome of a single cell far more uniformly than earlier methods and lets us call roughly 90 percent of small variants in a cell with high precision. We then paired PTA with full-length transcript capture so that genomic variants and transcript abundance are read from the same cell, and we are now adding DNA methylation, through a 5-methylcytosine-selective deaminase applied before amplification, and surface proteins. The aim is a single cell that yields its genome, transcriptome, methylome, and surface proteome together, at a cost that allows thousands of cells per patient. In parallel, we build wet-lab and computational methods to detect mutations, methylation changes, and microbial DNA in cell-free DNA from blood.</p>
-      <p>This is where a chemist, an engineer, or a computational biologist joining the lab makes the largest difference. A new chemistry here changes what every other program can see.</p>
-      <p class="status"><strong>Where we are:</strong> PTA and same-cell genome plus transcriptome sequencing are in use by laboratories worldwide and are available commercially as ResolveDNA and ResolveOME; the methylation readout is in development.</p>
-    </div>
-    <div>
-      <a class="zoom" href="assets/pta-figure.jpg" title="Click to enlarge"><img src="assets/pta-figure.jpg" alt="Overview of PTA: schematic comparing MDA and PTA amplification, amplification kinetics, and chromosome 1 coverage uniformity for MDA versus PTA" loading="lazy"></a>
-      <p class="img-credit">How PTA works. In MDA, exponential amplification from the first primed sites over-represents random loci; in PTA, exonuclease-resistant terminators keep amplification quasi-linear from the original template, giving far more uniform coverage. From Gonzalez-Pena et al., PNAS 2021.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="emerging">
+g">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Emerging directions</span>
@@ -97,7 +101,7 @@
   </div>
 </section>
 
-<section class="section" id="translation">
+<section class="section section-alt" id="translation">
   <div class="container prose">
     <span class="eyebrow">Beyond the lab</span>
     <h2>Methods that leave the building</h2>
