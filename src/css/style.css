@@ -303,7 +303,9 @@ p { margin: 0 0 1em; }
 /* ---------- Funders ---------- */
 .funders { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2rem 3rem; }
 .funders img { height: 84px; width: auto; max-width: 220px; object-fit: contain; filter: grayscale(1); opacity: .85; transition: filter .2s, opacity .2s; }
-.funders img:hover { filter: none; opacity: 1; }
+.funders a { display: inline-flex; align-items: center; }
+.funders a:hover img, .funders a:focus img { filter: none; opacity: 1; transform: translateY(-2px); }
+.funders img { transition: filter .2s, opacity .2s, transform .2s; }
 
 /* ---------- CTA band ---------- */
 .cta-band { background: linear-gradient(120deg, var(--cardinal) 0%, #B0412F 100%); color: #fff; }

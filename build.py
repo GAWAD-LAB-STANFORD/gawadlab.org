@@ -229,10 +229,14 @@ def resource_groups(groups):
         out.append(f'<div class="resource-group"><h3>{esc(g["title"])}</h3><ul>{lis}</ul></div>')
     return "\n".join(out)
 
-FUNDERS = [("alsf.jpg", "Alex's Lemonade Stand Foundation"), ("bwf.png", "Burroughs Wellcome Fund"),
-           ("hyundai-hope-on-wheels.jpg", "Hyundai Hope On Wheels"), ("nih-new-innovator.png", "NIH Director's New Innovator Award"),
-           ("stanford.png", "Stanford University"), ("ash.png", "American Society of Hematology"),
-           ("cz-biohub.png", "Chan Zuckerberg Biohub"), ("lls.png", "Leukemia & Lymphoma Society")]
+FUNDERS = [("alsf.jpg", "Alex's Lemonade Stand Foundation", "https://www.alexslemonade.org/"),
+           ("bwf.png", "Burroughs Wellcome Fund", "https://www.bwfund.org/"),
+           ("hyundai-hope-on-wheels.jpg", "Hyundai Hope On Wheels", "https://hyundaihopeonwheels.org/"),
+           ("nih-new-innovator.png", "NIH Director's New Innovator Award", "https://commonfund.nih.gov/newinnovator"),
+           ("stanford.png", "Stanford Medicine", "https://med.stanford.edu/"),
+           ("ash.png", "American Society of Hematology", "https://www.hematology.org/"),
+           ("cz-biohub.png", "Chan Zuckerberg Biohub", "https://www.czbiohub.org/"),
+           ("lls.png", "Blood Cancer United (formerly the Leukemia & Lymphoma Society)", "https://bloodcancerunited.org/")]
 
 def build():
     pubs = json.load(open(DATA / "publications.json"))
@@ -252,7 +256,7 @@ def build():
         "{{NEWS}}": news_items(news),
         "{{NEWS_RECENT}}": news_items(news[:3]),
         "{{RESOURCES}}": resource_groups(resources),
-        "{{FUNDERS}}": "\n".join(f'<img src="assets/funders/{f}" alt="{esc(n)}" loading="lazy">' for f, n in FUNDERS),
+        "{{FUNDERS}}": "\n".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" title="{esc(n)}"><img src="assets/funders/{f}" alt="{esc(n)}" loading="lazy"></a>' for f, n, u in FUNDERS),
         "{{YEAR}}": str(YEAR),
     }
     for frag in sorted((SRC / "pages").glob("*.html")):
