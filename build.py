@@ -229,6 +229,16 @@ def resource_groups(groups):
         out.append(f'<div class="resource-group"><h3>{esc(g["title"])}</h3><ul>{lis}</ul></div>')
     return "\n".join(out)
 
+
+def _dims(fname, _cache={}):
+    """Width/height scaled to an 84px-tall row so the link has size before the image loads."""
+    if fname not in _cache:
+        from PIL import Image
+        with Image.open(SRC / "assets" / "funders" / fname) as im:
+            w, h = im.size
+        _cache[fname] = (round(w * 84 / h), 84)
+    return _cache[fname]
+
 FUNDERS = [("alsf.jpg", "Alex's Lemonade Stand Foundation", "https://www.alexslemonade.org/"),
            ("bwf.png", "Burroughs Wellcome Fund", "https://www.bwfund.org/"),
            ("hyundai-hope-on-wheels.jpg", "Hyundai Hope On Wheels", "https://hyundaihopeonwheels.org/"),
@@ -256,7 +266,7 @@ def build():
         "{{NEWS}}": news_items(news),
         "{{NEWS_RECENT}}": news_items(news[:3]),
         "{{RESOURCES}}": resource_groups(resources),
-        "{{FUNDERS}}": "\n".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" title="{esc(n)}"><img src="assets/funders/{f}" alt="{esc(n)}" loading="lazy"></a>' for f, n, u in FUNDERS),
+        "{{FUNDERS}}": "\n".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" title="{esc(n)}"><img src="assets/funders/{f}" alt="{esc(n)}" width="{_dims(f)[0]}" height="{_dims(f)[1]}" loading="eager" decoding="async"></a>' for f, n, u in FUNDERS),
         "{{YEAR}}": str(YEAR),
     }
     for frag in sorted((SRC / "pages").glob("*.html")):

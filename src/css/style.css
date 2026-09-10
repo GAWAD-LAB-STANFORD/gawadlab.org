@@ -302,8 +302,8 @@ p { margin: 0 0 1em; }
 
 /* ---------- Funders ---------- */
 .funders { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2rem 3rem; }
-.funders img { height: 84px; width: auto; max-width: 220px; object-fit: contain; filter: grayscale(1); opacity: .85; transition: filter .2s, opacity .2s; }
-.funders a { display: inline-flex; align-items: center; }
+.funders img { height: 84px; width: auto; max-width: 220px; pointer-events: none; object-fit: contain; filter: grayscale(1); opacity: .85; transition: filter .2s, opacity .2s; }
+.funders a { display: inline-flex; align-items: center; position: relative; z-index: 2; min-width: 60px; min-height: 84px; }
 .funders a:hover img, .funders a:focus img { filter: none; opacity: 1; transform: translateY(-2px); }
 .funders img { transition: filter .2s, opacity .2s, transform .2s; }
 
