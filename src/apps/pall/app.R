@@ -462,8 +462,9 @@ server <- function(input, output, session) {
                                              sum(b >= input$bootmin), length(b), input$bootmin))
     }
     na <- sum(ann == "not annotated")
-    if (na) bits <- c(bits, sprintf("%d tips have no annotation for this colouring", na))
-    note(paste(bits, collapse = "; "), ".")
+    if (na) bits <- c(bits, sprintf("%d %s no annotation for this colouring",
+                                    na, if (na == 1) "tip has" else "tips have"))
+    note(paste0(paste(bits, collapse = "; "), "."))
   })
 
   # ---- Genes ----
