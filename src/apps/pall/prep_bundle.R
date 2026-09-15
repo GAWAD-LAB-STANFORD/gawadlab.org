@@ -83,6 +83,46 @@ build_bundle <- function(D) {
   am  <- am[!(am$gene %in% c("JAK2", "FLT3", "CDKN2A")), ]
   rec <- rec[!(rec$gene %in% c("JAK2", "FLT3", "CDKN2A")), ]
 
+  # --- 10. per-cell metadata for every patient -----------------------------
+  #     The Figure 7 tables cover one patient's paired samples only. These two
+  #     sources cover all four patients plus the in vitro benchmark, so the
+  #     phylogenies of 417, 445 and 4084 can be coloured by something real
+  #     instead of rendering uniformly grey.
+  PP <- file.path(D, "shared_phycall_Figures_4_5_S6_S7")
+  # stored as a data.frame; as.vector() on one of those returns columns rather
+  # than values, so coerce to a numeric matrix once, here
+  sig <- as.matrix(readRDS(file.path(PP, "Signatures.rds")))  # 191 x 30 exposures
+  storage.mode(sig) <- "double"
+  nsnv <- as.data.frame(readRDS(file.path(PP, "Signatures.suppl.info.rds")))
+  sig <- sig[!grepl("-(germline|internal)$", rownames(sig)), , drop = FALSE]
+  top_sig <- colnames(sig)[max.col(sig, "first")]
+  top_sig[rowSums(sig) == 0] <- NA
+  sigdf <- data.frame(cell = gsub("[._]", "-", rownames(sig)),
+                      patient = sub("[-_].*", "", rownames(sig)),
+                      top_signature = sub("Signature\\.", "SBS", top_sig),
+                      top_share = round(apply(sig, 1, max), 3),
+                      stringsAsFactors = FALSE)
+  sigdf$n_snv <- nsnv$NumSNVs[match(rownames(sig), nsnv$Sample)]
+
+  ado <- do.call(rbind, lapply(c("4295", "4084", "417", "445"), function(q) {
+    f <- file.path(PP, sprintf("ADO.%s.rds", q))
+    if (!file.exists(f)) return(NULL)
+    a <- readRDS(f)
+    data.frame(cell = gsub("[._]", "-", paste0(q, "-", trimws(a$Sample))),
+               patient = q, ado = suppressWarnings(as.numeric(a$ado)),
+               depth = suppressWarnings(as.numeric(a$seq)),
+               method = a$method, stringsAsFactors = FALSE)
+  }))
+  ado <- ado[!grepl("bulk", ado$cell, ignore.case = TRUE), ]
+
+  cellmeta <- merge(sigdf, ado[, c("cell", "ado", "depth", "method")], by = "cell", all = TRUE)
+  cellmeta$patient[is.na(cellmeta$patient)] <- sub("[-_].*", "", cellmeta$cell[is.na(cellmeta$patient)])
+  # the exposure matrix itself, for the per-patient signature panel
+  rownames(sig) <- gsub("[._]", "-", rownames(sig))
+  colnames(sig) <- sub("Signature\\.", "SBS", colnames(sig))
+  sig <- sig[, colSums(sig) > 0, drop = FALSE]
+  stopifnot(is.matrix(sig), is.numeric(sig))
+
   # --- 9. allele frequency before and after treatment (Fig 7 paired samples) -
   #     Each variant appears twice in the ConDoR read-count files, once suffixed
   #     with its gene and once with _NA. The _NA column is an empty placeholder -
@@ -140,7 +180,7 @@ build_bundle <- function(D) {
     chr6      = cells$Chr6_1_Deletion,
     stringsAsFactors = FALSE)
 
-  list(trees = trees, tips = tips, af = af,
+  list(trees = trees, tips = tips, af = af, cellmeta = cellmeta, sig = sig,
        burden = burden, pan = pan, ras = ras,
        drug = drug, dmat = dmat, sj = sj,
        cells = cells, gmat = gmat, emergent = em,
@@ -173,6 +213,11 @@ if (!interactive() && sys.nframe() == 0L) {
   cat("  trees       ")
   for (n in names(B$trees)) cat(sprintf("%s(%d chars) ", n, nchar(B$trees[[n]])))
   cat(sprintf("\n  tip labels  %d annotated cells\n", nrow(B$tips)))
+  cat(sprintf("  cell meta   %d cells across %s\n", nrow(B$cellmeta),
+              paste(sort(unique(B$cellmeta$patient)), collapse = ", ")))
+  cat(sprintf("  signatures  %d cells x %d active COSMIC signatures; most common top signature %s\n",
+              nrow(B$sig), ncol(B$sig),
+              names(sort(table(B$cellmeta$top_signature), decreasing = TRUE))[1]))
   cat(sprintf("  before/after %d variants with pseudobulk VAF at both timepoints; largest rise %s %+.3f, largest fall %s %+.3f\n",
               nrow(B$af), B$af$gene[which.max(B$af$delta)], max(B$af$delta),
               B$af$gene[which.min(B$af$delta)], min(B$af$delta)))

@@ -9,7 +9,7 @@
 #   shiny::runApp("src/apps/pall")
 # ---------------------------------------------------------------------------
 
-library(shiny); library(bslib); library(ggplot2); library(DT); library(ape)
+library(shiny); library(bslib); library(ggplot2); library(DT); library(ape); library(scales)
 
 B <- local({
   for (p in c("bundle.rds", file.path("..", "bundle.rds"),
@@ -22,6 +22,7 @@ drug <- B$drug; DMAT <- B$dmat; sj <- B$sj
 cells <- B$cells; GMAT <- B$gmat; EMERGENT <- B$emergent
 rec <- B$rec; am <- B$am
 TREES <- B$trees; TIPS <- B$tips; AF <- B$af
+CELLMETA <- B$cellmeta; SIG <- B$sig
 
 # Newick is parsed here rather than shipped as a serialised tree, so the bundle
 # stays in kilobytes. Labels come through as 4295_A10 or 4295.F1 depending on the
@@ -75,7 +76,8 @@ ui <- page_navbar(
       selectizeInput("dmut", "Highlight a mutation", choices = colnames(DMAT),
                      options = list(maxOptions = 200))),
     conditionalPanel("input.nav == 'Single cells'",
-      radioButtons("cfill", "Colour cells by",
+      selectInput("cpat", "Patient", sort(unique(CELLMETA$patient))),
+      radioButtons("cfill", "Colour the paired-sample plot by",
                    c("Clone" = "clone", "Timepoint" = "timepoint",
                      "Chromosome 4 deletion" = "Chr4_Deletion",
                      "Chromosome 6 deletion" = "Chr6_1_Deletion"))),
@@ -83,9 +85,7 @@ ui <- page_navbar(
       selectInput("tree", "Tree", TREE_CHOICES),
       radioButtons("ttype", "Layout",
                    c("Phylogram" = "phylogram", "Fan" = "fan", "Unrooted" = "unrooted")),
-      radioButtons("tipcol", "Colour tips by",
-                   c("Timepoint" = "timepoint", "Clone" = "clone",
-                     "Chromosome 4 deletion" = "chr4", "None" = "none")),
+      uiOutput("tipcol_ui"),
       sliderInput("bootmin", "Label bootstrap support of at least", 0, 100, 50, step = 5),
       checkboxInput("tiplab", "Show cell labels", FALSE)),
     conditionalPanel("input.nav == 'Genes'",
@@ -140,6 +140,18 @@ ui <- page_navbar(
            note("A separate single-patient experiment covering six agents plus controls.")))),
 
   nav_panel("Single cells",
+    card(card_header(textOutput("qc_title")),
+      layout_columns(col_widths = c(6, 6),
+        plotOutput("qc_plot", height = 380), plotOutput("sig_plot", height = 380)),
+      uiOutput("qc_head"),
+      note("Every patient's cells are here. Allelic dropout and depth are the two ",
+           "measurements that decide whether a single-cell genome can be called at all, ",
+           "and the signature panel is the COSMIC exposure fitted to each cell's own ",
+           "mutations. The panels below need the paired pretreatment and post-treatment ",
+           "samples, which exist for one patient only.")),
+
+    h4(textOutput("paired_head"), style = "margin:1.6rem 0 .6rem;font-weight:700"),
+
     layout_columns(col_widths = c(7, 5),
       card(card_header("115 single-cell genomes, before and after treatment"),
            plotOutput("cell_plot", height = 430),
@@ -147,10 +159,12 @@ ui <- page_navbar(
                 "4295 after. Axes are the measured surface-marker intensities used to ",
                 "separate leukemic from normal and premalignant cells.")),
       card(card_header("Clone composition"), plotOutput("clone_plot", height = 430),
-           note("Clones ", strong(paste(EMERGENT, collapse = " and ")),
-                " are absent from the pretreatment sample entirely; they appear only after ",
-                "treatment. Small counts, so read them as the observation they are rather ",
-                "than as a rate."))),
+           note("Each bar is the percentage of that timepoint's cells, not a raw count, ",
+                "because 30 cells were sequenced before treatment against 85 after. Clones ",
+                strong(paste(EMERGENT, collapse = " and ")),
+                " are absent from the pretreatment sample entirely and appear only after ",
+                "treatment, but they are 3 and 1 cells, so read them as the observation ",
+                "they are rather than as a reliable frequency."))),
     card(card_header("Allele frequency before and after treatment"),
       plotOutput("af_plot", height = 470),
       uiOutput("af_head"),
@@ -333,18 +347,26 @@ server <- function(input, output, session) {
       labs(x = "CD19", y = "CD34") + theme_lab()
   })
 
+  # Raw counts would mislead: 30 cells were sequenced before treatment against 85
+  # after, so every clone looks larger afterwards. Each bar is the share of the
+  # cells sequenced at that timepoint.
   output$clone_plot <- renderPlot({
-    # two cells carry no CNV-cluster assignment; show them rather than drop them
     d <- cells; d$clone <- ifelse(is.na(d$clone), "unassigned", d$clone)
     tab <- as.data.frame(table(clone = d$clone, timepoint = d$timepoint))
+    tot <- tapply(tab$Freq, tab$timepoint, sum)
+    tab$pct <- tab$Freq / tot[as.character(tab$timepoint)] * 100
     tab$emergent <- tab$clone %in% EMERGENT
-    ggplot(tab, aes(Freq, clone, fill = timepoint)) +
+    lv <- levels(droplevels(tab$timepoint))
+    labs_tp <- setNames(sprintf("%s (n = %d)", lv, tot[lv]), lv)
+    tab$timepoint <- factor(labs_tp[as.character(tab$timepoint)], levels = labs_tp)
+    ggplot(tab, aes(pct, clone, fill = timepoint)) +
       geom_col(position = "dodge") +
-      geom_text(data = tab[tab$emergent & tab$Freq > 0, ],
+      geom_text(data = tab[tab$emergent & tab$pct > 0, ],
                 aes(label = "emergent"), hjust = -.15, size = 3, colour = CARD) +
-      scale_fill_manual(values = c(Pretreatment = GREY, `Post-treatment` = CARD), name = NULL) +
-      scale_x_continuous(expand = expansion(mult = c(0, .25))) +
-      labs(x = "cells", y = NULL) + theme_lab()
+      scale_fill_manual(values = setNames(c(GREY, CARD), labs_tp), name = NULL) +
+      scale_x_continuous(expand = expansion(mult = c(0, .28)),
+                         labels = function(x) paste0(x, "%")) +
+      labs(x = "share of the cells sequenced at that timepoint", y = NULL) + theme_lab()
   })
 
   output$geno_plot <- renderPlot({
@@ -362,6 +384,56 @@ server <- function(input, output, session) {
       labs(x = "cells, ordered by timepoint then clone", y = NULL) +
       theme_lab() + theme(axis.text.x = element_blank(), axis.text.y = element_text(size = 7),
                           panel.grid = element_blank())
+  })
+
+  # ---- per-patient cell quality and signatures ----
+  cm <- reactive(CELLMETA[CELLMETA$patient == input$cpat, ])
+
+  output$qc_title <- renderText(sprintf("Patient %s: %d single-cell genomes",
+                                        input$cpat, nrow(cm())))
+  output$paired_head <- renderText(
+    sprintf("Paired pretreatment and post-treatment samples \u2014 patient 4295 only%s",
+            if (identical(input$cpat, "4295")) "" else
+              sprintf(" (you have patient %s selected above)", input$cpat)))
+
+  output$qc_plot <- renderPlot({
+    d <- cm(); d <- d[is.finite(d$ado) & is.finite(d$depth), ]
+    validate(need(nrow(d) > 0, sprintf(
+      "No allelic-dropout or depth measurements were reported for patient %s.", input$cpat)))
+    ggplot(d, aes(depth, ado)) +
+      geom_point(aes(size = n_snv), colour = CARD, alpha = .8) +
+      scale_size_continuous(range = c(2, 7), name = "SNVs called", labels = scales::comma) +
+      labs(x = "sequencing depth (fold)", y = "allelic dropout (%)") + theme_lab()
+  })
+
+  output$sig_plot <- renderPlot({
+    d <- cm(); k <- intersect(d$cell, rownames(SIG))
+    validate(need(length(k) > 0, sprintf("No signature fit was reported for patient %s.", input$cpat)))
+    m <- SIG[k, , drop = FALSE]
+    keep <- colSums(m) > 0
+    tot <- sort(colSums(m[, keep, drop = FALSE]), decreasing = TRUE)
+    top <- names(tot)[seq_len(min(8, length(tot)))]
+    dd <- data.frame(signature = factor(rep(top, each = nrow(m)), levels = rev(top)),
+                     exposure = as.vector(m[, top, drop = FALSE]))
+    ggplot(dd, aes(exposure, signature)) +
+      geom_boxplot(outlier.shape = NA, colour = "grey35", fill = NA, width = .6) +
+      geom_point(position = position_jitter(height = .15, seed = 7), size = 1.6,
+                 colour = TEAL, alpha = .7) +
+      labs(x = "share of a cell's mutations", y = NULL,
+           title = sprintf("%d cells with a signature fit", nrow(m))) + theme_lab()
+  })
+
+  output$qc_head <- renderUI({
+    d <- cm()
+    a <- d$ado[is.finite(d$ado)]; n <- d$n_snv[is.finite(d$n_snv)]
+    bits <- sprintf("%d cells", nrow(d))
+    if (length(a)) bits <- c(bits, sprintf("median allelic dropout %.1f%%", median(a)))
+    if (length(n)) bits <- c(bits, sprintf("median %s SNVs called per cell",
+                                           format(round(median(n)), big.mark = ",")))
+    ts <- table(d$top_signature[!is.na(d$top_signature)])
+    if (length(ts)) bits <- c(bits, sprintf("%s dominates in %d of %d cells",
+                                            names(which.max(ts)), max(ts), sum(ts)))
+    note(paste0(paste(bits, collapse = "; "), "."))
   })
 
   output$af_plot <- renderPlot({
@@ -402,14 +474,52 @@ server <- function(input, output, session) {
     t
   })
 
+  # Only the Figure 7 patient has timepoints, clones and copy-number calls. The
+  # other trees would colour uniformly grey, so the picker offers each tree the
+  # annotations that tree actually has.
+  tip_keys <- reactive(norm_tip(cur_tree()$tip.label))
+
+  avail_cols <- reactive({
+    k <- tip_keys()
+    opts <- c("None" = "none")
+    if (any(k %in% CELLMETA$cell[!is.na(CELLMETA$top_signature)]))
+      opts <- c(opts, "Dominant mutational signature" = "signature")
+    if (any(k %in% CELLMETA$cell[is.finite(CELLMETA$ado)]))
+      opts <- c(opts, "Allelic dropout rate" = "ado", "Sequencing depth" = "depth")
+    if (any(k %in% TIPS$cell)) {
+      if (length(unique(TIPS$timepoint[match(k, TIPS$cell)])) > 1)
+        opts <- c(opts, "Timepoint" = "timepoint")
+      opts <- c(opts, "Clone" = "clone", "Chromosome 4 deletion" = "chr4")
+    }
+    opts
+  })
+
+  output$tipcol_ui <- renderUI({
+    o <- avail_cols()
+    radioButtons("tipcol", "Colour tips by", choices = o,
+                 selected = if (length(o) > 1) o[[2]] else o[[1]])
+  })
+
+  BINS <- function(x, n = 5) {
+    ok <- is.finite(x); if (!any(ok)) return(rep(NA_character_, length(x)))
+    b <- unique(stats::quantile(x[ok], seq(0, 1, length.out = n + 1), na.rm = TRUE))
+    if (length(b) < 3) return(ifelse(ok, sprintf("%.2f", x), NA))
+    as.character(cut(x, breaks = b, include.lowest = TRUE, dig.lab = 3))
+  }
+
   tip_ann <- reactive({
-    t <- cur_tree(); key <- norm_tip(t$tip.label)
-    i <- match(key, TIPS$cell)
-    v <- switch(input$tipcol,
+    k <- tip_keys(); col <- input$tipcol
+    req(!is.null(col))
+    j <- match(k, CELLMETA$cell); i <- match(k, TIPS$cell)
+    v <- switch(col,
+      signature = CELLMETA$top_signature[j],
+      ado       = BINS(CELLMETA$ado[j]),
+      depth     = BINS(CELLMETA$depth[j]),
       timepoint = TIPS$timepoint[i],
       clone     = TIPS$clone[i],
-      chr4      = ifelse(is.na(TIPS$chr4[i]), NA, ifelse(TIPS$chr4[i] == 1, "deleted", "retained")),
-      none      = rep("cell", length(key)))
+      chr4      = ifelse(is.na(TIPS$chr4[i]), NA,
+                         ifelse(TIPS$chr4[i] == 1, "deleted", "retained")),
+      rep("cell", length(k)))
     ifelse(is.na(v), "not annotated", as.character(v))
   })
 
@@ -423,7 +533,10 @@ server <- function(input, output, session) {
     lv <- sort(unique(ann))
     pal <- if (identical(input$tipcol, "timepoint"))
              c(Pretreatment = "#4A555F", `Post-treatment` = CARD, `not annotated` = GREY)[lv]
-           else setNames(grDevices::hcl.colors(length(lv), "Spectral"), lv)
+           else if (input$tipcol %in% c("ado", "depth")) {
+             o <- lv[order(suppressWarnings(as.numeric(sub("^[\\[(]", "", sub(",.*", "", lv)))))]
+             setNames(grDevices::hcl.colors(length(o), "Viridis"), o)[lv]
+           } else setNames(grDevices::hcl.colors(length(lv), "Spectral"), lv)
     pal[is.na(pal)] <- GREY
     cols <- pal[ann]
     par(mar = c(1, 1, 1, 1), xpd = NA)
