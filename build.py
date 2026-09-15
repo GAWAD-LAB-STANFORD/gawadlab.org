@@ -277,12 +277,13 @@ def build():
     OUT.mkdir()
     for d in ("css", "js", "assets"): shutil.copytree(SRC / d, OUT / d)
 
-    # Standalone WebAssembly build of the AML target-discovery app (shinylive).
-    # It is a self-contained static site; copy it in verbatim at /aml-atlas/.
-    app_dir = ROOT / "aml-atlas"
-    if app_dir.is_dir():
-        shutil.copytree(app_dir, OUT / "aml-atlas")
-        print(f"copied aml-atlas ({sum(1 for _ in (OUT / 'aml-atlas').rglob('*') if _.is_file())} files)")
+    # Standalone WebAssembly builds of the atlas browsers (shinylive). Each is a
+    # self-contained static site, so copy it in verbatim under its own path.
+    for app in ("aml-atlas", "cerebellum-atlas"):
+        app_dir = ROOT / app
+        if app_dir.is_dir():
+            shutil.copytree(app_dir, OUT / app)
+            print(f"copied {app} ({sum(1 for _ in (OUT / app).rglob('*') if _.is_file())} files)")
 
     fills = {
         "{{LATEST_PUBS}}": "\n".join(pub_item(p, compact=True) for p in pubs[:4]),
