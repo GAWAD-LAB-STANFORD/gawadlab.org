@@ -63,6 +63,7 @@ ui <- page_navbar(
                      "Chromosome 6 deletion" = "Chr6_1_Deletion"))),
     conditionalPanel("input.nav == 'Genes'",
       selectizeInput("gene", "Highlight a gene", choices = sort(unique(rec$gene)),
+                     selected = if ("TBL1XR1" %in% rec$gene) "TBL1XR1" else sort(unique(rec$gene))[1],
                      options = list(maxOptions = 200))),
     hr(),
     note(strong("Pang, Prieto ", em("et al."), "."),
@@ -74,11 +75,13 @@ ui <- page_navbar(
   nav_panel("Hidden diversity",
     layout_columns(col_widths = c(6, 6),
       card(card_header("Bulk sequencing misses most of the mutations"),
-           plotOutput("burden_plot", height = 400),
-           note("Sensitivity-corrected somatic mutations per cell or bulk sample, ",
-                "five patients. Each single cell carries several times what the matched ",
-                "bulk sample reports, because a mutation private to one clone is diluted ",
-                "below the detection floor of bulk sequencing.")),
+           plotOutput("burden_plot", height = 400), uiOutput("burden_head"),
+           note("Whole-genome calls from the five patients sequenced both ways, each ",
+                "corrected for that sample's own detection sensitivity. A mutation private ",
+                "to one clone is diluted below the detection floor of a bulk sample, which ",
+                "is why the single cells sit so far above it. These are the Figure 3 ",
+                "whole-genome numbers; the exome experiment in Figure 2 measures the same ",
+                "effect on a different scale.")),
       card(card_header("Where pediatric ALL sits among childhood cancers"),
            plotOutput("pan_plot", height = 400),
            note("SNVs per megabase in a published survey of paediatric tumours. ",
@@ -127,8 +130,9 @@ ui <- page_navbar(
   nav_panel("Genes",
     card(card_header("Recurrence against predicted pathogenicity"),
          plotOutput("gene_scatter", height = 440),
-         note("Horizontal axis is recurrence above what the gene's coding length predicts; ",
-              "vertical axis is the mean AlphaMissense score of the missense variants ",
+         uiOutput("gene_count"),
+         note("Horizontal axis is recurrence above what the gene's coding length predicts, on a ",
+              "log scale; vertical axis is the mean AlphaMissense score of the missense variants ",
               "observed in it. Upper right is a gene that is both hit more often than ",
               "expected and predicted damaging. The two axes come from different cohort ",
               "sets, so a gene's pair of values is not derived from identical samples.")),
@@ -143,16 +147,27 @@ ui <- page_navbar(
 server <- function(input, output, session) {
 
   # ---- Hidden diversity ----
+  # There is one bulk sample but several single cells per patient, so the cells
+  # are shown as a distribution rather than joined to the bulk point by a line.
   output$burden_plot <- renderPlot({
     d <- burden; d$assay <- factor(d$assay, levels = c("Bulk", "Single"))
-    ggplot(d, aes(assay, corrected_som_per_mb, group = patient)) +
-      geom_line(colour = GREY, linewidth = .8) +
-      geom_point(aes(colour = assay), size = 4) +
-      geom_text(data = d[d$assay == "Single", ], aes(label = patient),
-                hjust = -.25, size = 3.4, colour = "#4A555F") +
-      scale_colour_manual(values = c(Bulk = GREY, Single = CARD), guide = "none") +
-      scale_x_discrete(expand = expansion(add = c(.4, .9))) +
+    ggplot(d, aes(patient, corrected_som_per_mb, colour = assay)) +
+      geom_point(position = position_jitterdodge(jitter.width = .25, dodge.width = .7, seed = 5),
+                 size = 3, alpha = .9) +
+      stat_summary(fun = median, geom = "crossbar", width = .45,
+                   position = position_dodge(width = .7), linewidth = .4, show.legend = FALSE) +
+      scale_colour_manual(values = c(Bulk = "#4A555F", Single = CARD), name = NULL) +
       labs(x = NULL, y = "sensitivity-corrected somatic mutations per Mb") + theme_lab()
+  })
+
+  # stated from the table in front of the reader, not quoted from the paper
+  output$burden_head <- renderUI({
+    b <- burden$corrected_som_per_mb[burden$assay == "Bulk"]
+    s <- burden$corrected_som_per_mb[burden$assay == "Single"]
+    note(sprintf(paste("Across these five patients the median single cell carries %.1f times the",
+                       "corrected mutation density of its matched bulk sample (%.2f against %.2f",
+                       "per Mb, %d cells and %d bulk samples)."),
+                 median(s) / median(b), median(s), median(b), length(s), length(b)))
   })
 
   output$pan_plot <- renderPlot({
@@ -311,11 +326,12 @@ server <- function(input, output, session) {
   })
 
   output$gene_scatter <- renderPlot({
-    d <- gene_am(); d <- d[is.finite(d$mean_am), ]
+    d <- gene_am(); d <- d[is.finite(d$mean_am) & is.finite(d$fold_size_corr), ]
     sel <- d[d$gene == input$gene, ]
     ggplot(d, aes(fold_size_corr, mean_am, colour = label)) +
       geom_hline(yintercept = c(.34, .564), linetype = "22", colour = "grey55", linewidth = .4) +
       geom_point(size = 3, alpha = .9) +
+      scale_x_continuous(trans = "log1p", breaks = c(0, 1, 3, 10, 30, 100, 300, 700)) +
       { if (nrow(sel)) geom_point(data = sel, size = 6, shape = 21, fill = NA,
                                   colour = "black", stroke = 1.1) } +
       { if (nrow(sel)) geom_text(data = sel, aes(label = gene), vjust = -1.4,
@@ -323,6 +339,14 @@ server <- function(input, output, session) {
       scale_colour_manual(values = setNames(GRP[names(GRP_LAB)], GRP_LAB), name = NULL) +
       labs(x = "recurrence, fold above the coding-size expectation",
            y = "mean AlphaMissense pathogenicity") + theme_lab()
+  })
+
+  output$gene_count <- renderUI({
+    d <- gene_am()
+    n <- sum(is.finite(d$mean_am) & is.finite(d$fold_size_corr))
+    miss <- d$gene[!(is.finite(d$mean_am) & is.finite(d$fold_size_corr))]
+    note(sprintf("%d of %d genes can be placed. %s carry no scored missense variant or no coding length, so they have no position here.",
+                 n, nrow(d), paste(sort(miss), collapse = ", ")))
   })
 
   output$am_title <- renderText(sprintf("%s: every scored missense variant", input$gene))

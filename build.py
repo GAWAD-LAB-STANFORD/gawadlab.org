@@ -285,7 +285,7 @@ def build():
 
     # Standalone WebAssembly builds of the atlas browsers (shinylive). Each is a
     # self-contained static site, so copy it in verbatim under its own path.
-    for app in ("aml-atlas", "cerebellum-atlas"):
+    for app in ("aml-atlas", "cerebellum-atlas", "pall-resistance"):
         app_dir = ROOT / app
         if app_dir.is_dir():
             shutil.copytree(app_dir, OUT / app)
