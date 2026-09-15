@@ -294,6 +294,25 @@ p { margin: 0 0 1em; }
 .resource-group a { font-weight: 600; }
 .resource-group a::after { content: "\00a0\2197"; font-size: .8em; color: var(--muted); white-space: nowrap; }
 
+/* ---------- Dataset lists (Atlases page) ---------- */
+/* Same shape as .resource-group: the link is the headline, the explanation sits
+   under it. A table put long prose in one column against a one-line link in the
+   other, so rows ran from 30px to 114px with no padding to separate them. */
+.datasets { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem 3rem; }
+.dataset { padding-top: 1.25rem; border-top: 2px solid var(--ink); }
+.dataset h3 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; margin: 0;
+              padding-bottom: .5rem; border-bottom: 2px solid var(--amber); display: inline-block; }
+.dataset ul { list-style: none; margin: .9rem 0 0; padding: 0; }
+.dataset li { padding: .85rem 0; border-bottom: 1px solid var(--border); }
+.dataset li:last-child { border-bottom: 0; }
+.dataset li a { font-weight: 650; }
+.dataset li a[href^="http"]::after { content: "\00a0\2197"; font-size: .8em; color: var(--muted); white-space: nowrap; }
+.dataset li a[href^="downloads/"]::after { content: "\00a0\2193"; font-size: .85em; color: var(--muted); white-space: nowrap; }
+.dataset li span { display: block; margin-top: .3rem; font-size: .92rem; line-height: 1.5; color: var(--muted); }
+.note-counts { margin: 1.25rem 0 0; font-size: .9rem; line-height: 1.6; color: var(--muted);
+               border-left: 3px solid var(--amber); padding: .1rem 0 .1rem .9rem; }
+.note-counts code { font-size: .92em; }
+
 /* ---------- News ---------- */
 .timeline { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--border); }
 .timeline li { position: relative; padding: 0 0 2rem 2rem; }
