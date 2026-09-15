@@ -1,0 +1,358 @@
+# Pediatric ALL treatment resistance browser
+# ---------------------------------------------------------------------------
+# Pang, Prieto et al.: "Single-Cell Sequencing Reveals Extensive Genetic
+# Diversity Underlying Pediatric ALL Treatment Complexity". Every number here
+# comes from the manuscript's figure-level source data; nothing is recomputed
+# from raw sequence and nothing is simulated.
+#
+#   Rscript src/apps/pall/prep_bundle.R SOURCE_DATA bundle.rds
+#   shiny::runApp("src/apps/pall")
+# ---------------------------------------------------------------------------
+
+library(shiny); library(bslib); library(ggplot2); library(DT)
+
+B <- local({
+  for (p in c("bundle.rds", file.path("..", "bundle.rds"),
+              file.path("src", "apps", "pall", "bundle.rds")))
+    if (file.exists(p)) return(readRDS(p))
+  stop("bundle.rds not found - build it with prep_bundle.R first")
+})
+burden <- B$burden; pan <- B$pan; ras <- B$ras
+drug <- B$drug; DMAT <- B$dmat; sj <- B$sj
+cells <- B$cells; GMAT <- B$gmat; EMERGENT <- B$emergent
+rec <- B$rec; am <- B$am
+
+CARD <- "#8C1515"; TEAL <- "#2F5D70"; AMBER <- "#F6A30C"; GREY <- "#B9C0C7"
+GRP <- c(MRD_candidate = "#D55E00", control_relapse = "#0072B2", control_founding = "#E69F00")
+GRP_LAB <- c(MRD_candidate = "MRD candidate", control_relapse = "Resistance-associated",
+             control_founding = "Known cancer initiator")
+COND_COL <- c(Bulk = GREY, DMSO = TEAL, `Pred-Hi` = CARD, `DNR-Hi` = AMBER)
+MARKERS <- c("CD19_M", "CD34_M", "CD10_M", "CD20_M")
+
+theme_lab <- function(rot = 0) {
+  theme_minimal(base_size = 13) +
+    theme(panel.grid.minor = element_blank(),
+          plot.title = element_text(face = "bold", size = 13),
+          axis.text.x = element_text(angle = rot, hjust = if (rot > 0) 1 else .5))
+}
+note <- function(...) div(class = "text-muted", style = "font-size:.85rem;margin-top:.5rem", ...)
+ext  <- function(l, u) a(l, href = u, target = "_blank", rel = "noopener")
+
+DRUG_GENES <- sort(unique(sub(" .*$", "", colnames(DMAT))))
+ALL_GENES  <- sort(unique(c(DRUG_GENES, rec$gene, am$gene, sj$gene)))
+
+# --- ui --------------------------------------------------------------------
+ui <- page_navbar(
+  id = "nav",
+  title = "Pediatric ALL Treatment Resistance",
+  theme = bs_theme(version = 5, primary = "#2F5D70"),
+  header = tags$style(HTML(
+    ".navbar .navbar-brand{font-size:1.45rem;font-weight:700}",
+    ".navbar .nav-link{font-size:1.18rem;font-weight:600;padding:.5rem 1rem}",
+    ".navbar .nav-link.active{font-weight:700}")),
+  sidebar = sidebar(
+    width = 300,
+    conditionalPanel("input.nav == 'Drug response'",
+      selectInput("dpat", "Patient", sort(unique(drug$patient))),
+      selectizeInput("dmut", "Highlight a mutation", choices = colnames(DMAT),
+                     options = list(maxOptions = 200))),
+    conditionalPanel("input.nav == 'Single cells'",
+      radioButtons("cfill", "Colour cells by",
+                   c("Clone" = "clone", "Timepoint" = "timepoint",
+                     "Chromosome 4 deletion" = "Chr4_Deletion",
+                     "Chromosome 6 deletion" = "Chr6_1_Deletion"))),
+    conditionalPanel("input.nav == 'Genes'",
+      selectizeInput("gene", "Highlight a gene", choices = sort(unique(rec$gene)),
+                     options = list(maxOptions = 200))),
+    hr(),
+    note(strong("Pang, Prieto ", em("et al."), "."),
+         " Single-cell sequencing reveals extensive genetic diversity underlying ",
+         "pediatric ALL treatment complexity. Every panel is drawn from the ",
+         "manuscript's figure-level source data.")
+  ),
+
+  nav_panel("Hidden diversity",
+    layout_columns(col_widths = c(6, 6),
+      card(card_header("Bulk sequencing misses most of the mutations"),
+           plotOutput("burden_plot", height = 400),
+           note("Sensitivity-corrected somatic mutations per cell or bulk sample, ",
+                "five patients. Each single cell carries several times what the matched ",
+                "bulk sample reports, because a mutation private to one clone is diluted ",
+                "below the detection floor of bulk sequencing.")),
+      card(card_header("Where pediatric ALL sits among childhood cancers"),
+           plotOutput("pan_plot", height = 400),
+           note("SNVs per megabase in a published survey of paediatric tumours. ",
+                "ALL sits at the bottom of the range, which is the observation this ",
+                "study set out to reconcile with the complexity of its treatment."))),
+    card(card_header("Per-patient detail"), DTOutput("burden_tbl"))),
+
+  nav_panel("RAS",
+    card(card_header("Activating RAS mutations found by error-corrected sequencing"),
+         plotOutput("ras_plot", height = 420),
+         note("Each point is one activating mutation. Bulk sequencing reported a single ",
+              "RAS mutation in each of these patients; error-corrected sequencing finds ",
+              "several more at low allele frequency, which is why they were missed.")),
+    layout_columns(col_widths = c(7, 5),
+      card(card_header("Allele frequency by codon"), plotOutput("ras_codon", height = 340)),
+      card(card_header("Every RAS mutation"), DTOutput("ras_tbl")))),
+
+  nav_panel("Drug response",
+    card(card_header(textOutput("drug_title")), plotOutput("drug_heat", height = 460),
+         note("Mutant allele frequency in percent, one row per sequenced sample and one ",
+              "column per recurrent mutation. Pred-Hi is prednisolone and DNR-Hi is ",
+              "daunorubicin, each against its own DMSO control and the diagnostic bulk ",
+              "sample. A column that rises under one drug and not the other marks a ",
+              "population with differential sensitivity.")),
+    layout_columns(col_widths = c(6, 6),
+      card(card_header(textOutput("dmut_title")), plotOutput("dmut_plot", height = 340)),
+      card(card_header("SJETV077 across nine ex vivo conditions"),
+           plotOutput("sj_plot", height = 340),
+           note("A separate single-patient experiment covering six agents plus controls.")))),
+
+  nav_panel("Single cells",
+    layout_columns(col_widths = c(7, 5),
+      card(card_header("115 single-cell genomes, before and after treatment"),
+           plotOutput("cell_plot", height = 430),
+           note("Two paired samples from the same patient: 4272 before treatment and ",
+                "4295 after. Axes are the measured surface-marker intensities used to ",
+                "separate leukemic from normal and premalignant cells.")),
+      card(card_header("Clone composition"), plotOutput("clone_plot", height = 430),
+           note("Clones ", strong(paste(EMERGENT, collapse = " and ")),
+                " are absent from the pretreatment sample entirely; they appear only after ",
+                "treatment. Small counts, so read them as the observation they are rather ",
+                "than as a rate."))),
+    card(card_header("Genotypes across 31 variants"), plotOutput("geno_plot", height = 420),
+         note("Presence or absence of each somatic variant in each cell, cells ordered by clone."))),
+
+  nav_panel("Genes",
+    card(card_header("Recurrence against predicted pathogenicity"),
+         plotOutput("gene_scatter", height = 440),
+         note("Horizontal axis is recurrence above what the gene's coding length predicts; ",
+              "vertical axis is the mean AlphaMissense score of the missense variants ",
+              "observed in it. Upper right is a gene that is both hit more often than ",
+              "expected and predicted damaging. The two axes come from different cohort ",
+              "sets, so a gene's pair of values is not derived from identical samples.")),
+    layout_columns(col_widths = c(7, 5),
+      card(card_header(textOutput("am_title")), plotOutput("am_plot", height = 360),
+           note("Dashed lines are the published AlphaMissense thresholds: likely benign ",
+                "below 0.34, likely pathogenic above 0.564.")),
+      card(card_header("Gene table"), DTOutput("gene_tbl"))))
+)
+
+# --- server ----------------------------------------------------------------
+server <- function(input, output, session) {
+
+  # ---- Hidden diversity ----
+  output$burden_plot <- renderPlot({
+    d <- burden; d$assay <- factor(d$assay, levels = c("Bulk", "Single"))
+    ggplot(d, aes(assay, corrected_som_per_mb, group = patient)) +
+      geom_line(colour = GREY, linewidth = .8) +
+      geom_point(aes(colour = assay), size = 4) +
+      geom_text(data = d[d$assay == "Single", ], aes(label = patient),
+                hjust = -.25, size = 3.4, colour = "#4A555F") +
+      scale_colour_manual(values = c(Bulk = GREY, Single = CARD), guide = "none") +
+      scale_x_discrete(expand = expansion(add = c(.4, .9))) +
+      labs(x = NULL, y = "sensitivity-corrected somatic mutations per Mb") + theme_lab()
+  })
+
+  output$pan_plot <- renderPlot({
+    d <- pan
+    med <- stats::aggregate(snv_per_mb ~ cancer_type, d, median)
+    d$cancer_type <- factor(d$cancer_type, levels = med$cancer_type[order(med$snv_per_mb)])
+    d$is_all <- grepl("ALL", d$cancer_type)
+    ggplot(d, aes(snv_per_mb, cancer_type, colour = is_all)) +
+      geom_point(position = position_jitter(height = .18, seed = 1), size = 1.1, alpha = .6) +
+      scale_x_continuous(trans = "log10") +
+      scale_colour_manual(values = c(`FALSE` = GREY, `TRUE` = CARD), guide = "none") +
+      labs(x = "SNVs per Mb (log scale)", y = NULL) + theme_lab()
+  })
+
+  output$burden_tbl <- renderDT({
+    d <- burden[, c("patient", "assay", "total_somatic", "unique", "shared",
+                    "sensitivity", "corrected_som_per_mb", "corrected_total")]
+    names(d) <- c("Patient", "Assay", "Total somatic", "Unique", "Shared",
+                  "Sensitivity", "Corrected som./Mb", "Corrected total")
+    datatable(d, rownames = FALSE, options = list(pageLength = 10, dom = "tip")) |>
+      formatRound(c("Sensitivity", "Corrected som./Mb"), 2) |>
+      formatRound("Corrected total", 0)
+  })
+
+  # ---- RAS ----
+  output$ras_plot <- renderPlot({
+    d <- ras
+    n <- stats::aggregate(AF ~ Patient, d, length); names(n)[2] <- "n"
+    d$Patient <- factor(d$Patient, levels = n$Patient[order(-n$n)])
+    ggplot(d, aes(AF, Patient, colour = Ras)) +
+      geom_point(size = 3, alpha = .85) +
+      scale_x_continuous(trans = "log10", labels = function(x) paste0(x * 100, "%")) +
+      scale_colour_manual(values = c(KRAS = CARD, NRAS = TEAL), name = NULL) +
+      labs(x = "mutant allele frequency (log scale)", y = NULL) + theme_lab()
+  })
+
+  output$ras_codon <- renderPlot({
+    d <- ras; d$Location <- factor(d$Location, levels = sort(unique(d$Location)))
+    ggplot(d, aes(Location, AF, colour = Ras)) +
+      geom_point(position = position_jitter(width = .12, seed = 2), size = 3, alpha = .85) +
+      scale_y_continuous(trans = "log10", labels = function(x) paste0(x * 100, "%")) +
+      scale_colour_manual(values = c(KRAS = CARD, NRAS = TEAL), name = NULL) +
+      labs(x = "codon", y = "allele frequency") + theme_lab()
+  })
+
+  output$ras_tbl <- renderDT({
+    d <- ras[order(-ras$AF), c("Patient", "Ras", "Location", "AA_Change", "AF")]
+    names(d) <- c("Patient", "Gene", "Codon", "Change", "Allele frequency")
+    datatable(d, rownames = FALSE, options = list(pageLength = 8, dom = "ftip")) |>
+      formatPercentage("Allele frequency", 2)
+  })
+
+  # ---- Drug response ----
+  dsub <- reactive({ i <- drug$patient == input$dpat; list(meta = drug[i, ], m = DMAT[i, , drop = FALSE]) })
+
+  output$drug_title <- renderText(sprintf("Patient %s: ex vivo response of every recurrent mutation", input$dpat))
+  output$drug_heat <- renderPlot({
+    s <- dsub(); m <- s$m
+    keep <- colSums(m > 0, na.rm = TRUE) > 0
+    validate(need(any(keep), "No mutations recorded for this patient."))
+    m <- m[, keep, drop = FALSE]
+    ord <- order(colMeans(m, na.rm = TRUE), decreasing = TRUE)
+    m <- m[, ord, drop = FALSE]
+    lab <- paste(s$meta$condition, s$meta$replicate)
+    d <- data.frame(sample = factor(rep(lab, ncol(m)), levels = rev(lab[order(s$meta$condition)])),
+                    mutation = factor(rep(colnames(m), each = nrow(m)), levels = colnames(m)),
+                    af = as.vector(m), stringsAsFactors = FALSE)
+    ggplot(d, aes(mutation, sample, fill = af)) +
+      geom_tile(colour = "white", linewidth = .25) +
+      scale_fill_viridis_c(option = "rocket", direction = -1, name = "AF %") +
+      labs(x = NULL, y = NULL) + theme_lab(90) +
+      theme(axis.text.x = element_text(size = 7), panel.grid = element_blank())
+  })
+
+  output$dmut_title <- renderText(sprintf("%s across conditions", input$dmut))
+  output$dmut_plot <- renderPlot({
+    req(input$dmut %in% colnames(DMAT))
+    d <- drug; d$af <- DMAT[, input$dmut]
+    d$condition <- factor(d$condition, levels = names(COND_COL))
+    ggplot(d, aes(condition, af, colour = condition)) +
+      geom_point(position = position_jitter(width = .12, seed = 3), size = 3, alpha = .9) +
+      facet_wrap(~ patient, nrow = 1) +
+      scale_colour_manual(values = COND_COL, guide = "none") +
+      labs(x = NULL, y = "mutant allele frequency (%)") + theme_lab(45)
+  })
+
+  output$sj_plot <- renderPlot({
+    d <- sj
+    top <- names(sort(tapply(d$af, d$Mutation, max, na.rm = TRUE), decreasing = TRUE))[1:25]
+    d <- d[d$Mutation %in% top, ]
+    d$Mutation <- factor(d$Mutation, levels = rev(top))
+    ggplot(d, aes(Treatment, Mutation, fill = af)) +
+      geom_tile(colour = "white", linewidth = .25) +
+      scale_fill_viridis_c(option = "mako", direction = -1, name = "AF %") +
+      scale_y_discrete(labels = function(x) sub(":.*$", "", x)) +
+      labs(x = NULL, y = NULL) + theme_lab(45) +
+      theme(axis.text.y = element_text(size = 7), panel.grid = element_blank())
+  })
+
+  # ---- Single cells ----
+  output$cell_plot <- renderPlot({
+    d <- cells
+    d$fill <- switch(input$cfill,
+      clone = ifelse(is.na(d$clone), "unassigned", d$clone),
+      timepoint = as.character(d$timepoint),
+      ifelse(is.na(d[[input$cfill]]), "unknown",
+             ifelse(d[[input$cfill]] == 1, "present", "absent")))
+    d <- d[is.finite(d$CD19_M) & is.finite(d$CD34_M), ]
+    validate(need(nrow(d) > 0, "No cells with both markers measured."))
+    ggplot(d, aes(CD19_M, CD34_M, colour = fill, shape = timepoint)) +
+      geom_point(size = 3, alpha = .85) +
+      scale_colour_manual(values = grDevices::hcl.colors(length(unique(d$fill)), "Spectral"),
+                          name = NULL) +
+      scale_shape_manual(values = c(Pretreatment = 1, `Post-treatment` = 16), name = NULL) +
+      labs(x = "CD19", y = "CD34") + theme_lab()
+  })
+
+  output$clone_plot <- renderPlot({
+    # two cells carry no CNV-cluster assignment; show them rather than drop them
+    d <- cells; d$clone <- ifelse(is.na(d$clone), "unassigned", d$clone)
+    tab <- as.data.frame(table(clone = d$clone, timepoint = d$timepoint))
+    tab$emergent <- tab$clone %in% EMERGENT
+    ggplot(tab, aes(Freq, clone, fill = timepoint)) +
+      geom_col(position = "dodge") +
+      geom_text(data = tab[tab$emergent & tab$Freq > 0, ],
+                aes(label = "emergent"), hjust = -.15, size = 3, colour = CARD) +
+      scale_fill_manual(values = c(Pretreatment = GREY, `Post-treatment` = CARD), name = NULL) +
+      scale_x_continuous(expand = expansion(mult = c(0, .25))) +
+      labs(x = "cells", y = NULL) + theme_lab()
+  })
+
+  output$geno_plot <- renderPlot({
+    ord <- order(cells$timepoint, ifelse(is.na(cells$clone), "zz", cells$clone))
+    ids <- cells$Index[ord]
+    ids <- ids[ids %in% rownames(GMAT)]
+    m <- GMAT[ids, , drop = FALSE]
+    d <- data.frame(cell = factor(rep(ids, ncol(m)), levels = ids),
+                    variant = factor(rep(colnames(m), each = nrow(m)), levels = colnames(m)),
+                    present = as.vector(m) == 1)
+    ggplot(d, aes(cell, variant, fill = present)) +
+      geom_tile() +
+      scale_fill_manual(values = c(`TRUE` = TEAL, `FALSE` = "#EDF0F2"), guide = "none") +
+      scale_y_discrete(labels = function(x) sub("^.*_", "", x)) +
+      labs(x = "cells, ordered by timepoint then clone", y = NULL) +
+      theme_lab() + theme(axis.text.x = element_blank(), axis.text.y = element_text(size = 7),
+                          panel.grid = element_blank())
+  })
+
+  # ---- Genes ----
+  gene_am <- reactive({
+    a <- stats::aggregate(am_pathogenicity ~ gene, am, mean)
+    names(a)[2] <- "mean_am"
+    m <- merge(rec, a, by = "gene", all.x = TRUE)
+    m$label <- GRP_LAB[m$group]
+    m
+  })
+
+  output$gene_scatter <- renderPlot({
+    d <- gene_am(); d <- d[is.finite(d$mean_am), ]
+    sel <- d[d$gene == input$gene, ]
+    ggplot(d, aes(fold_size_corr, mean_am, colour = label)) +
+      geom_hline(yintercept = c(.34, .564), linetype = "22", colour = "grey55", linewidth = .4) +
+      geom_point(size = 3, alpha = .9) +
+      { if (nrow(sel)) geom_point(data = sel, size = 6, shape = 21, fill = NA,
+                                  colour = "black", stroke = 1.1) } +
+      { if (nrow(sel)) geom_text(data = sel, aes(label = gene), vjust = -1.4,
+                                 fontface = "bold", show.legend = FALSE) } +
+      scale_colour_manual(values = setNames(GRP[names(GRP_LAB)], GRP_LAB), name = NULL) +
+      labs(x = "recurrence, fold above the coding-size expectation",
+           y = "mean AlphaMissense pathogenicity") + theme_lab()
+  })
+
+  output$am_title <- renderText(sprintf("%s: every scored missense variant", input$gene))
+  output$am_plot <- renderPlot({
+    d <- am[am$gene == input$gene, ]
+    validate(need(nrow(d) > 0, sprintf("No scored missense variants observed in %s.", input$gene)))
+    d$tp <- factor(ifelse(d$timepoint == "relapse", "Relapse", "Diagnosis"),
+                   levels = c("Diagnosis", "Relapse"))
+    ggplot(d, aes(tp, am_pathogenicity)) +
+      geom_hline(yintercept = c(.34, .564), linetype = "22", colour = "grey55", linewidth = .4) +
+      geom_boxplot(width = .5, outlier.shape = NA, colour = "grey30", fill = NA) +
+      geom_point(position = position_jitter(width = .12, seed = 4), size = 2.4,
+                 shape = 21, fill = "white", colour = "grey30") +
+      ylim(0, 1.02) + labs(x = NULL, y = "AlphaMissense pathogenicity") + theme_lab()
+  })
+
+  output$gene_tbl <- renderDT({
+    d <- gene_am()[, c("gene", "label", "nonsyn", "fold_size_corr", "relapse_freq_pct", "mean_am")]
+    names(d) <- c("Gene", "Class", "Nonsyn. events", "Fold recurrence", "Relapse %", "Mean AlphaMissense")
+    datatable(d[order(-d$`Fold recurrence`), ], rownames = FALSE, selection = "single",
+              options = list(pageLength = 8, dom = "ftip")) |>
+      formatRound(c("Fold recurrence", "Relapse %", "Mean AlphaMissense"), 2)
+  })
+  observeEvent(input$gene_tbl_rows_selected, {
+    i <- input$gene_tbl_rows_selected
+    if (length(i)) {
+      d <- gene_am(); d <- d[order(-d$fold_size_corr), ]
+      updateSelectizeInput(session, "gene", selected = d$gene[i])
+    }
+  })
+}
+
+shinyApp(ui, server)

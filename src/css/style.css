@@ -329,7 +329,10 @@ p { margin: 0 0 1em; }
 .funders img { transition: filter .2s, opacity .2s, transform .2s; }
 
 /* ---------- CTA band ---------- */
-.cta-band { background: linear-gradient(120deg, var(--cardinal) 0%, #B0412F 100%); color: #fff; }
+/* Solid Stanford cardinal. This was a gradient running to #B0412F, a lighter
+   brick red that is not the brand colour, so the band did not match the
+   buttons or the nav call-to-action beside it. */
+.cta-band { background: var(--cardinal); color: #fff; }
 .cta-band h2 { color: #fff; }
 .cta-band p { color: rgba(255,255,255,.88); max-width: 60ch; }
 .cta-band .btn-ghost { border-color: rgba(255,255,255,.7); }
@@ -459,8 +462,6 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .why:hover { border-color: var(--amber); transform: translateY(-3px); }
 .opening { transition: background .2s ease, padding-left .25s ease; border-radius: 8px; }
 .opening:hover { background: var(--surface); padding-left: .75rem; }
-.cta-band { background-size: 200% 200%; animation: bandShift 18s ease-in-out infinite alternate; }
-@keyframes bandShift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 .contact-card img { transition: transform .4s ease; }
 .contact-card:hover img { transform: scale(1.02); }
 /* funders: gentle continuous marquee, pauses on hover */
@@ -469,7 +470,7 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .funders-track:hover .funders { animation-play-state: paused; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
-  .page-hero .eyebrow, .page-hero h1, .page-hero .lede, .pub-year::after, .cta-band, .funders-track .funders { animation: none; }
+  .page-hero .eyebrow, .page-hero h1, .page-hero .lede, .pub-year::after, .funders-track .funders { animation: none; }
   .funders-track .funders { flex-wrap: wrap; justify-content: center; width: auto; }
 }
 
