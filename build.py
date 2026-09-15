@@ -303,6 +303,30 @@ def build():
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"  <url><loc>{SITE_URL}/{'' if p=='index.html' else p}</loc></url>\n" for p in sorted(pages)) + "</urlset>\n")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
+
+    # Old WordPress-era URLs (/publications/, /joining-the-lab/, /team/<name>/ ...) are still
+    # indexed by search engines and were 404s on the static site. GitHub Pages has no
+    # server-side redirects, so each old path gets a tiny redirect stub, and 404.html catches
+    # everything else by matching the path prefix before falling back to the home page.
+    REDIRECTS = {"joining-the-lab": "join.html", "join-us": "join.html", "publications": "publications.html",
+                 "research": "research.html", "people": "people.html", "team": "people.html",
+                 "news": "news.html", "resources": "resources.html", "contact": "index.html"}
+    def _redirect_html(target, extra_script=""):
+        url = f"{SITE_URL}/{'' if target == 'index.html' else target}"
+        return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Gawad Lab</title>'
+                f'<link rel="canonical" href="{url}"><meta name="robots" content="noindex">'
+                f'<meta http-equiv="refresh" content="0; url={url}"><script>{extra_script or f"location.replace({url!r})"}</script>'
+                f'</head><body><p>This page has moved to <a href="{url}">{url}</a>.</p></body></html>\n')
+    for old, target in REDIRECTS.items():
+        (OUT / old).mkdir(exist_ok=True)
+        (OUT / old / "index.html").write_text(_redirect_html(target), encoding="utf-8")
+    prefix_map = json.dumps([[f"/{k}", v] for k, v in REDIRECTS.items()])
+    (OUT / "404.html").write_text(_redirect_html("index.html", extra_script=(
+        "(function(){var p=location.pathname.toLowerCase(),m=" + prefix_map + ",t='';"
+        "for(var i=0;i<m.length;i++){if(p.indexOf(m[i][0])===0){t=m[i][1];break;}}"
+        f"location.replace('{SITE_URL}/'+(t==='index.html'?'':t));}})();")), encoding="utf-8")
+    print(f"wrote {len(REDIRECTS)} redirect stubs + 404.html")
+
     (OUT / "CNAME").write_text("gawadlab.org\n")
     (OUT / ".nojekyll").write_text("")
     print(f"done: {len(pages)} pages, {len(pubs)} publications")
