@@ -48,8 +48,8 @@ p { margin: 0 0 1em; }
 .lede { font-size: 1.15rem; color: var(--ink-soft); max-width: 62ch; }
 .muted { color: var(--muted); }
 .eyebrow {
-  display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--cardinal); margin-bottom: .6rem;
+  display: inline-block; font-size: .95rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--cardinal); margin-bottom: .7rem;
 }
 .container { width: min(var(--max), 100% - 2.5rem); margin-inline: auto; }
 .section { padding: clamp(3rem, 7vw, 5.5rem) 0; }

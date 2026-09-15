@@ -83,7 +83,65 @@ build_bundle <- function(D) {
   am  <- am[!(am$gene %in% c("JAK2", "FLT3", "CDKN2A")), ]
   rec <- rec[!(rec$gene %in% c("JAK2", "FLT3", "CDKN2A")), ]
 
-  list(burden = burden, pan = pan, ras = ras,
+  # --- 9. allele frequency before and after treatment (Fig 7 paired samples) -
+  #     Each variant appears twice in the ConDoR read-count files, once suffixed
+  #     with its gene and once with _NA. The _NA column is an empty placeholder -
+  #     zero alt reads and no total depth anywhere - so only the gene-named
+  #     columns carry data. Two multi-allelic sites have no gene column at all.
+  ar <- rc("Figure_7", "ConDoR_alt_readscount.csv")
+  tr <- rc("Figure_7", "ConDoR_total_readscount.csv")
+  stopifnot(identical(names(ar), names(tr)), identical(ar[[1]], tr[[1]]))
+  vc <- names(ar)[-1]; vc <- vc[sub("^.*_", "", vc) != "NA"]
+  A <- as.matrix(ar[, vc, drop = FALSE]); TT <- as.matrix(tr[, vc, drop = FALSE])
+  storage.mode(A) <- "double"; storage.mode(TT) <- "double"
+  stopifnot(all(colSums(TT, na.rm = TRUE) > 0))
+  tp <- sub("-.*", "", ar[[1]])
+  pseudobulk <- function(sel) {
+    al <- colSums(A[sel, , drop = FALSE], na.rm = TRUE)
+    to <- colSums(TT[sel, , drop = FALSE], na.rm = TRUE)
+    ifelse(to > 0, al / to, NA_real_)
+  }
+  ncov <- function(sel) colSums(!is.na(TT[sel, , drop = FALSE]) & TT[sel, , drop = FALSE] > 0)
+  i1 <- tp == "4272"; i2 <- tp == "4295"
+  af <- data.frame(
+    variant    = vc,
+    gene       = sub("^.*_", "", vc),
+    locus      = sub("_[^_]*$", "", vc),
+    pre        = pseudobulk(i1),  post       = pseudobulk(i2),
+    cells_pre  = ncov(i1),        cells_post = ncov(i2),
+    depth_pre  = colSums(TT[i1, , drop = FALSE], na.rm = TRUE),
+    depth_post = colSums(TT[i2, , drop = FALSE], na.rm = TRUE),
+    stringsAsFactors = FALSE)
+  af$delta <- af$post - af$pre
+  af <- af[is.finite(af$pre) & is.finite(af$post), ]
+  rownames(af) <- NULL
+
+  # --- 8. phylogenies (Fig 5E/5G maximum likelihood, Fig 7A clone tree) ---
+  #     Newick is kept as text and parsed in the browser, so the bundle carries
+  #     kilobytes rather than a serialised tree object.
+  PH <- c("4295", "445", "417", "4084", "Invitro")
+  trees <- list()
+  for (q in PH) {
+    f <- rp("shared_phycall_Figures_4_5_S6_S7",
+            sprintf("CellPhy.%s.GT10+FO+E.nobulks.noCNVs.raxml.support", q))
+    if (file.exists(f)) trees[[q]] <- paste(readLines(f, warn = FALSE), collapse = "")
+  }
+  trees[["clone"]] <- paste(readLines(rp("Figure_7", "_tree.newick"), warn = FALSE), collapse = "")
+
+  # one annotation row per cell, keyed on a normalised id, because the trees
+  # write 4295_A10 / 4295.F1 while the tables write 4295-A10
+  norm <- function(x) gsub("[._]", "-", x)
+  tips <- data.frame(
+    cell      = norm(cells$Index),
+    sample    = as.character(cells$TimeLine),
+    timepoint = as.character(cells$timepoint),
+    clone     = ifelse(is.na(cells$clone), "unassigned", cells$clone),
+    chr4      = cells$Chr4_Deletion,
+    chr6      = cells$Chr6_1_Deletion,
+    stringsAsFactors = FALSE)
+
+  list(trees = trees, tips = tips, af = af,
+       burden = burden, pan = pan, ras = ras,
        drug = drug, dmat = dmat, sj = sj,
        cells = cells, gmat = gmat, emergent = em,
        rec = rec, am = am)
@@ -112,4 +170,10 @@ if (!interactive() && sys.nframe() == 0L) {
   cat(sprintf("  genotypes   %d cells x %d variants\n", nrow(B$gmat), ncol(B$gmat)))
   cat(sprintf("  genes       %d with recurrence, %d scored missense variants\n",
               nrow(B$rec), nrow(B$am)))
+  cat("  trees       ")
+  for (n in names(B$trees)) cat(sprintf("%s(%d chars) ", n, nchar(B$trees[[n]])))
+  cat(sprintf("\n  tip labels  %d annotated cells\n", nrow(B$tips)))
+  cat(sprintf("  before/after %d variants with pseudobulk VAF at both timepoints; largest rise %s %+.3f, largest fall %s %+.3f\n",
+              nrow(B$af), B$af$gene[which.max(B$af$delta)], max(B$af$delta),
+              B$af$gene[which.min(B$af$delta)], min(B$af$delta)))
 }
