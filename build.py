@@ -25,7 +25,7 @@ LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", 
                "Youssef S", "Agarwal V", "Cherian A"}
 
 NAV = [("index.html", "Home"), ("research.html", "Research"), ("people.html", "People"),
-       ("publications.html", "Publications"), ("atlases.html", "Atlases"), ("news.html", "News"),
+       ("publications.html", "Publications"), ("apps.html", "Apps"), ("news.html", "News"),
        ("resources.html", "Resources"), ("join.html", "Join")]
 SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
 
@@ -335,6 +335,10 @@ def build():
     for old, target in REDIRECTS.items():
         (OUT / old).mkdir(exist_ok=True)
         (OUT / old / "index.html").write_text(_redirect_html(target), encoding="utf-8")
+    # Pages that were renamed keep their old .html address alive.
+    RENAMED = {"atlases.html": "apps.html"}
+    for old, target in RENAMED.items():
+        (OUT / old).write_text(_redirect_html(target), encoding="utf-8")
     prefix_map = json.dumps([[f"/{k}", v] for k, v in REDIRECTS.items()])
     (OUT / "404.html").write_text(_redirect_html("index.html", extra_script=(
         "(function(){var p=location.pathname.toLowerCase(),m=" + prefix_map + ",t='';"
