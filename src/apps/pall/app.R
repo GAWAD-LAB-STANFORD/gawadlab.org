@@ -178,11 +178,23 @@ ui <- page_navbar(
     card(card_header("Every variant, before and after"), DTOutput("af_tbl")),
 
     card(card_header("Genotypes across 31 variants"), plotOutput("geno_plot", height = 420),
-         note("Presence or absence of each somatic variant in each cell, cells ordered by clone."))),
+         note("Presence or absence of each somatic variant in each cell, cells ordered by clone.")),
+
+    card(card_header(textOutput("pie_title")),
+      layout_columns(col_widths = c(5, 7),
+        plotOutput("sig_pie", height = 430), plotOutput("sig_bar", height = 430)),
+      uiOutput("pie_head"),
+      note("Each cell's signature exposures sum to one, so a plain average over cells would let a ",
+           "cell carrying 300 mutations count as much as one carrying 12,000. These shares are ",
+           "weighted by the mutations each cell actually contributes, which makes them the share ",
+           "of that patient's mutations attributable to each signature. Signatures below 2% are ",
+           "pooled in the pie and below 2% in the bars. The in vitro benchmark is a cell line, ",
+           "not a patient, and is kept out of the ",
+           "four-patient comparison."))),
 
   nav_panel("Phylogeny",
     card(card_header(textOutput("tree_title")), plotOutput("tree_plot", height = 620),
-         uiOutput("tree_head"),
+         uiOutput("tree_legend"), uiOutput("tree_head"),
          note("The patient trees are maximum-likelihood phylogenies built by CellPhy from ",
               "somatic single-nucleotide variants, with support from 100 bootstrap replicates; ",
               "branch lengths are substitutions per site. The clone tree is the ConDoR ",
@@ -467,6 +479,73 @@ server <- function(input, output, session) {
                  sum(AF$delta > 0), nrow(AF)))
   })
 
+  # ---- relative contribution of the mutational signatures ----
+  # Exposures are per-cell fractions summing to 1, so the honest aggregate is
+  # weighted by each cell's mutation count, not a mean over cells.
+  sig_share <- function(patients) {
+    k <- intersect(CELLMETA$cell[CELLMETA$patient %in% patients & is.finite(CELLMETA$n_snv)],
+                   rownames(SIG))
+    if (!length(k)) return(NULL)
+    w <- CELLMETA$n_snv[match(k, CELLMETA$cell)]
+    v <- colSums(SIG[k, , drop = FALSE] * w) / sum(w)
+    list(share = sort(v[v > 0], decreasing = TRUE), n_cells = length(k), n_mut = sum(w))
+  }
+
+  pool <- function(v, floor = 0.02) {
+    big <- v[v >= floor]
+    if (sum(v < floor) > 0) big <- c(big, `other signatures` = sum(v[v < floor]))
+    big
+  }
+
+  output$pie_title <- renderText(
+    sprintf("Relative contribution of the mutational signatures \u2014 patient %s", input$cpat))
+
+  output$sig_pie <- renderPlot({
+    r <- sig_share(input$cpat)
+    validate(need(!is.null(r), sprintf("No signature fit for patient %s.", input$cpat)))
+    v <- pool(r$share, floor = 0.03)
+    d <- data.frame(sig = factor(names(v), levels = names(v)), share = as.numeric(v))
+    d$lab <- ifelse(d$share >= .04, sprintf("%s\n%.0f%%", d$sig, 100 * d$share), "")
+    d$pos <- cumsum(d$share) - d$share / 2
+    ggplot(d, aes(x = "", y = share, fill = sig)) +
+      geom_col(width = 1, colour = "white", linewidth = .6) +
+      coord_polar(theta = "y", direction = -1) +
+      geom_text(aes(y = 1 - pos, label = lab), size = 3.4, colour = "white", fontface = "bold") +
+      scale_fill_manual(values = grDevices::hcl.colors(nrow(d), "Spectral"), name = NULL) +
+      theme_void(base_size = 12) + theme(legend.position = "right")
+  })
+
+  output$sig_bar <- renderPlot({
+    pats <- setdiff(sort(unique(CELLMETA$patient)), "Invitro")
+    rows <- lapply(pats, function(q) {
+      r <- sig_share(q); if (is.null(r)) return(NULL)
+      v <- pool(r$share)
+      data.frame(patient = sprintf("%s\n(%s mutations)", q, format(r$n_mut, big.mark = ",")),
+                 sig = names(v), share = as.numeric(v), stringsAsFactors = FALSE)
+    })
+    d <- do.call(rbind, rows)
+    validate(need(!is.null(d) && nrow(d) > 0, "No signature fits available."))
+    ord <- names(sort(tapply(d$share, d$sig, sum), decreasing = TRUE))
+    ord <- c(setdiff(ord, "other signatures"), intersect("other signatures", ord))
+    d$sig <- factor(d$sig, levels = rev(ord))
+    ggplot(d, aes(share, patient, fill = sig)) +
+      geom_col(colour = "white", linewidth = .3) +
+      scale_fill_manual(values = rev(grDevices::hcl.colors(length(ord), "Spectral")), name = NULL) +
+      guides(fill = guide_legend(reverse = TRUE)) +
+      scale_x_continuous(labels = function(x) paste0(x * 100, "%"),
+                         expand = expansion(mult = c(0, .01))) +
+      labs(x = "share of that patient's mutations", y = NULL,
+           title = "The four patients side by side") + theme_lab()
+  })
+
+  output$pie_head <- renderUI({
+    r <- sig_share(input$cpat)
+    if (is.null(r)) return(NULL)
+    top <- utils::head(r$share, 3)
+    note(sprintf("%s mutations across %d cells. %s.", format(r$n_mut, big.mark = ","), r$n_cells,
+                 paste(sprintf("%s contributes %.0f%%", names(top), 100 * top), collapse = ", ")))
+  })
+
   # ---- Phylogeny ----
   cur_tree <- reactive({
     txt <- TREES[[input$tree]]; req(!is.null(txt))
@@ -483,7 +562,8 @@ server <- function(input, output, session) {
     k <- tip_keys()
     opts <- c("None" = "none")
     if (any(k %in% CELLMETA$cell[!is.na(CELLMETA$top_signature)]))
-      opts <- c(opts, "Dominant mutational signature" = "signature")
+      opts <- c(opts, "Signature composition (pie per cell)" = "pie",
+                      "Dominant mutational signature" = "signature")
     if (any(k %in% CELLMETA$cell[is.finite(CELLMETA$ado)]))
       opts <- c(opts, "Allelic dropout rate" = "ado", "Sequencing depth" = "depth")
     if (any(k %in% TIPS$cell)) {
@@ -498,6 +578,24 @@ server <- function(input, output, session) {
     o <- avail_cols()
     radioButtons("tipcol", "Colour tips by", choices = o,
                  selected = if (length(o) > 1) o[[2]] else o[[1]])
+  })
+
+  # one row per tip, columns pooled to the signatures that actually show at this
+  # scale; a tip with no fit gets an all-zero row and is drawn as a grey dot
+  tip_pie <- reactive({
+    k <- tip_keys()
+    m <- matrix(0, nrow = length(k), ncol = ncol(SIG), dimnames = list(k, colnames(SIG)))
+    i <- match(k, rownames(SIG)); ok <- !is.na(i)
+    m[ok, ] <- SIG[i[ok], , drop = FALSE]
+    tot <- colSums(m)
+    keep <- names(sort(tot[tot > 0], decreasing = TRUE))
+    keep <- keep[seq_len(min(7L, length(keep)))]
+    rest <- setdiff(colnames(m)[colSums(m) > 0], keep)
+    out <- m[, keep, drop = FALSE]
+    if (length(rest)) out <- cbind(out, `other` = rowSums(m[, rest, drop = FALSE]))
+    rs <- rowSums(out)
+    out[rs > 0, ] <- out[rs > 0, , drop = FALSE] / rs[rs > 0]   # each pie sums to 1
+    list(m = out, has = rs > 0)
   })
 
   BINS <- function(x, n = 5) {
@@ -528,7 +626,37 @@ server <- function(input, output, session) {
     sprintf("%s: %d cells", names(TREE_CHOICES)[match(input$tree, TREE_CHOICES)], ape::Ntip(t))
   })
 
-  output$tree_plot <- renderPlot({
+  # The legend is HTML, not part of the graphic. ape::plot.phylo manages its own
+  # margins, so anything drawn with legend() lands on the caption below the image.
+  tree_pal <- reactive({
+    if (identical(input$tipcol, "pie")) {
+      pm <- tip_pie()$m
+      setNames(grDevices::hcl.colors(ncol(pm), "Spectral"), colnames(pm))
+    } else {
+      lv <- sort(unique(tip_ann()))
+      if (identical(input$tipcol, "timepoint"))
+        c(Pretreatment = "#4A555F", `Post-treatment` = CARD, `not annotated` = GREY)[lv]
+      else if (input$tipcol %in% c("ado", "depth")) {
+        o <- lv[order(suppressWarnings(as.numeric(sub("^[\\[(]", "", sub(",.*", "", lv)))))]
+        setNames(grDevices::hcl.colors(length(o), "Viridis"), o)[lv]
+      } else setNames(grDevices::hcl.colors(length(lv), "Spectral"), lv)
+    }
+  })
+
+  output$tree_legend <- renderUI({
+    if (identical(input$tipcol, "none")) return(NULL)
+    pal <- tree_pal(); pal[is.na(pal)] <- GREY
+    div(style = "display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.4rem 0 0;font-size:.85rem",
+        lapply(names(pal), function(n) span(
+          span(style = sprintf("display:inline-block;width:.75rem;height:.75rem;border-radius:50%%;background:%s;margin-right:.3rem;vertical-align:-1px", pal[[n]])),
+          n)))
+  })
+
+  output$tree_plot <- renderPlot(height = function() {
+    n <- tryCatch(ape::Ntip(cur_tree()), error = function(e) 40)
+    per <- if (identical(input$tipcol, "pie")) 22 else 9   # pies need room to read
+    max(560, min(2400, round(per * n)))
+  }, {
     t <- cur_tree(); ann <- tip_ann()
     lv <- sort(unique(ann))
     pal <- if (identical(input$tipcol, "timepoint"))
@@ -539,27 +667,30 @@ server <- function(input, output, session) {
            } else setNames(grDevices::hcl.colors(length(lv), "Spectral"), lv)
     pal[is.na(pal)] <- GREY
     cols <- pal[ann]
-    par(mar = c(1, 1, 1, 1), xpd = NA)
+    par(mar = c(1, 1, 1, 1), xpd = TRUE)
     plot(t, type = input$ttype, show.tip.label = isTRUE(input$tiplab),
          tip.color = cols, cex = .6, no.margin = FALSE,
          edge.color = "#5A6570", edge.width = .9,
          use.edge.length = !is.null(t$edge.length))
-    ape::tiplabels(pch = 19, col = cols, cex = 1.1)
+    if (identical(input$tipcol, "pie")) {
+      tp <- tip_pie(); pm <- tp$m
+      pcol <- unname(tree_pal())
+      # scale the pies to the tip count so a 113-tip tree does not turn to soup
+      # keep the discs clear of each other: the panel gives each tip 22 px
+      pc <- max(0.28, min(0.62, 26 / max(ape::Ntip(t), 1)))
+      if (any(!tp$has)) ape::tiplabels(pch = 19, col = GREY, cex = .6,
+                                       tip = which(!tp$has))
+      if (any(tp$has)) ape::tiplabels(pie = pm[tp$has, , drop = FALSE],
+                                      tip = which(tp$has), piecol = pcol, cex = pc)
+    } else {
+      ape::tiplabels(pch = 19, col = cols, cex = 1.1)
+    }
     # bootstrap support, only where the file recorded it and it clears the threshold
     if (!is.null(t$node.label)) {
       b <- suppressWarnings(as.numeric(t$node.label))
       keep <- is.finite(b) & b >= input$bootmin
       if (any(keep)) ape::nodelabels(text = as.character(b[keep]), node = which(keep) + ape::Ntip(t),
                                      frame = "none", col = "#17212B", cex = .6, adj = c(1.1, -.3))
-    }
-    # a long legend goes along the bottom rather than over the crown of the tree
-    if (!identical(input$tipcol, "none")) {
-      if (length(pal) > 4)
-        legend("bottom", legend = names(pal), pt.bg = pal, col = pal, pch = 21,
-               bty = "n", cex = .95, pt.cex = 1.4, horiz = TRUE, inset = c(0, -.02))
-      else
-        legend("topleft", legend = names(pal), pt.bg = pal, col = pal, pch = 21,
-               bty = "n", cex = 1, pt.cex = 1.4)
     }
   })
 
@@ -574,7 +705,7 @@ server <- function(input, output, session) {
       if (length(b)) bits <- c(bits, sprintf("%d of %d internal nodes reach %d%% bootstrap support",
                                              sum(b >= input$bootmin), length(b), input$bootmin))
     }
-    na <- sum(ann == "not annotated")
+    na <- if (identical(input$tipcol, "pie")) sum(!tip_pie()$has) else sum(ann == "not annotated")
     if (na) bits <- c(bits, sprintf("%d %s no annotation for this colouring",
                                     na, if (na == 1) "tip has" else "tips have"))
     note(paste0(paste(bits, collapse = "; "), "."))
