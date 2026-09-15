@@ -25,7 +25,8 @@ LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", 
                "Youssef S", "Agarwal V", "Cherian A"}
 
 NAV = [("index.html", "Home"), ("research.html", "Research"), ("people.html", "People"),
-       ("publications.html", "Publications"), ("news.html", "News"), ("resources.html", "Resources"), ("join.html", "Join")]
+       ("publications.html", "Publications"), ("atlases.html", "Atlases"), ("news.html", "News"),
+       ("resources.html", "Resources"), ("join.html", "Join")]
 SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
 
 ICONS = {

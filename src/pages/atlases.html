@@ -1,0 +1,35 @@
+<!-- title: Atlases | desc: Interactive single-cell atlas browsers from the Gawad Lab: a pediatric AML immunotherapy-target atlas and the developing mouse cerebellum atlas. -->
+<section class="page-hero"><div class="container">
+  <span class="eyebrow">Atlases</span>
+  <h1>Explore our single-cell data in your <em class="accent">browser</em></h1>
+  <p class="lede">Interactive browsers for the lab's single-cell atlases. Each one runs entirely in your browser, with no login, no install, and nothing sent to a server. Pick a gene and see where it is expressed.</p>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="pillars">
+
+    <div class="pillar">
+      <span class="num">01</span>
+      <h3><em class="accent">Pediatric AML</em> target discovery</h3>
+      <p>Screen 1,704 surface proteins for marrow-sparing immunotherapy targets across 96,627 cells from 28 children. Set your own thresholds for efficacy, patient breadth and normal-marrow sparing and watch the candidate list narrow, then profile any target across the 49 leukemic states, normal tissue, and independent adult cohorts.</p>
+      <p class="status"><strong>Data:</strong> single-cell RNA-seq of pediatric AML and healthy marrow, with bulk validation in TARGET and Beat AML.</p>
+      <div class="actions"><a class="btn btn-primary" href="aml-atlas/">Open the AML browser</a></div>
+    </div>
+
+    <div class="pillar">
+      <span class="num">02</span>
+      <h3><em class="accent">Developing cerebellum</em> atlas</h3>
+      <p>The developing mouse cerebellum at single-cell resolution: 40,253 cells spanning thirteen timepoints from embryonic day 10 to postnatal day 10, across granule, Purkinje, GABAergic, glial and progenitor populations. Map any gene onto the atlas and follow how its expression shifts through development.</p>
+      <p class="status"><strong>Data:</strong> Carter RA <em>et al.</em>, <a href="https://doi.org/10.1016/j.cub.2018.07.062">Current Biology</a> 28, 2910-2920 (2018). Raw reads at ENA <a href="https://www.ebi.ac.uk/ena/browser/view/PRJEB23051">PRJEB23051</a>.</p>
+      <div class="actions"><a class="btn btn-primary" href="cerebellum-atlas/">Open the cerebellum browser</a></div>
+    </div>
+
+  </div>
+</div></section>
+
+<section class="section section-alt"><div class="container prose">
+  <span class="eyebrow">How these work</span>
+  <h2>Built to outlive their hosting</h2>
+  <p>Both browsers are compiled to WebAssembly, so the analysis runs inside your browser rather than on a server we have to keep alive. That means they load from plain static files, cost nothing to run, and will keep working for as long as the page exists. The first visit downloads the R runtime and takes a few seconds; after that it is cached.</p>
+  <p>Every number shown comes from the published source data, which is bundled with each browser. Where a measurement was only made for a subset of genes, the browser says so rather than leaving a blank panel.</p>
+</div></section>
