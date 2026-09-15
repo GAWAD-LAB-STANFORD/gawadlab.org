@@ -184,18 +184,23 @@ ui <- page_navbar(
       layout_columns(col_widths = c(5, 7),
         plotOutput("sig_pie", height = 430), plotOutput("sig_bar", height = 430)),
       uiOutput("pie_head"),
-      note("Each cell's signature exposures sum to one, so a plain average over cells would let a ",
-           "cell carrying 300 mutations count as much as one carrying 12,000. These shares are ",
-           "weighted by the mutations each cell actually contributes, which makes them the share ",
-           "of that patient's mutations attributable to each signature. Signatures below 2% are ",
-           "pooled in the pie and below 2% in the bars. The in vitro benchmark is a cell line, ",
-           "not a patient, and is kept out of the ",
-           "four-patient comparison."))),
+      note("This pie pools every mutation from every cell of the patient and splits that total ",
+           "by signature. It is not an average of the per-cell percentages: a cell that ",
+           "contributed 12,000 mutations counts for more than one that contributed 300, which is ",
+           "what treating each cell as one unit would wrongly do. The per-cell pies on the ",
+           "Phylogeny tab are the other view, each one that single cell's own mutations split by ",
+           "signature. Signatures under 3% are pooled here and under 2% in the bars. The in vitro ",
+           "benchmark is a cell line rather than a patient, and is left out of the four-patient ",
+           "comparison."))),
 
   nav_panel("Phylogeny",
-    card(card_header(textOutput("tree_title")), plotOutput("tree_plot", height = 620),
+    card(fill = FALSE, card_header(textOutput("tree_title")),
+         plotOutput("tree_plot", height = "auto"),
          uiOutput("tree_legend"), uiOutput("tree_head"),
-         note("The patient trees are maximum-likelihood phylogenies built by CellPhy from ",
+         note("A tip pie is that one cell's own mutations split by signature. Where a tree ",
+              "holds both samples, the branch leading to each cell is coloured by the sample it ",
+              "came from, so before and after treatment read off the topology directly. ",
+              "The patient trees are maximum-likelihood phylogenies built by CellPhy from ",
               "somatic single-nucleotide variants, with support from 100 bootstrap replicates; ",
               "branch lengths are substitutions per site. The clone tree is the ConDoR ",
               "topology behind Figure 7A, which carries no branch lengths, so it is drawn as ",
@@ -542,8 +547,8 @@ server <- function(input, output, session) {
     r <- sig_share(input$cpat)
     if (is.null(r)) return(NULL)
     top <- utils::head(r$share, 3)
-    note(sprintf("%s mutations across %d cells. %s.", format(r$n_mut, big.mark = ","), r$n_cells,
-                 paste(sprintf("%s contributes %.0f%%", names(top), 100 * top), collapse = ", ")))
+    note(sprintf("%s mutations pooled from %d cells. %s.", format(r$n_mut, big.mark = ","), r$n_cells,
+                 paste(sprintf("%s accounts for %.0f%% of them", names(top), 100 * top), collapse = ", ")))
   })
 
   # ---- Phylogeny ----
@@ -598,6 +603,15 @@ server <- function(input, output, session) {
     list(m = out, has = rs > 0)
   })
 
+  # Timepoint of each tip, where the tree spans both samples. Only the clone tree
+  # does; the CellPhy trees are single-sample, so this is NULL for them.
+  tip_timepoint <- reactive({
+    v <- TIPS$timepoint[match(tip_keys(), TIPS$cell)]
+    if (length(unique(stats::na.omit(v))) > 1) as.character(v) else NULL
+  })
+
+  TP_EDGE <- c(Pretreatment = "#4A555F", `Post-treatment` = CARD)
+
   BINS <- function(x, n = 5) {
     ok <- is.finite(x); if (!any(ok)) return(rep(NA_character_, length(x)))
     b <- unique(stats::quantile(x[ok], seq(0, 1, length.out = n + 1), na.rm = TRUE))
@@ -644,18 +658,31 @@ server <- function(input, output, session) {
   })
 
   output$tree_legend <- renderUI({
-    if (identical(input$tipcol, "none")) return(NULL)
-    pal <- tree_pal(); pal[is.na(pal)] <- GREY
-    div(style = "display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.4rem 0 0;font-size:.85rem",
-        lapply(names(pal), function(n) span(
-          span(style = sprintf("display:inline-block;width:.75rem;height:.75rem;border-radius:50%%;background:%s;margin-right:.3rem;vertical-align:-1px", pal[[n]])),
-          n)))
+    dot <- function(col) span(style = sprintf(
+      "display:inline-block;width:.75rem;height:.75rem;border-radius:50%%;background:%s;margin-right:.3rem;vertical-align:-1px", col))
+    bar <- function(col) span(style = sprintf(
+      "display:inline-block;width:1.1rem;height:.2rem;background:%s;margin-right:.3rem;vertical-align:.18rem", col))
+    rows <- list()
+    if (!identical(input$tipcol, "none")) {
+      pal <- tree_pal(); pal[is.na(pal)] <- GREY
+      rows[[length(rows) + 1]] <- div(
+        style = "display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.4rem 0 0;font-size:.85rem",
+        span(style = "color:#64707C", "tips:"),
+        lapply(names(pal), function(n) span(dot(pal[[n]]), n)))
+    }
+    if (!is.null(tip_timepoint()))
+      rows[[length(rows) + 1]] <- div(
+        style = "display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin:.3rem 0 0;font-size:.85rem",
+        span(style = "color:#64707C", "terminal branch:"),
+        lapply(names(TP_EDGE), function(n) span(bar(TP_EDGE[[n]]), n)),
+        span(bar("#C7CDD2"), "sample unknown"))
+    do.call(tagList, rows)
   })
 
   output$tree_plot <- renderPlot(height = function() {
     n <- tryCatch(ape::Ntip(cur_tree()), error = function(e) 40)
-    per <- if (identical(input$tipcol, "pie")) 22 else 9   # pies need room to read
-    max(560, min(2400, round(per * n)))
+    per <- if (identical(input$tipcol, "pie")) 30 else 9   # pies need room to read
+    max(560, min(3600, round(per * n)))
   }, {
     t <- cur_tree(); ann <- tip_ann()
     lv <- sort(unique(ann))
@@ -667,17 +694,31 @@ server <- function(input, output, session) {
            } else setNames(grDevices::hcl.colors(length(lv), "Spectral"), lv)
     pal[is.na(pal)] <- GREY
     cols <- pal[ann]
+    # The terminal branch of each cell is coloured by the sample that cell came
+    # from, so before and after treatment are readable straight off the topology.
+    tp <- tip_timepoint()
+    ecol <- rep("#5A6570", nrow(t$edge)); ewid <- rep(.9, nrow(t$edge))
+    if (!is.null(tp)) {
+      term <- t$edge[, 2] <= ape::Ntip(t)
+      v <- tp[t$edge[term, 2]]
+      ecol[term] <- ifelse(is.na(v), "#C7CDD2", unname(TP_EDGE[v]))
+      ewid[term] <- 2.1
+    }
     par(mar = c(1, 1, 1, 1), xpd = TRUE)
     plot(t, type = input$ttype, show.tip.label = isTRUE(input$tiplab),
          tip.color = cols, cex = .6, no.margin = FALSE,
-         edge.color = "#5A6570", edge.width = .9,
+         edge.color = ecol, edge.width = ewid,
          use.edge.length = !is.null(t$edge.length))
     if (identical(input$tipcol, "pie")) {
       tp <- tip_pie(); pm <- tp$m
       pcol <- unname(tree_pal())
       # scale the pies to the tip count so a 113-tip tree does not turn to soup
-      # keep the discs clear of each other: the panel gives each tip 22 px
-      pc <- max(0.28, min(0.62, 26 / max(ape::Ntip(t), 1)))
+      # A pie's radius scales with the plot WIDTH, not the tip count, so the size is
+      # a constant wherever each tip gets its intended 30 px of height. Scaling it
+      # by 1/n, as a first attempt did, shrank an 85-tip tree's pies for no reason.
+      # Where the height cap bites, fall back to the room a tip actually has.
+      per_tip <- (par("din")[2] * 96) / max(ape::Ntip(t), 1)
+      pc <- 0.70 * min(1, per_tip / 30)
       if (any(!tp$has)) ape::tiplabels(pch = 19, col = GREY, cex = .6,
                                        tip = which(!tp$has))
       if (any(tp$has)) ape::tiplabels(pie = pm[tp$has, , drop = FALSE],
