@@ -59,12 +59,17 @@ elsewhere <- function(g, what, why = NULL)
 
 gvec <- function(g) { i <- match(g, GENES)
                       if (is.na(i)) NULL else as.integer(GMAT[, i]) * SCALE }
+# Squares where the gene was never detected are drawn grey rather than at the
+# bottom of the colour ramp, so "not detected" cannot be read as "low", and the
+# ramp is square-root: most genes sit at zero in most squares, and a linear ramp
+# turns a marker confined to one population into a flat wash.
 emap <- function(g, title = NULL) {
   v <- gvec(g); req(!is.null(v))
-  d <- bins; d$mean <- v
-  ggplot(d, aes(x, y, fill = mean)) +
-    geom_tile(width = BINW, height = BINH) +
-    scale_fill_viridis_c(option = "rocket", direction = -1,
+  d <- bins; d$mean <- v; z <- d$mean <= 0
+  ggplot() +
+    geom_tile(data = d[z, ], aes(x, y), fill = "#EDF0F2", width = BINW, height = BINH) +
+    geom_tile(data = d[!z, ], aes(x, y, fill = mean), width = BINW, height = BINH) +
+    scale_fill_viridis_c(option = "rocket", direction = -1, trans = "sqrt",
                          name = sprintf("%s\nmean log expr", g)) +
     labs(x = "t-SNE 1", y = "t-SNE 2", title = title) +
     coord_equal() + theme_lab() + theme(panel.grid = element_blank())

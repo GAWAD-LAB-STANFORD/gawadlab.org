@@ -277,6 +277,12 @@ def build():
     OUT.mkdir()
     for d in ("css", "js", "assets"): shutil.copytree(SRC / d, OUT / d)
 
+    # Data packages offered from the Atlases page.
+    dl = ROOT / "downloads"
+    if dl.is_dir():
+        shutil.copytree(dl, OUT / "downloads")
+        print(f"copied downloads ({sum(1 for _ in (OUT / 'downloads').iterdir())} files)")
+
     # Standalone WebAssembly builds of the atlas browsers (shinylive). Each is a
     # self-contained static site, so copy it in verbatim under its own path.
     for app in ("aml-atlas", "cerebellum-atlas"):
