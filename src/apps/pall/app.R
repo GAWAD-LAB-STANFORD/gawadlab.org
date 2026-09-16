@@ -98,6 +98,15 @@ stack_labels <- function(v, lo, hi, frac = .04) {
 }
 ext  <- function(l, u) a(l, href = u, target = "_blank", rel = "noopener")
 
+# A browser is only useful to a researcher if the numbers can leave it, so every
+# table ships the exact rows and columns on screen as a CSV. DT's own Buttons
+# extension is not bundled by shinylive, so this goes through downloadHandler,
+# which runs in the wasm VM and hands the browser a real file.
+dl_link <- function(id) div(
+  style = "margin-top:.45rem",
+  downloadLink(paste0("dl_", id), "Download this table (CSV)",
+               style = "font-size:.85rem;color:#64707C"))
+
 DRUG_GENES <- sort(unique(sub(" .*$", "", colnames(DMAT))))
 ALL_GENES  <- sort(unique(c(DRUG_GENES, rec$gene, am$gene, sj$gene)))
 
@@ -152,7 +161,14 @@ ui <- page_navbar(
     note(strong("Pang, Prieto ", em("et al."), "."),
          " Single-cell sequencing reveals extensive genetic diversity underlying ",
          "pediatric ALL treatment complexity. Every panel is drawn from the ",
-         "manuscript's figure-level source data.")
+         "manuscript's figure-level source data; nothing here is simulated. ",
+         "Manuscript in review, so there is no DOI to cite yet.",
+         div(style = "margin-top:.5rem;display:flex;flex-direction:column;gap:.15rem",
+             ext("Source data and count matrices", "https://gawadlab.org/apps.html"),
+             ext("Code on GitHub", "https://github.com/GAWAD-LAB-STANFORD"),
+             ext("Gawad Lab", "https://gawadlab.org")),
+         div(style = "margin-top:.5rem",
+             "Every table on every tab has a CSV download beneath it."))
   ),
 
   nav_panel("Hidden diversity",
@@ -172,7 +188,7 @@ ui <- page_navbar(
                 "study set out to reconcile with the complexity of its treatment. ",
                 "The axis is logarithmic, so the 12 tumours reported at zero SNVs per ",
                 "megabase cannot be drawn and are absent from the plot."))),
-    card(card_header("Per-patient detail"), DTOutput("burden_tbl"))),
+    card(card_header("Per-patient detail"), tagList(DTOutput("burden_tbl"), dl_link("burden_tbl")))),
 
   nav_panel("RAS",
     card(card_header("Activating RAS mutations found by error-corrected sequencing"),
@@ -182,7 +198,7 @@ ui <- page_navbar(
               "several more at low allele frequency, which is why they were missed.")),
     layout_columns(col_widths = c(7, 5),
       card(card_header("Allele frequency by codon"), plotOutput("ras_codon", height = 340)),
-      card(card_header("Every RAS mutation"), DTOutput("ras_tbl")))),
+      card(card_header("Every RAS mutation"), tagList(DTOutput("ras_tbl"), dl_link("ras_tbl"))))),
 
   nav_panel("Drug response",
     card(card_header(textOutput("drug_title")), plotOutput("drug_heat", height = 460),
@@ -281,7 +297,7 @@ ui <- page_navbar(
            "and the residual cells are rare. That gap is exactly why the single-cell work in ",
            "Figure 7 was needed.")),
 
-    card(card_header("Every branch mutation, before and after"), DTOutput("wgs_tbl")),
+    card(card_header("Every branch mutation, before and after"), tagList(DTOutput("wgs_tbl"), dl_link("wgs_tbl"))),
 
     card(fill = FALSE, card_header(textOutput("ind_title")),
          plotOutput("ind_tree", height = "auto"),
@@ -308,13 +324,14 @@ ui <- page_navbar(
       uiOutput("pos_head"),
       note("Each line is one variant, and the axis is the percentage of that ",
            "timepoint's cells that carry it \u2014 a carrier frequency, not an allele ",
-           "frequency. Cells are the 29 pretreatment and 84 post-induction cells of the ",
-           "Figure 7 tree. Any mutant genotype counts as carrying it: the paper scores ",
-           "states 1, 2 and 4 as different mutant states and only 0 as wild type. ",
-           "Variants drawn in red were carried by no pretreatment cell at all and appear ",
-           "only after induction.")),
+           "frequency. Cells are all 115 with a genotype call, 30 before induction and ",
+           "85 after; calls come from the same ConDoR genotype matrix Figure 7 is drawn ",
+           "from, where every one of these variants is called present or absent. Two of ",
+           "those cells are not tips of the Figure 7 tree, which is why the tree on the ",
+           "previous tab holds 113. Variants drawn in red were carried by no cell before ",
+           "induction and appear only after it.")),
 
-    card(card_header("Every variant, by percent of cells"), DTOutput("pos_tbl")),
+    card(card_header("Every variant, by percent of cells"), tagList(DTOutput("pos_tbl"), dl_link("pos_tbl"))),
 
     card(card_header("Allele frequency before and after treatment"),
       plotOutput("af_plot", height = 470),
@@ -326,10 +343,13 @@ ui <- page_navbar(
            "pretreatment sample carries 30 cells against 85 after, which makes the ",
            "pretreatment estimate the noisier of the two.")),
 
-    card(card_header("Every variant, before and after"), DTOutput("af_tbl")),
+    card(card_header("Every variant, before and after"), tagList(DTOutput("af_tbl"), dl_link("af_tbl"))),
 
     card(card_header("Genotypes across 31 variants"), plotOutput("geno_plot", height = 420),
-         note("Presence or absence of each somatic variant in each cell, cells ordered by clone.")),
+         note("Presence or absence of each somatic variant in each cell, cells ordered by ",
+              "timepoint then clone. These are the called genotypes from the ConDoR matrix, ",
+              "not dropout-corrected, so a blank cell means the variant was not called in ",
+              "that cell rather than that it is certainly absent.")),
 
     card(card_header("Clone composition before and after"), plotOutput("clone_plot2", height = 430),
          note("Each bar is the percentage of that sample's cells, not a raw count, because 30 ",
@@ -349,7 +369,7 @@ ui <- page_navbar(
       card(card_header(textOutput("am_title")), plotOutput("am_plot", height = 360),
            note("Dashed lines are the published AlphaMissense thresholds: likely benign ",
                 "below 0.34, likely pathogenic above 0.564.")),
-      card(card_header("Gene table"), DTOutput("gene_tbl"))))
+      card(card_header("Gene table"), tagList(DTOutput("gene_tbl"), dl_link("gene_tbl")))))
 )
 
 # --- server ----------------------------------------------------------------
@@ -373,10 +393,21 @@ server <- function(input, output, session) {
   output$burden_head <- renderUI({
     b <- burden$corrected_som_per_mb[burden$assay == "Bulk"]
     s <- burden$corrected_som_per_mb[burden$assay == "Single"]
-    note(sprintf(paste("Across these five patients the median single cell carries %.1f times the",
-                       "corrected mutation density of its matched bulk sample (%.2f against %.2f",
-                       "per Mb, %d cells and %d bulk samples)."),
-                 median(s) / median(b), median(s), median(b), length(s), length(b)))
+    # Ratio of the two pooled medians, which is NOT a paired statistic; the
+    # per-patient ratio is computed separately rather than implied by wording.
+    pp <- vapply(split(burden, burden$patient), function(d) {
+      bb <- d$corrected_som_per_mb[d$assay == "Bulk"]
+      ss <- d$corrected_som_per_mb[d$assay == "Single"]
+      if (!length(bb) || !length(ss)) NA_real_ else median(ss) / median(bb)
+    }, numeric(1))
+    pp <- pp[is.finite(pp)]
+    note(sprintf(paste("Pooling all cells and all bulk samples, the median single cell sits at",
+                       "%.2f corrected mutations per Mb against %.2f for the bulks, a %.1f-fold",
+                       "difference across %d cells and %d bulk samples. Taken patient by patient",
+                       "instead, which is the paired comparison, the ratio runs %.1f to %.1f with",
+                       "a median of %.1f across %d patients."),
+                 median(s), median(b), median(s) / median(b), length(s), length(b),
+                 min(pp), max(pp), median(pp), length(pp)))
   })
 
   output$pan_plot <- renderPlot({
@@ -391,12 +422,36 @@ server <- function(input, output, session) {
       labs(x = "SNVs per Mb (log scale)", y = NULL) + theme_lab()
   })
 
-  output$burden_tbl <- renderDT({
+  burden_tbl_df <- reactive({
     d <- burden[, c("patient", "assay", "total_somatic", "unique", "shared",
                     "sensitivity", "corrected_som_per_mb", "corrected_total")]
     names(d) <- c("Patient", "Assay", "Total somatic", "Unique", "Shared",
                   "Sensitivity", "Corrected som./Mb", "Corrected total")
-    datatable(d, rownames = FALSE, options = list(pageLength = 10, dom = "tip")) |>
+    d
+  })
+  # CSV of exactly what each table shows, named so a folder of them stays legible.
+  # The *_df reactives are defined further down, so the handlers resolve them by
+  # name against the server environment at download time rather than now.
+  SRV <- environment()
+  local({
+    specs <- list(
+      burden_tbl = "pALL_mutation_burden",
+      ras_tbl    = "pALL_RAS_mutations",
+      wgs_tbl    = "pALL_branch_mutations_bulk_before_after",
+      pos_tbl    = "pALL_carrier_frequency_before_after",
+      af_tbl     = "pALL_allele_frequency_before_after",
+      gene_tbl   = "pALL_gene_recurrence_alphamissense")
+    for (id in names(specs)) local({
+      i <- id; stem <- specs[[id]]
+      output[[paste0("dl_", i)]] <- downloadHandler(
+        filename = function() sprintf("%s_%s.csv", stem, format(Sys.Date(), "%Y%m%d")),
+        content  = function(file)
+          utils::write.csv(get(paste0(i, "_df"), envir = SRV)(), file, row.names = FALSE))
+    })
+  })
+
+  output$burden_tbl <- renderDT({
+    datatable(burden_tbl_df(), rownames = FALSE, options = list(pageLength = 10, dom = "ftip")) |>
       formatRound(c("Sensitivity", "Corrected som./Mb"), 2) |>
       formatRound("Corrected total", 0)
   })
@@ -422,10 +477,13 @@ server <- function(input, output, session) {
       labs(x = "codon", y = "allele frequency") + theme_lab()
   })
 
-  output$ras_tbl <- renderDT({
+  ras_tbl_df <- reactive({
     d <- ras[order(-ras$AF), c("Patient", "Ras", "Location", "AA_Change", "AF")]
     names(d) <- c("Patient", "Gene", "Codon", "Change", "Allele frequency")
-    datatable(d, rownames = FALSE, options = list(pageLength = 8, dom = "ftip")) |>
+    d
+  })
+  output$ras_tbl <- renderDT({
+    datatable(ras_tbl_df(), rownames = FALSE, options = list(pageLength = 8, dom = "ftip")) |>
       formatPercentage("Allele frequency", 2)
   })
 
@@ -639,18 +697,19 @@ server <- function(input, output, session) {
                  sum(d$delta > 0 & !d$emergent), sum(d$delta < 0)))
   })
 
-  output$pos_tbl <- renderDT({
+  pos_tbl_df <- reactive({
     d <- pos_d()
-    x <- data.frame(Gene = d$gene, Locus = d$locus,
+    data.frame(Gene = d$gene, Locus = d$locus,
                     `Cells before` = sprintf("%d / %d", d$n_pre, d$cells_pre),
                     `Cells after`  = sprintf("%d / %d", d$n_post, d$cells_post),
                     `% before` = round(100 * d$pct_pre, 1),
                     `% after`  = round(100 * d$pct_post, 1),
                     `Change (pp)` = round(100 * d$delta, 1),
-                    `Absent before` = ifelse(d$emergent, "yes", ""),
-                    check.names = FALSE)
-    datatable(x, rownames = FALSE, options = list(pageLength = 10, dom = "ftip"))
+               `Absent before` = ifelse(d$emergent, "yes", ""),
+               check.names = FALSE)
   })
+  output$pos_tbl <- renderDT(
+    datatable(pos_tbl_df(), rownames = FALSE, options = list(pageLength = 10, dom = "ftip")))
 
   output$af_plot <- renderPlot({
     d <- AF
@@ -668,10 +727,13 @@ server <- function(input, output, session) {
            y = "allele frequency after treatment (sample 4295)") + theme_lab()
   })
 
-  output$af_tbl <- renderDT({
+  af_tbl_df <- reactive({
     d <- AF[order(-AF$delta), c("gene", "locus", "pre", "post", "delta", "cells_pre", "cells_post")]
     names(d) <- c("Gene", "Locus", "Before", "After", "Change", "Cells before", "Cells after")
-    datatable(d, rownames = FALSE, options = list(pageLength = 8, dom = "ftip")) |>
+    d
+  })
+  output$af_tbl <- renderDT({
+    datatable(af_tbl_df(), rownames = FALSE, options = list(pageLength = 8, dom = "ftip")) |>
       formatRound(c("Before", "After", "Change"), 3)
   })
 
@@ -862,15 +924,16 @@ server <- function(input, output, session) {
                                          percent(max(kept$after), accuracy = .1)) else ""))
   })
 
-  output$wgs_tbl <- renderDT({
+  wgs_tbl_df <- reactive({
     b <- wgs_bulk()
-    d <- data.frame(Mutation = b$mutation, Effect = b$effect, Locus = b$locus,
+    data.frame(Mutation = b$mutation, Effect = b$effect, Locus = b$locus,
                     Diagnosis = round(b$before, 4), Remission = round(b$after, 4),
                     `Fold change` = ifelse(b$after > 0, round(b$before / b$after, 1), NA),
-                    `Depth dx` = b$dp_before, `Depth rem` = b$dp_after,
-                    check.names = FALSE)
-    datatable(d, rownames = FALSE, options = list(pageLength = 10, dom = "tip"))
+               `Depth dx` = b$dp_before, `Depth rem` = b$dp_after,
+               check.names = FALSE)
   })
+  output$wgs_tbl <- renderDT(
+    datatable(wgs_tbl_df(), rownames = FALSE, options = list(pageLength = 10, dom = "ftip")))
 
   output$ind_pies <- renderPlot({
     d <- clade_tab()
@@ -1322,10 +1385,13 @@ server <- function(input, output, session) {
       ylim(0, 1.02) + labs(x = NULL, y = "AlphaMissense pathogenicity") + theme_lab()
   })
 
-  output$gene_tbl <- renderDT({
+  gene_tbl_df <- reactive({
     d <- gene_am()[, c("gene", "label", "nonsyn", "fold_size_corr", "relapse_freq_pct", "mean_am")]
     names(d) <- c("Gene", "Class", "Nonsyn. events", "Fold recurrence", "Relapse %", "Mean AlphaMissense")
-    datatable(d[order(-d$`Fold recurrence`), ], rownames = FALSE, selection = "single",
+    d[order(-d$`Fold recurrence`), ]
+  })
+  output$gene_tbl <- renderDT({
+    datatable(gene_tbl_df(), rownames = FALSE, selection = "single",
               options = list(pageLength = 8, dom = "ftip")) |>
       formatRound(c("Fold recurrence", "Relapse %", "Mean AlphaMissense"), 2)
   })

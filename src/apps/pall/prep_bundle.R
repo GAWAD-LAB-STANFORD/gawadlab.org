@@ -70,18 +70,36 @@ build_bundle <- function(D) {
                 unique(clone$Cluster[clone$sample == "4272"]))
   cells$timepoint <- factor(ifelse(cells$TimeLine == "4272", "Pretreatment", "Post-treatment"),
                             levels = c("Pretreatment", "Post-treatment"))
-  geno <- rc("Figure_7", "_B.csv")
-  gmat <- as.matrix(geno[, -1, drop = FALSE]); storage.mode(gmat) <- "integer"
-  rownames(gmat) <- geno$SampleName
+  # Genotypes come from ConDoR_matrix.csv, which README_Figure7.md names as the
+  # figure's input and figure7_tree_genotype_cnv_csf.R reads. An earlier version
+  # of this bundle used _B.csv, which the README lists under "also present but
+  # not needed for the figure": it holds the same 113 tree cells but a different
+  # variant set (it carries AKAP6 and CCNL1 chr3:157160403 and lacks SPI1 and
+  # CCNL1 chr3:157160400), and on the shared variants it disagrees with the
+  # called genotypes on 90 of 3,277 cell-variant pairs - 83 of them positive in
+  # _B where the call is 0, which is what an allelic-dropout-corrected matrix
+  # looks like. Carrier frequencies built on it were model output, not calls.
+  #
+  # Two column groups must be dropped by hand. The "*_NA" columns are empty
+  # placeholders. "cluster_id" is the clone number 1-8, not a variant, and the
+  # shipped figure script does NOT drop it: it survives that script's
+  # !grepl("_NA$") and colSums != 0 filters and is plotted as a 32nd "variant",
+  # which is also where the README's "states 2 and 4" come from.
+  geno <- rc("Figure_7", "ConDoR_matrix.csv")
+  rownames(geno) <- geno[[1]]; geno[[1]] <- NULL
+  geno <- geno[, !grepl("_NA$", colnames(geno)) & colnames(geno) != "cluster_id", drop = FALSE]
+  gmat <- as.matrix(geno); storage.mode(gmat) <- "integer"
+  stopifnot(!anyNA(gmat), all(gmat %in% 0:1), nrow(gmat) == nrow(cells))
 
   # --- 6b. how many CELLS carry each variant, before and after --------------
   #     An allele frequency and a carrier frequency answer different questions,
   #     and for this tab the carrier frequency is the one that matters: a variant
   #     can be absent from the diagnostic sample entirely and still be carried by
-  #     a seventh of the cells that survive induction. Positive means any mutant
-  #     state, i.e. > 0 - the paper's own heatmap distinguishes states 1/2/4 as
-  #     different mutant genotypes and only 0 is wild type, so testing == 1 would
-  #     drop the cells called in the rarer states.
+  #     a seventh of the cells that survive induction. Positive means a non-zero
+  #     state. On the real variant columns of this file the calls are strictly
+  #     0/1 - the README's "states 0/1/2/4" describes the file before the _NA and
+  #     cluster_id columns come out - so > 0 and == 1 agree here; > 0 is written
+  #     so a future file with genuine multi-state calls still behaves.
   gtp  <- sub("-.*", "", rownames(gmat))
   gpre <- gtp == "4272"; gpost <- gtp == "4295"
   stopifnot(any(gpre), any(gpost), all(gpre | gpost))
