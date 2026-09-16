@@ -74,6 +74,35 @@ build_bundle <- function(D) {
   gmat <- as.matrix(geno[, -1, drop = FALSE]); storage.mode(gmat) <- "integer"
   rownames(gmat) <- geno$SampleName
 
+  # --- 6b. how many CELLS carry each variant, before and after --------------
+  #     An allele frequency and a carrier frequency answer different questions,
+  #     and for this tab the carrier frequency is the one that matters: a variant
+  #     can be absent from the diagnostic sample entirely and still be carried by
+  #     a seventh of the cells that survive induction. Positive means any mutant
+  #     state, i.e. > 0 - the paper's own heatmap distinguishes states 1/2/4 as
+  #     different mutant genotypes and only 0 is wild type, so testing == 1 would
+  #     drop the cells called in the rarer states.
+  gtp  <- sub("-.*", "", rownames(gmat))
+  gpre <- gtp == "4272"; gpost <- gtp == "4295"
+  stopifnot(any(gpre), any(gpost), all(gpre | gpost))
+  gpos <- gmat > 0
+  pos <- data.frame(
+    variant  = colnames(gmat),
+    gene     = sub("^.*_", "", colnames(gmat)),
+    locus    = sub("_[^_]*$", "", colnames(gmat)),
+    n_pre    = as.integer(colSums(gpos[gpre, , drop = FALSE])),
+    n_post   = as.integer(colSums(gpos[gpost, , drop = FALSE])),
+    cells_pre  = sum(gpre),
+    cells_post = sum(gpost),
+    stringsAsFactors = FALSE)
+  pos$pct_pre  <- pos$n_pre  / pos$cells_pre
+  pos$pct_post <- pos$n_post / pos$cells_post
+  pos$delta    <- pos$pct_post - pos$pct_pre
+  # absent from every pretreatment cell, present in at least one afterwards
+  pos$emergent <- pos$n_pre == 0 & pos$n_post > 0
+  rownames(pos) <- NULL
+  stopifnot(nrow(pos) == ncol(gmat), any(pos$emergent))
+
   # --- 7. gene-level recurrence and predicted pathogenicity (Fig 7B, 7C) --
   rec <- rc("Figure_7", "panels_B_C", "panel_2axis.csv")
   am  <- rc("Figure_7", "panels_B_C", "observed_variants_am2.csv")
@@ -117,6 +146,19 @@ build_bundle <- function(D) {
 
   cellmeta <- merge(sigdf, ado[, c("cell", "ado", "depth", "method")], by = "cell", all = TRUE)
   cellmeta$patient[is.na(cellmeta$patient)] <- sub("[-_].*", "", cellmeta$cell[is.na(cellmeta$patient)])
+  # The ADO/depth table covers the BULK libraries as well as the single cells, and
+  # they arrive keyed the same way, so six bulk samples (417-368B, 417-417T,
+  # 445-380T, 445-445T, 4084-4072T, 4084-4072NonB) were being counted as cells.
+  # Same rule as the timing derivation: strip the repeated "<patient>-" prefix and
+  # a single cell leaves a well behind (A10), a bulk leaves an accession (368B).
+  cm_rest <- cellmeta$cell
+  for (i in seq_along(cm_rest)) {
+    r <- cm_rest[i]; q <- cellmeta$patient[i]
+    repeat { r2 <- sub(paste0("^", q, "-"), "", r); if (identical(r2, r)) break; r <- r2 }
+    cm_rest[i] <- r
+  }
+  cellmeta <- cellmeta[!grepl("^[0-9]", cm_rest), , drop = FALSE]
+  rownames(cellmeta) <- NULL
   # the exposure matrix itself, for the per-patient signature panel
   rownames(sig) <- gsub("[._]", "-", rownames(sig))
   colnames(sig) <- sub("Signature\\.", "SBS", colnames(sig))
@@ -270,6 +312,11 @@ build_bundle <- function(D) {
       normal   = if (is.null(nb)) NA_real_ else nb$vaf[match(ids, nb$id)],
       stringsAsFactors = FALSE)
   }
+  # every tip of every whole-genome tree must survive the bulk-row removal above
+  for (q in names(wgs)) {
+    tp_lab <- gsub("[._]", "-", setdiff(ape::read.tree(text = wgs[[q]]$nwk)$tip.label, "zeros"))
+    stopifnot(all(tp_lab %in% cellmeta$cell))
+  }
   bulk <- do.call(rbind, bulk); rownames(bulk) <- NULL
   # ANNOVAR writes a variant that overlaps two genes as "GENE1\\x3bGENE2", the
   # escape for a semicolon. Render it as GENE1/GENE2: a bare semicolon would
@@ -311,7 +358,7 @@ build_bundle <- function(D) {
        wgs = wgs, bulk = bulk,
        burden = burden, pan = pan, ras = ras,
        drug = drug, dmat = dmat, sj = sj,
-       cells = cells, gmat = gmat, emergent = em,
+       cells = cells, gmat = gmat, emergent = em, pos = pos,
        rec = rec, am = am)
 }
 

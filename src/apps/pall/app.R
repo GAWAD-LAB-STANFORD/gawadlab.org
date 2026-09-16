@@ -39,7 +39,7 @@ node_keys <- function(t) {
   out
 }
 WGS_KEY <- lapply(WGS_TREE, node_keys)
-CELLMETA <- B$cellmeta; SIG <- B$sig
+CELLMETA <- B$cellmeta; SIG <- B$sig; POS <- B$pos
 
 # Newick is parsed here rather than shipped as a serialised tree, so the bundle
 # stays in kilobytes. Labels come through as 4295_A10 or 4295.F1 depending on the
@@ -68,6 +68,26 @@ theme_lab <- function(rot = 0) {
           axis.text.x = element_text(angle = rot, hjust = if (rot > 0) 1 else .5))
 }
 note <- function(...) div(class = "text-muted", style = "font-size:.85rem;margin-top:.5rem", ...)
+
+# Lay out labels in a right-hand column without overlaps. ggrepel is not in the
+# webR repo, so: push each label below the one above by a fixed gap, then move
+# the whole stack to fit between lo and hi - translating it, or compressing it
+# when there are more labels than the panel has room for. Never clamp: clamping
+# is what stacks several labels on the same limit. Returns values in the order
+# given, so the caller need not pre-sort.
+stack_labels <- function(v, lo, hi, frac = .04) {
+  n <- length(v); if (!n) return(numeric(0))
+  span <- hi - lo
+  if (!is.finite(span) || span <= 0) return(v)
+  gap <- if (n > 1) min(span * frac, span / (n - 1)) else 0
+  o <- order(-v); y <- v[o]
+  for (i in seq_len(n)[-1]) if (y[i - 1] - y[i] < gap) y[i] <- y[i - 1] - gap
+  r <- range(y)
+  if (diff(r) > span)      y <- lo + (y - r[1]) / diff(r) * span
+  else if (r[1] < lo)      y <- y + (lo - r[1])
+  else if (r[2] > hi)      y <- y - (r[2] - hi)
+  out <- numeric(n); out[o] <- y; out
+}
 ext  <- function(l, u) a(l, href = u, target = "_blank", rel = "noopener")
 
 DRUG_GENES <- sort(unique(sub(" .*$", "", colnames(DMAT))))
@@ -269,6 +289,19 @@ ui <- page_navbar(
               "indices. A pie that is entirely pink is a clade whose cells were all found after ",
               "induction; entirely blue means the clade did not survive it. Use the slider to ",
               "set how small a clade still earns a pie.")),
+
+    card(card_header("Before and after induction, by percent of cells carrying the mutation"),
+      plotOutput("pos_plot", height = 520),
+      uiOutput("pos_head"),
+      note("Each line is one variant, and the axis is the percentage of that ",
+           "timepoint's cells that carry it \u2014 a carrier frequency, not an allele ",
+           "frequency. Cells are the 29 pretreatment and 84 post-induction cells of the ",
+           "Figure 7 tree. Any mutant genotype counts as carrying it: the paper scores ",
+           "states 1, 2 and 4 as different mutant states and only 0 as wild type. ",
+           "Variants drawn in red were carried by no pretreatment cell at all and appear ",
+           "only after induction.")),
+
+    card(card_header("Every variant, by percent of cells"), DTOutput("pos_tbl")),
 
     card(card_header("Allele frequency before and after treatment"),
       plotOutput("af_plot", height = 470),
@@ -494,7 +527,9 @@ server <- function(input, output, session) {
     m <- GMAT[ids, , drop = FALSE]
     d <- data.frame(cell = factor(rep(ids, ncol(m)), levels = ids),
                     variant = factor(rep(colnames(m), each = nrow(m)), levels = colnames(m)),
-                    present = as.vector(m) == 1)
+                    # states 1/2/4 are all mutant genotypes in the paper's own
+                    # heatmap; only 0 is wild type
+                    present = as.vector(m) > 0)
     ggplot(d, aes(cell, variant, fill = present)) +
       geom_tile() +
       scale_fill_manual(values = c(`TRUE` = TEAL, `FALSE` = "#EDF0F2"), guide = "none") +
@@ -515,9 +550,13 @@ server <- function(input, output, session) {
               sprintf(" (you have patient %s selected above)", input$cpat)))
 
   output$qc_plot <- renderPlot({
-    d <- cm(); d <- d[is.finite(d$ado) & is.finite(d$depth), ]
-    validate(need(nrow(d) > 0, sprintf(
-      "No allelic-dropout or depth measurements were reported for patient %s.", input$cpat)))
+    # n_snv drives the point size, so a row without it is dropped silently and the
+    # panel comes out empty; require all three and say so when they are not there
+    d <- cm(); d <- d[is.finite(d$ado) & is.finite(d$depth) & is.finite(d$n_snv), ]
+    validate(need(nrow(d) > 0, sprintf(paste(
+      "Depth and allelic dropout were not reported together with a mutation count",
+      "for any single cell of patient %s, so there is nothing to plot here."),
+      input$cpat)))
     ggplot(d, aes(depth, ado)) +
       geom_point(aes(size = n_snv), colour = CARD, alpha = .8) +
       scale_size_continuous(range = c(2, 7), name = "SNVs called", labels = scales::comma) +
@@ -552,6 +591,68 @@ server <- function(input, output, session) {
     if (length(ts)) bits <- c(bits, sprintf("%s dominates in %d of %d cells",
                                             names(which.max(ts)), max(ts), sum(ts)))
     note(paste0(paste(bits, collapse = "; "), "."))
+  })
+
+  # ---- carrier frequency before and after ----------------------------------
+  pos_d <- reactive({
+    d <- POS
+    d$mutation <- d$gene
+    dup <- d$gene[duplicated(d$gene)]
+    d$mutation[d$gene %in% dup] <- paste(d$gene[d$gene %in% dup],
+                                         sub(" .*$", "", d$locus[d$gene %in% dup]))
+    d$fate <- ifelse(d$emergent, "Absent before induction",
+              ifelse(d$delta > 0, "Rose", ifelse(d$delta < 0, "Fell", "Unchanged")))
+    d[order(-d$pct_post), ]
+  })
+
+  output$pos_plot <- renderPlot({
+    d <- pos_d()
+    validate(need(nrow(d) > 0, "No genotype calls available."))
+    long <- rbind(
+      data.frame(mutation = d$mutation, fate = d$fate, when = "Pretreatment",   pct = d$pct_pre),
+      data.frame(mutation = d$mutation, fate = d$fate, when = "Post-induction", pct = d$pct_post))
+    long$when <- factor(long$when, levels = c("Pretreatment", "Post-induction"))
+    lab <- d[order(-d$pct_post), ]
+    lab$shifted <- stack_labels(lab$pct_post, 0, max(c(d$pct_pre, d$pct_post)), frac = .040)
+    ggplot(long, aes(when, pct, group = mutation, colour = fate)) +
+      geom_line(linewidth = .85, alpha = .85) +
+      geom_point(size = 2.2) +
+      geom_segment(data = lab, aes(x = 2, xend = 2.1, y = pct_post, yend = shifted),
+                   linewidth = .3, colour = "#B9C0C7", show.legend = FALSE) +
+      geom_text(data = lab, aes(x = 2.12, y = shifted, label = mutation),
+                hjust = 0, size = 3.05, show.legend = FALSE) +
+      scale_x_discrete(expand = expansion(mult = c(.08, .52))) +
+      scale_y_continuous(labels = percent_format(accuracy = 1),
+                         expand = expansion(mult = c(.03, .06))) +
+      scale_colour_manual(values = c("Absent before induction" = CARD, "Rose" = TEAL,
+                                     "Fell" = AMBER, "Unchanged" = GREY), name = NULL) +
+      labs(x = NULL, y = "cells carrying the mutation") +
+      theme_lab() + theme(legend.position = "top")
+  })
+
+  output$pos_head <- renderUI({
+    d <- pos_d(); e <- d[d$emergent, ]
+    note(sprintf(paste("%d variants across %d pretreatment and %d post-induction cells.",
+                       "%d were carried by no pretreatment cell and appear only after",
+                       "induction: %s. %d rose, %d fell."),
+                 nrow(d), d$cells_pre[1], d$cells_post[1], nrow(e),
+                 if (nrow(e)) paste(sprintf("%s in %d of %d cells (%s)", e$gene, e$n_post,
+                                            e$cells_post, percent(e$pct_post, accuracy = .1)),
+                                    collapse = "; ") else "none",
+                 sum(d$delta > 0 & !d$emergent), sum(d$delta < 0)))
+  })
+
+  output$pos_tbl <- renderDT({
+    d <- pos_d()
+    x <- data.frame(Gene = d$gene, Locus = d$locus,
+                    `Cells before` = sprintf("%d / %d", d$n_pre, d$cells_pre),
+                    `Cells after`  = sprintf("%d / %d", d$n_post, d$cells_post),
+                    `% before` = round(100 * d$pct_pre, 1),
+                    `% after`  = round(100 * d$pct_post, 1),
+                    `Change (pp)` = round(100 * d$delta, 1),
+                    `Absent before` = ifelse(d$emergent, "yes", ""),
+                    check.names = FALSE)
+    datatable(x, rownames = FALSE, options = list(pageLength = 10, dom = "ftip"))
   })
 
   output$af_plot <- renderPlot({
@@ -800,14 +901,9 @@ server <- function(input, output, session) {
     lab <- b[b$after > 0, ]
     lab <- lab[order(-lab$after), ]
     if (nrow(lab)) {
+      # the axis is sqrt-transformed, so space the labels in sqrt units
       top <- sqrt(max(c(b$before, b$after), na.rm = TRUE))
-      # never ask for more room than the panel has
-      gap <- min(top * .042, top / max(1, nrow(lab) - 1))
-      y <- sqrt(lab$after)
-      for (i in seq_along(y)[-1])
-        if (y[i - 1] - y[i] < gap) y[i] <- y[i - 1] - gap
-      if (min(y) < 0) y <- y - min(y)   # slide the stack back up rather than clamp it
-      lab$shifted <- pmin(y, top)^2
+      lab$shifted <- stack_labels(sqrt(lab$after), 0, top, frac = .042)^2
     }
     ggplot(long, aes(when, vaf, group = mutation, colour = fate)) +
       geom_line(linewidth = .8, alpha = .8) +
@@ -854,7 +950,7 @@ server <- function(input, output, session) {
     d <- d[order(-d$n), ]
     lab <- setNames(sprintf("node %d  (%d cells)", d$node, d$n), d$node)
     long <- do.call(rbind, lapply(seq_len(nrow(d)), function(i) data.frame(
-      node = factor(lab[as.character(d$node[i])], levels = unname(lab)),
+      node = factor(unname(lab[as.character(d$node[i])]), levels = unname(lab)),
       sample = factor(c("Pretreatment", "Post-treatment"),
                       levels = c("Pretreatment", "Post-treatment")),
       frac = c(d$pre[i], d$post[i]) / (d$pre[i] + d$post[i]))))
@@ -895,10 +991,20 @@ server <- function(input, output, session) {
     v <- as.character(tp)[t$edge[term, 2]]
     ecol[term] <- ifelse(is.na(v), "#C7CDD2", unname(TP_EDGE[v]))
     ewid[term] <- 2.1
+    # plot.phylo sizes the x axis to the tree alone, so on a cladogram every tip
+    # sits exactly on the right edge and half of each signature disc is cut off.
+    # Measure the axis first, then re-plot with headroom for the discs.
     par(mar = c(1, 1, 1, 1), xpd = TRUE)
+    xl <- NULL
+    if (!identical(input$ind_mark, "tp"))
+      xl <- tryCatch({
+        pp <- plot(t, type = input$ind_type, show.tip.label = isTRUE(input$ind_lab),
+                   cex = .6, use.edge.length = FALSE, plot = FALSE)
+        c(pp$x.lim[1], pp$x.lim[1] + diff(pp$x.lim) * 1.10)
+      }, error = function(e) NULL)
     plot(t, type = input$ind_type, show.tip.label = isTRUE(input$ind_lab),
          cex = .6, no.margin = FALSE, edge.color = ecol, edge.width = ewid,
-         use.edge.length = FALSE)
+         use.edge.length = FALSE, x.lim = xl)
     # Figure 7A draws a pie at each major clade giving the pre/post split of the
     # cells beneath it. Computed here from the topology rather than hard-coded to
     # one tree, so it survives the tree being rebuilt.
