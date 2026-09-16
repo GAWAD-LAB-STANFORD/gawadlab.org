@@ -22,6 +22,23 @@ drug <- B$drug; DMAT <- B$dmat; sj <- B$sj
 cells <- B$cells; GMAT <- B$gmat; EMERGENT <- B$emergent
 rec <- B$rec; am <- B$am
 TREES <- B$trees; TIPS <- B$tips; AF <- B$af
+WGS <- B$wgs; BULK <- B$bulk
+
+# The four Figure 5 trees, with the exome-mapped mutations put back on their
+# branches. Annotations are keyed on the set of tips beneath a branch, not on a
+# node number, so they survive ape renumbering the tree when it parses the file.
+WGS_PT <- names(WGS)
+WGS_TREE <- lapply(WGS, function(z) ape::read.tree(text = z$nwk))
+node_keys <- function(t) {
+  nt <- ape::Ntip(t); kids <- split(t$edge[, 2], t$edge[, 1])
+  out <- character(nt + ape::Nnode(t)); out[seq_len(nt)] <- t$tip.label
+  for (n in rev(sort(unique(t$edge[, 1])))) {
+    ch <- as.integer(kids[[as.character(n)]])
+    out[n] <- paste(sort(unlist(strsplit(out[ch], "|", fixed = TRUE))), collapse = "|")
+  }
+  out
+}
+WGS_KEY <- lapply(WGS_TREE, node_keys)
 CELLMETA <- B$cellmeta; SIG <- B$sig
 
 # Newick is parsed here rather than shipped as a serialised tree, so the bundle
@@ -121,9 +138,11 @@ ui <- page_navbar(
                 "effect on a different scale.")),
       card(card_header("Where pediatric ALL sits among childhood cancers"),
            plotOutput("pan_plot", height = 400),
-           note("SNVs per megabase in a published survey of paediatric tumours. ",
+           note("SNVs per megabase in a published survey of 961 paediatric tumours. ",
                 "ALL sits at the bottom of the range, which is the observation this ",
-                "study set out to reconcile with the complexity of its treatment."))),
+                "study set out to reconcile with the complexity of its treatment. ",
+                "The axis is logarithmic, so the 12 tumours reported at zero SNVs per ",
+                "megabase cannot be drawn and are absent from the plot."))),
     card(card_header("Per-patient detail"), DTOutput("burden_tbl"))),
 
   nav_panel("RAS",
@@ -188,6 +207,49 @@ ui <- page_navbar(
            "comparison."))),
 
   nav_panel("Induction therapy",
+    card(card_header("Two strategies, two kinds of before and after"),
+      note("Induction therapy appears twice in this paper, measured two different ways. ",
+           "Figure 5 sequenced whole genomes of single cells with PTA and built four ",
+           "maximum-likelihood trees with CellPhy \u2014 but every one of those 165 cells was ",
+           "drawn ", tags$b("after"), " four weeks of induction, from patients who still had ",
+           "detectable residual disease. Those trees have no before-and-after inside them. ",
+           "Their before-and-after is bulk: each tree's mutations were re-measured in the ",
+           "diagnostic sample and again in the remission sample, which is the first two panels ",
+           "here, and it covers all four patients. Figure 7 did something different \u2014 ",
+           "single-cell ", tags$b("exome"), " sequencing with a ConDoR tree \u2014 and only there ",
+           "do single cells from before and after sit in the same phylogeny. That is one ",
+           "patient, 4295, and it is everything below the third panel.")),
+
+    card(fill = FALSE,
+      card_header(textOutput("wgs_title")),
+      layout_columns(col_widths = c(6, 6),
+        radioButtons("wgs_pt", NULL, inline = TRUE,
+                     choices = setNames(WGS_PT, paste("Patient", WGS_PT)),
+                     selected = if ("4295" %in% WGS_PT) "4295" else WGS_PT[1]),
+        checkboxInput("wgs_lab", "Label each cell", value = FALSE)),
+      plotOutput("wgs_tree", height = "auto"),
+      uiOutput("wgs_muts"),
+      note("The Figure 5 whole-genome phylogeny for this patient, with the mutations that ",
+           "could be mapped to a branch marked on it. A tag on the trunk is a mutation every ",
+           "sampled cell carries; a tag further out belongs to one clone or one cell. Tag ",
+           "colour is what induction did to those mutations in the bulk: red if the mutation ",
+           "was still detectable in the remission sample, grey if it was not. Branch lengths ",
+           "are substitutions per site. The tip marked germline is the all-reference sequence ",
+           "the tree is rooted on, not a cell.")),
+
+    card(card_header("Before and after induction, measured in the bulk"),
+      plotOutput("wgs_slope", height = 480),
+      uiOutput("wgs_slope_head"),
+      note("Every branch mutation of this patient's tree, measured in the diagnostic bulk ",
+           "sample and again in the remission bulk sample. The y axis is square-root scaled so ",
+           "that the small surviving frequencies stay visible next to the clonal ones. A line ",
+           "falling to the floor is a mutation that became undetectable in the bulk \u2014 which ",
+           "is not the same as gone, because a bulk remission sample is mostly normal marrow ",
+           "and the residual cells are rare. That gap is exactly why the single-cell work in ",
+           "Figure 7 was needed.")),
+
+    card(card_header("Every branch mutation, before and after"), DTOutput("wgs_tbl")),
+
     card(fill = FALSE, card_header(textOutput("ind_title")),
          plotOutput("ind_tree", height = "auto"),
          uiOutput("ind_legend"), uiOutput("ind_head"),
@@ -641,6 +703,133 @@ server <- function(input, output, session) {
     })
     d <- do.call(rbind, rows)
     d[d$n < nt, ]                      # drop the root, which is every cell
+  })
+
+  # --- Figure 5 whole-genome trees, all four patients ----------------------
+  # Branch annotations arrive keyed on the tip set beneath the branch; resolve
+  # them to node indices against the tree as ape parsed it here.
+  wgs_ann <- reactive({
+    q <- input$wgs_pt; req(q %in% WGS_PT)
+    m <- WGS[[q]]$mut
+    if (!nrow(m)) return(m[0, ])
+    m$node <- match(m$key, WGS_KEY[[q]])
+    m <- m[!is.na(m$node), ]
+    # split "GENE CHANGE; GENE CHANGE" back into genes so the fate of the branch
+    # can be looked up in the bulk table
+    m$genes <- lapply(strsplit(m$label, "; *"), function(x) sub(" .*$", "", trimws(x)))
+    b <- BULK[BULK$patient == q, ]
+    m$kept <- vapply(m$genes, function(g) {
+      v <- b$after[b$gene %in% g]
+      length(v) > 0 && any(is.finite(v) & v > 0)
+    }, logical(1))
+    m$tag <- paste0("M", seq_len(nrow(m)))
+    m[order(m$node), ]
+  })
+
+  output$wgs_title <- renderText({
+    q <- input$wgs_pt; req(q %in% WGS_PT)
+    sprintf("Patient %s — %d single-cell genomes, %d mutation-carrying branches",
+            q, ape::Ntip(WGS_TREE[[q]]) - 1L, nrow(wgs_ann()))
+  })
+
+  output$wgs_tree <- renderPlot(height = function() {
+    q <- input$wgs_pt
+    if (!isTRUE(q %in% WGS_PT)) return(560)
+    max(480, min(2400, round(22 * ape::Ntip(WGS_TREE[[q]]))))
+  }, {
+    q <- input$wgs_pt; req(q %in% WGS_PT)
+    t <- WGS_TREE[[q]]; a <- wgs_ann()
+    t$tip.label <- ifelse(t$tip.label == "zeros", "germline",
+                          sub("^[0-9]+_", "", t$tip.label))
+    ec <- rep("#5A6570", nrow(t$edge)); ew <- rep(1, nrow(t$edge))
+    if (nrow(a)) {
+      e <- match(a$node, t$edge[, 2])
+      ok <- !is.na(e)
+      ec[e[ok]] <- ifelse(a$kept[ok], CARD, "#7A838C")
+      ew[e[ok]] <- 2.6
+    }
+    par(mar = c(3.5, 1, 1, 1), xpd = TRUE)
+    plot(t, show.tip.label = isTRUE(input$wgs_lab), cex = .62,
+         edge.color = ec, edge.width = ew, no.margin = FALSE)
+    ape::add.scale.bar(cex = .75, col = "#5A6570")
+    if (nrow(a)) {
+      e <- match(a$node, t$edge[, 2]); ok <- !is.na(e)
+      ape::edgelabels(a$tag[ok], e[ok], frame = "rect", cex = .68, adj = c(.5, .5),
+                      bg = ifelse(a$kept[ok], "#F4DADA", "#EDF0F2"),
+                      col = ifelse(a$kept[ok], CARD, "#39424A"), font = 2)
+    }
+  })
+
+  # The gene lists run to sixteen entries on a trunk branch, which cannot be
+  # drawn on the branch itself without covering the tree, so the tags on the
+  # figure are expanded here instead.
+  output$wgs_muts <- renderUI({
+    a <- wgs_ann()
+    if (!nrow(a)) return(note("No branch of this tree carries a mapped mutation."))
+    rows <- lapply(seq_len(nrow(a)), function(i) tags$li(
+      style = "margin-bottom:.25rem",
+      tags$b(style = sprintf("color:%s", if (a$kept[i]) CARD else "#39424A"), a$tag[i]),
+      sprintf(" · %s · ", if (a$n[i] == 1) "1 cell" else sprintf("%d cells", a$n[i])),
+      a$label[i],
+      tags$span(class = "text-muted",
+                if (a$kept[i]) " — still detectable after induction"
+                else " — not detected after induction")))
+    div(style = "font-size:.86rem;margin-top:.6rem", tags$ul(style = "padding-left:1.1rem", rows))
+  })
+
+  wgs_bulk <- reactive({
+    q <- input$wgs_pt; req(q %in% WGS_PT)
+    b <- BULK[BULK$patient == q, ]
+    b <- b[is.finite(b$before) | is.finite(b$after), ]
+    b$before[!is.finite(b$before)] <- 0; b$after[!is.finite(b$after)] <- 0
+    b$mutation <- ifelse(nzchar(b$change), paste(b$gene, b$change), b$gene)
+    b$fate <- ifelse(b$after > 0, "Still detectable", "Not detected after")
+    b[order(-b$before), ]
+  })
+
+  output$wgs_slope <- renderPlot({
+    b <- wgs_bulk()
+    validate(need(nrow(b) > 0, "No bulk measurement for this patient."))
+    long <- rbind(
+      data.frame(mutation = b$mutation, fate = b$fate, when = "Diagnosis",  vaf = b$before),
+      data.frame(mutation = b$mutation, fate = b$fate, when = "Remission",  vaf = b$after))
+    long$when <- factor(long$when, levels = c("Diagnosis", "Remission"))
+    lab <- b[b$after > 0, ]
+    ggplot(long, aes(when, vaf, group = mutation, colour = fate)) +
+      geom_line(linewidth = .8, alpha = .8) +
+      geom_point(size = 2.1) +
+      geom_text(data = transform(lab, when = factor("Remission",
+                                 levels = c("Diagnosis", "Remission")), vaf = after),
+                aes(label = mutation), hjust = -.12, size = 3.1, show.legend = FALSE) +
+      scale_x_discrete(expand = expansion(mult = c(.08, .45))) +
+      scale_y_sqrt(labels = percent_format(accuracy = 1),
+                   breaks = c(0, .01, .05, .1, .2, .3, .4, .5, .6)) +
+      scale_colour_manual(values = c("Still detectable" = CARD,
+                                     "Not detected after" = "#9AA3AB"), name = NULL) +
+      labs(x = NULL, y = "Variant allele frequency in bulk") +
+      theme_lab() + theme(legend.position = "top")
+  })
+
+  output$wgs_slope_head <- renderUI({
+    b <- wgs_bulk()
+    kept <- b[b$after > 0, ]
+    note(sprintf(paste("%d branch mutations. Median allele frequency fell from %s at diagnosis",
+                       "to %s in remission. %d were still detectable in the remission bulk%s."),
+                 nrow(b), percent(median(b$before), accuracy = .1),
+                 percent(median(b$after), accuracy = .1), nrow(kept),
+                 if (nrow(kept)) sprintf(", the highest being %s at %s",
+                                         kept$mutation[which.max(kept$after)],
+                                         percent(max(kept$after), accuracy = .1)) else ""))
+  })
+
+  output$wgs_tbl <- renderDT({
+    b <- wgs_bulk()
+    d <- data.frame(Mutation = b$mutation, Effect = b$effect, Locus = b$locus,
+                    Diagnosis = round(b$before, 4), Remission = round(b$after, 4),
+                    `Fold change` = ifelse(b$after > 0, round(b$before / b$after, 1), NA),
+                    `Depth dx` = b$dp_before, `Depth rem` = b$dp_after,
+                    check.names = FALSE)
+    datatable(d, rownames = FALSE, options = list(pageLength = 10, dom = "tip"))
   })
 
   output$ind_pies <- renderPlot({

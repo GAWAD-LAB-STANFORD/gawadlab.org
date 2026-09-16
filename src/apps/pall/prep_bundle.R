@@ -166,6 +166,114 @@ build_bundle <- function(D) {
   mut <- mut[, colSums(mut, na.rm = TRUE) > 0, drop = FALSE]
   storage.mode(mut) <- "double"
 
+  # --- 11. induction therapy across all four patients ----------------------
+  #     Two different strategies built the two groups of phylogenies, and they
+  #     carry "before and after" in two different places.
+  #
+  #     (a) Figure 5: PTA single-cell WHOLE GENOMES, trees built by CellPhy.
+  #         Four patients, 165 cells. Every one of those cells was drawn AFTER
+  #         four weeks of induction therapy - the manuscript's own words are
+  #         "four high-risk pALL patients who had undergone four weeks of
+  #         induction therapy ... but had detectable MRD cells". So the trees
+  #         themselves have no before/after axis.
+  #     (b) The before/after for those four patients is BULK, in
+  #         Mutect<patient>.filtered.rds: every exome-mapped tree mutation
+  #         re-measured in the diagnostic bulk and again in the remission bulk.
+  #     (c) Figure 7: single-cell EXOME, tree built by ConDoR. One patient only
+  #         (4295), and there the before/after is per cell. That is the tree the
+  #         rest of this tab draws.
+  #
+  #     Sample naming is not documented in a table, so it is derived: strip the
+  #     repeated "<patient>-" prefix, and what remains is "<accession><suffix>".
+  #     A cell leaves no accession behind (417-A10 -> "A10"), a bulk does
+  #     (417-368B -> accession 368, suffix B). The notebook's own rule at
+  #     Figures.BALL.PTA.Rmd:1508 is timing = if the accession equals the patient
+  #     id then "remission" else "diagnosis"; the patient is named for its
+  #     remission accession. The VAFs below confirm it independently in all four
+  #     patients: the other accession carries these mutations at ~0.3-0.5 VAF
+  #     (clonal disease) and the patient-named one at ~0.01-0.03 (residual).
+  #     Suffix NonB is the sorted non-blast fraction, i.e. a normal control, so
+  #     it is kept separately and never averaged into the tumour columns.
+  wgs <- list(); bulk <- list()
+  for (q in c("417", "445", "4084", "4295")) {
+    td <- readRDS(rp("shared_phycall_Figures_4_5_S6_S7",
+                     sprintf("TreeMutWithZeros.%s.genome.exomemapped.rds", q)))
+    ph <- td@phylo
+    dd <- as.data.frame(td@data)
+    nt <- ape::Ntip(ph)
+
+    # Identify each annotated branch by the SET OF TIPS beneath it rather than by
+    # its node index, so the annotation survives the newick round trip into webR
+    # (ape renumbers nodes from the edge matrix, not from the file).
+    # descendant tips, by walking the edge matrix - avoids a phangorn dependency
+    kids <- split(ph$edge[, 2], ph$edge[, 1])
+    tips_under <- function(n) {
+      if (n <= nt) return(n)
+      out <- integer(0); stack <- as.integer(kids[[as.character(n)]])
+      while (length(stack)) {
+        v <- stack[1]; stack <- stack[-1]
+        if (v <= nt) out <- c(out, v) else stack <- c(stack, as.integer(kids[[as.character(v)]]))
+      }
+      sort(out)
+    }
+    desc <- function(n) paste(sort(ph$tip.label[tips_under(n)]), collapse = "|")
+    ann <- dd[!is.na(dd$mutList) & nzchar(dd$mutList), c("node", "mutList")]
+    ann <- ann[order(ann$node), ]
+    wgs[[q]] <- list(
+      nwk = ape::write.tree(ph),
+      mut = if (nrow(ann)) data.frame(
+        key   = vapply(ann$node, desc, character(1)),
+        n     = vapply(ann$node, function(n) length(tips_under(n)), integer(1)),
+        label = gsub("\n", "; ", ann$mutList),
+        stringsAsFactors = FALSE) else
+        data.frame(key = character(0), n = integer(0), label = character(0)))
+
+    m <- readRDS(rp("shared_phycall_Figures_4_5_S6_S7",
+                    sprintf("Mutect%s.filtered.rds", q)))
+    rest <- as.character(m$sample)
+    repeat { r2 <- sub(paste0("^", q, "-"), "", rest); if (identical(r2, rest)) break; rest <- r2 }
+    acc <- sub("[^0-9].*$", "", rest)          # empty for a single cell
+    suf <- sub("^[0-9]+", "", rest)
+    isbulk <- nzchar(acc)
+    stopifnot(any(isbulk), any(!isbulk))
+    timing <- ifelse(acc == q, "after", "before")
+    control <- grepl("NonB", suf)
+    agg <- function(keep) {
+      z <- m[isbulk & keep, ]
+      if (!nrow(z)) return(NULL)
+      # one patient has two diagnostic aliquots (T1/T2); pool their reads rather
+      # than averaging two VAFs computed at different depths
+      data.frame(id = z$id, alt = z$VAF * z$DP, dp = z$DP, stringsAsFactors = FALSE)
+    }
+    pool <- function(z) if (is.null(z)) NULL else {
+      a <- rowsum(z[, c("alt", "dp")], z$id)
+      data.frame(id = rownames(a), vaf = ifelse(a$dp > 0, a$alt / a$dp, NA_real_),
+                 dp = a$dp, stringsAsFactors = FALSE)
+    }
+    bf <- pool(agg(timing == "before" & !control))
+    af2 <- pool(agg(timing == "after"  & !control))
+    nb <- pool(agg(control))
+    stopifnot(!is.null(bf), !is.null(af2))
+    ids <- sort(unique(c(bf$id, af2$id)))
+    ann1 <- m[match(ids, m$id), c("id", "Gene.refGene", "ExonicFunc.refGene", "CHROM:POS")]
+    bulk[[q]] <- data.frame(
+      patient  = q,
+      id       = ids,
+      gene     = as.character(ann1$Gene.refGene),
+      change   = sub("^.*:p\\.", "", ids),
+      effect   = sub("_SNV$", "", as.character(ann1$ExonicFunc.refGene)),
+      locus    = as.character(ann1[["CHROM:POS"]]),
+      before   = bf$vaf[match(ids, bf$id)],
+      after    = af2$vaf[match(ids, af2$id)],
+      dp_before= bf$dp[match(ids, bf$id)],
+      dp_after = af2$dp[match(ids, af2$id)],
+      normal   = if (is.null(nb)) NA_real_ else nb$vaf[match(ids, nb$id)],
+      stringsAsFactors = FALSE)
+  }
+  bulk <- do.call(rbind, bulk); rownames(bulk) <- NULL
+  bulk$change[!grepl(":p\\.", bulk$id)] <- ""
+  stopifnot(nrow(bulk) > 0, all(is.finite(bulk$before) | is.finite(bulk$after)))
+
   # --- 8. phylogenies (Fig 5E/5G maximum likelihood, Fig 7A clone tree) ---
   #     Newick is kept as text and parsed in the browser, so the bundle carries
   #     kilobytes rather than a serialised tree object.
@@ -191,6 +299,7 @@ build_bundle <- function(D) {
     stringsAsFactors = FALSE)
 
   list(trees = trees, tips = tips, af = af, cellmeta = cellmeta, sig = sig, mut = mut,
+       wgs = wgs, bulk = bulk,
        burden = burden, pan = pan, ras = ras,
        drug = drug, dmat = dmat, sj = sj,
        cells = cells, gmat = gmat, emergent = em,
