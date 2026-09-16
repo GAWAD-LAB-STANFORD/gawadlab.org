@@ -22,7 +22,7 @@ drug <- B$drug; DMAT <- B$dmat; sj <- B$sj
 cells <- B$cells; GMAT <- B$gmat; EMERGENT <- B$emergent
 rec <- B$rec; am <- B$am
 TREES <- B$trees; TIPS <- B$tips; AF <- B$af
-CELLMETA <- B$cellmeta; SIG <- B$sig; MUT <- B$mut
+CELLMETA <- B$cellmeta; SIG <- B$sig
 
 # Newick is parsed here rather than shipped as a serialised tree, so the bundle
 # stays in kilobytes. Labels come through as 4295_A10 or 4295.F1 depending on the
@@ -83,11 +83,9 @@ ui <- page_navbar(
                      "Chromosome 6 deletion" = "Chr6_1_Deletion"))),
     conditionalPanel("input.nav == 'Induction therapy'",
       radioButtons("ind_mark", "Tip marks",
-                   c("Mutations in this cell (pie)" = "mut",
-                     "Mutational signature (post-treatment cells only)" = "sig",
-                     "Sample" = "tp")),
-      selectInput("ind_gene", "Always show this gene",
-                  c("(none)", sort(colnames(B$mut))), selected = "JAK2"),
+                   c("Sample the cell came from" = "tp",
+                     "Mutational signature (post-induction cells only)" = "sig"),
+                   selected = "tp"),
       radioButtons("ind_type", "Layout",
                    c("Cladogram" = "phylogram", "Fan" = "fan", "Unrooted" = "unrooted")),
       checkboxInput("ind_node", "Clade pies: pre/post composition at each node", TRUE),
@@ -193,17 +191,15 @@ ui <- page_navbar(
     card(fill = FALSE, card_header(textOutput("ind_title")),
          plotOutput("ind_tree", height = "auto"),
          uiOutput("ind_legend"), uiOutput("ind_head"),
-         note("The exome phylogeny of patient 4295, reconstructed by ConDoR across the two ",
-              "samples: 4272 drawn before induction and 4295 after four weeks of it. The branch ",
-              "into each cell carries the sample it came from. Each tip pie is that cell's own ",
-              "alternate reads split across the panel's genes, so a cell sitting in a ",
-              "JAK2-mutant clone shows JAK2. Slices are the eight genes contributing the most ",
-              "reads overall, plus whichever gene you pin; the rest are pooled. This tree has ",
-              "no branch lengths, so it is a ",
-              "cladogram: the topology is meaningful and the horizontal distances are not. ",
-              "The pie at each internal node is the pre/post split of the cells beneath it, as ",
-              "in Figure 7A; a node that is all pink is a clade found only after induction. ",
-              "They are computed from the topology here rather than fixed to one tree.")),
+         note("The Figure 7A single-cell phylogeny of patient 4295, spanning both samples: ",
+              "4272 taken before induction and 4295 after four weeks of it. The branch into each ",
+              "cell carries the sample it came from, and the pie at each internal node is the ",
+              "before/after split of the cells beneath it, exactly as in Figure 7A. A node that ",
+              "is entirely pink is a clade found only after induction. The pies are computed from ",
+              "the topology here, rather than fixed to one tree as the figure script's hard-coded ",
+              "clade vector is. The tree carries no branch lengths, so it is a cladogram: the ",
+              "topology is meaningful and the horizontal distances are not. Which variants each ",
+              "cell carries is the heatmap below, not the tip marks.")),
 
     card(card_header("Allele frequency before and after treatment"),
       plotOutput("af_plot", height = 470),
@@ -594,7 +590,7 @@ server <- function(input, output, session) {
   # so the default is the cell's own alternate reads split by gene, which covers
   # 110 of the 113 tips including 29 of the 30 pretreatment cells.
   ind_pie <- reactive({
-    src <- if (identical(input$ind_mark, "sig")) SIG else MUT
+    src <- SIG
     m <- matrix(0, nrow = length(IND_KEYS), ncol = ncol(src),
                 dimnames = list(IND_KEYS, colnames(src)))
     i <- match(IND_KEYS, rownames(src)); ok <- !is.na(i)
@@ -603,9 +599,6 @@ server <- function(input, output, session) {
     tot <- colSums(m)
     keep <- names(sort(tot[tot > 0], decreasing = TRUE))
     keep <- keep[seq_len(min(8L, length(keep)))]
-    pin <- input$ind_gene
-    if (!is.null(pin) && pin != "(none)" && pin %in% colnames(m) && !(pin %in% keep))
-      keep <- c(keep, pin)
     rest <- setdiff(colnames(m)[colSums(m) > 0], keep)
     out <- m[, keep, drop = FALSE]
     if (length(rest)) out <- cbind(out, other = rowSums(m[, rest, drop = FALSE]))
@@ -621,7 +614,7 @@ server <- function(input, output, session) {
   })
 
   output$ind_title <- renderText(
-    sprintf("Patient 4295 exome phylogeny, before and after induction \u2014 %d cells",
+    sprintf("Patient 4295, before and after induction \u2014 %d single-cell genomes",
             ape::Ntip(IND_TREE)))
 
   output$ind_tree <- renderPlot(height = function() {
@@ -706,9 +699,7 @@ server <- function(input, output, session) {
     if (!identical(input$ind_mark, "tp"))
       bits <- c(bits, sprintf("%d %s no %s and are drawn as a plain dot", miss,
                               if (miss == 1) "tip has" else "tips have",
-                              if (identical(input$ind_mark, "sig"))
-                                "signature fit (none of the pretreatment cells were fitted)"
-                              else "detected alternate reads"))
+                              "signature fit (none of the pre-induction cells were fitted)"))
     bits <- c(bits, sprintf("clones %s appear only after induction",
                             paste(EMERGENT, collapse = " and ")))
     note(paste0(paste(bits, collapse = "; "), "."))
