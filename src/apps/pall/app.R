@@ -22,12 +22,31 @@ drug <- B$drug; DMAT <- B$dmat; sj <- B$sj
 cells <- B$cells; GMAT <- B$gmat; EMERGENT <- B$emergent
 rec <- B$rec; am <- B$am
 TREES <- B$trees; TIPS <- B$tips; AF <- B$af
-BULK <- B$bulk
+BULK <- B$bulk; WGSMUT <- B$wgs
 
 # The four patients whose Figure 5 tree mutations were re-measured in bulk at
-# both timepoints. The trees are drawn on the Phylogeny tab; B$wgs still carries
-# their per-branch annotations, which nothing renders at the moment.
-WGS_PT <- names(B$wgs)
+# both timepoints, and whose trees carry exome-mapped mutations on their branches.
+WGS_PT <- names(WGSMUT)
+
+# Put a branch annotation back on a branch. The annotation was keyed on the tip
+# set beneath the branch in the TreeMut object, which carries an extra all-
+# reference tip ("zeros") and is rooted differently from the CellPhy tree drawn
+# here. Both describe the same unrooted topology, so match on the SPLIT instead:
+# drop "zeros", and name the split by its smaller side so that naming a clade or
+# its complement gives the same key. Verified to place all 21 annotations across
+# the four trees, with no split occurring twice.
+node_sets <- function(t) {
+  nt <- ape::Ntip(t); kids <- split(t$edge[, 2], t$edge[, 1])
+  out <- vector("list", nt + ape::Nnode(t))
+  for (i in seq_len(nt)) out[[i]] <- t$tip.label[i]
+  for (n in rev(sort(unique(t$edge[, 1]))))
+    out[[n]] <- sort(unlist(out[as.integer(kids[[as.character(n)]])]))
+  out
+}
+split_key <- function(s, all) {
+  s <- setdiff(s, "zeros"); o <- setdiff(all, s)
+  paste(if (length(s) <= length(o)) s else o, collapse = "|")
+}
 CELLMETA <- B$cellmeta; SIG <- B$sig; POS <- B$pos
 
 # Newick is parsed here rather than shipped as a serialised tree, so the bundle
@@ -123,6 +142,7 @@ ui <- page_navbar(
                    c("Phylogram" = "phylogram", "Fan" = "fan", "Unrooted" = "unrooted")),
       uiOutput("tipcol_ui"),
       sliderInput("bootmin", "Label bootstrap support of at least", 0, 100, 50, step = 5),
+      checkboxInput("treemut", "Mark branches carrying mutations", TRUE),
       checkboxInput("tiplab", "Show cell labels", FALSE)),
     conditionalPanel("input.nav == 'Genes'",
       selectizeInput("gene", "Highlight a gene", choices = sort(unique(rec$gene)),
@@ -218,7 +238,7 @@ ui <- page_navbar(
   nav_panel("Phylogeny",
     card(fill = FALSE, card_header(textOutput("tree_title")),
          plotOutput("tree_plot", height = "auto"),
-         uiOutput("tree_legend"), uiOutput("tree_head"),
+         uiOutput("tree_legend"), uiOutput("tree_muts"), uiOutput("tree_head"),
          note("The four patient trees hold post-induction cells only: every cell in them was ",
               "taken after four weeks of induction therapy, which is why their branches are ",
               "uniform. Only the last tree spans two samples from patient 4295, 4272 drawn ",
@@ -1121,6 +1141,55 @@ server <- function(input, output, session) {
     do.call(tagList, rows)
   })
 
+  # Exome-mapped mutations placed on the branches of the tree being drawn. Only
+  # the four Figure 5 patient trees carry them; the in vitro benchmark and the
+  # Figure 7 clone tree get nothing.
+  tree_ann <- reactive({
+    q <- input$tree
+    empty <- data.frame(node = integer(0), n = integer(0), label = character(0),
+                        kept = logical(0), tag = character(0))
+    if (!isTRUE(input$treemut) || is.null(WGSMUT[[q]])) return(empty)
+    m <- WGSMUT[[q]]$mut
+    if (!nrow(m)) return(empty)
+    t <- cur_tree(); all <- sort(t$tip.label)
+    ck <- vapply(node_sets(t), split_key, character(1), all = all)
+    ck[!(seq_along(ck) %in% t$edge[, 2])] <- NA_character_   # the root has no branch
+    m$node <- match(vapply(strsplit(m$key, "|", fixed = TRUE), split_key,
+                           character(1), all = all), ck)
+    m <- m[!is.na(m$node), ]
+    if (!nrow(m)) return(empty)
+    b <- BULK[BULK$patient == q, ]
+    genes <- lapply(strsplit(m$label, "; *"), function(x) sub(" .*$", "", trimws(x)))
+    m$kept <- vapply(genes, function(g) {
+      v <- b$after[b$gene %in% g]
+      length(v) > 0 && any(is.finite(v) & v > 0)
+    }, logical(1))
+    m <- m[order(-m$n), ]
+    m$tag <- paste0("M", seq_len(nrow(m)))
+    m
+  })
+
+  # Sixteen gene names cannot be written along a branch without burying the tree,
+  # so the branch carries a short tag and the tags are expanded underneath.
+  output$tree_muts <- renderUI({
+    a <- tree_ann()
+    if (!nrow(a)) return(NULL)
+    rows <- lapply(seq_len(nrow(a)), function(i) tags$li(
+      style = "margin-bottom:.25rem",
+      tags$b(style = sprintf("color:%s", if (a$kept[i]) CARD else "#39424A"), a$tag[i]),
+      sprintf(" \u00b7 %s \u00b7 ", if (a$n[i] == 1) "1 cell" else sprintf("%d cells", a$n[i])),
+      a$label[i],
+      tags$span(class = "text-muted",
+                if (a$kept[i]) " \u2014 still detectable in the remission bulk"
+                else " \u2014 not detected in the remission bulk")))
+    div(style = "font-size:.86rem;margin-top:.6rem",
+        div(class = "text-muted", style = "margin-bottom:.3rem",
+            "Mutations mapped onto branches. A tag on the trunk is carried by every ",
+            "sampled cell; a tag further out belongs to one clone or one cell. Red means ",
+            "the mutation was still detectable in that patient's remission bulk sample."),
+        tags$ul(style = "padding-left:1.1rem", rows))
+  })
+
   output$tree_plot <- renderPlot(height = function() {
     n <- tryCatch(ape::Ntip(cur_tree()), error = function(e) 40)
     per <- if (identical(input$tipcol, "pie")) 30 else 9   # pies need room to read
@@ -1146,11 +1215,23 @@ server <- function(input, output, session) {
       ecol[term] <- ifelse(is.na(v), "#C7CDD2", unname(TP_EDGE[v]))
       ewid[term] <- 2.1
     }
+    ann_m <- tree_ann()
+    if (nrow(ann_m)) {
+      e <- match(ann_m$node, t$edge[, 2]); ok <- !is.na(e)
+      ecol[e[ok]] <- ifelse(ann_m$kept[ok], CARD, "#39424A")
+      ewid[e[ok]] <- 2.6
+    }
     par(mar = c(1, 1, 1, 1), xpd = TRUE)
     plot(t, type = input$ttype, show.tip.label = isTRUE(input$tiplab),
          tip.color = cols, cex = .6, no.margin = FALSE,
          edge.color = ecol, edge.width = ewid,
          use.edge.length = !is.null(t$edge.length))
+    if (nrow(ann_m)) {
+      e <- match(ann_m$node, t$edge[, 2]); ok <- !is.na(e)
+      ape::edgelabels(ann_m$tag[ok], e[ok], frame = "rect", cex = .68, adj = c(.5, .5),
+                      bg = ifelse(ann_m$kept[ok], "#F4DADA", "#EDF0F2"),
+                      col = ifelse(ann_m$kept[ok], CARD, "#39424A"), font = 2)
+    }
     if (identical(input$tipcol, "pie")) {
       tp <- tip_pie(); pm <- tp$m
       pcol <- unname(tree_pal())
