@@ -794,14 +794,29 @@ server <- function(input, output, session) {
       data.frame(mutation = b$mutation, fate = b$fate, when = "Diagnosis",  vaf = b$before),
       data.frame(mutation = b$mutation, fate = b$fate, when = "Remission",  vaf = b$after))
     long$when <- factor(long$when, levels = c("Diagnosis", "Remission"))
+    # ggrepel is not in the webR repo, so labels are de-overlapped here: work in
+    # the sqrt space the axis actually uses, then push each label down until it
+    # clears the one above by a fixed fraction of the panel.
     lab <- b[b$after > 0, ]
+    lab <- lab[order(-lab$after), ]
+    if (nrow(lab)) {
+      top <- sqrt(max(c(b$before, b$after), na.rm = TRUE))
+      # never ask for more room than the panel has
+      gap <- min(top * .042, top / max(1, nrow(lab) - 1))
+      y <- sqrt(lab$after)
+      for (i in seq_along(y)[-1])
+        if (y[i - 1] - y[i] < gap) y[i] <- y[i - 1] - gap
+      if (min(y) < 0) y <- y - min(y)   # slide the stack back up rather than clamp it
+      lab$shifted <- pmin(y, top)^2
+    }
     ggplot(long, aes(when, vaf, group = mutation, colour = fate)) +
       geom_line(linewidth = .8, alpha = .8) +
       geom_point(size = 2.1) +
-      geom_text(data = transform(lab, when = factor("Remission",
-                                 levels = c("Diagnosis", "Remission")), vaf = after),
-                aes(label = mutation), hjust = -.12, size = 3.1, show.legend = FALSE) +
-      scale_x_discrete(expand = expansion(mult = c(.08, .45))) +
+      geom_segment(data = lab, aes(x = 2, xend = 2.12, y = after, yend = shifted),
+                   linewidth = .3, colour = "#B9C0C7", show.legend = FALSE) +
+      geom_text(data = lab, aes(x = 2.14, y = shifted, label = mutation),
+                hjust = 0, size = 3.05, show.legend = FALSE) +
+      scale_x_discrete(expand = expansion(mult = c(.08, .62))) +
       scale_y_sqrt(labels = percent_format(accuracy = 1),
                    breaks = c(0, .01, .05, .1, .2, .3, .4, .5, .6)) +
       scale_colour_manual(values = c("Still detectable" = CARD,

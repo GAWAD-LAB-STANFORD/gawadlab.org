@@ -271,6 +271,15 @@ build_bundle <- function(D) {
       stringsAsFactors = FALSE)
   }
   bulk <- do.call(rbind, bulk); rownames(bulk) <- NULL
+  # ANNOVAR writes a variant that overlaps two genes as "GENE1\\x3bGENE2", the
+  # escape for a semicolon. Render it as GENE1/GENE2: a bare semicolon would
+  # collide with the separator the branch labels are split on.
+  unesc <- function(x) gsub("\\\\x3b", "/", x)
+  bulk$gene <- unesc(bulk$gene); bulk$id <- unesc(bulk$id)
+  for (q in names(wgs)) if (nrow(wgs[[q]]$mut))
+    wgs[[q]]$mut$label <- unesc(wgs[[q]]$mut$label)
+  stopifnot(!any(grepl("x3b", c(bulk$gene, bulk$id,
+            unlist(lapply(wgs, function(z) z$mut$label))))))
   bulk$change[!grepl(":p\\.", bulk$id)] <- ""
   stopifnot(nrow(bulk) > 0, all(is.finite(bulk$before) | is.finite(bulk$after)))
 
