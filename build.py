@@ -28,6 +28,7 @@ NAV = [("index.html", "Home"), ("research.html", "Research"), ("people.html", "P
        ("publications.html", "Publications"), ("apps.html", "Apps"), ("news.html", "News"),
        ("resources.html", "Resources"), ("join.html", "Join")]
 SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
+GITHUB_ORG = "https://github.com/GAWAD-LAB-STANFORD"
 
 ICONS = {
     "mail": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
@@ -69,7 +70,8 @@ def head(title, desc, page, og_image="assets/og-image.jpg"):
     <a class="brand" href="index.html" aria-label="Gawad Lab home"><img src="assets/logo.png" alt="Stanford Medicine · Gawad Lab" width="592" height="164"></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
-""" + "".join(f'      <li><a href="{h}"{" class=\"active\"" if h == page else ""}>{t}</a></li>\n' for h, t in NAV) + f"""      <li class="nav-cta"><a href="{SUPPORT_MAILTO}" class="support-link" title="Support the lab">Support our work</a></li>
+""" + "".join(f'      <li><a href="{h}"{" class=\"active\"" if h == page else ""}>{t}</a></li>\n' for h, t in NAV) + f"""      <li class="nav-gh"><a href="{GITHUB_ORG}" title="Code and data on GitHub" aria-label="Gawad Lab on GitHub">{ICONS['github']}<span>GitHub</span></a></li>
+      <li class="nav-cta"><a href="{SUPPORT_MAILTO}" class="support-link" title="Support the lab">Support our work</a></li>
     </ul>
   </div>
 </header>
@@ -85,7 +87,7 @@ def footer():
         <img src="assets/logo.png" alt="Stanford Medicine · Gawad Lab">
         <p>We invent single-cell and cell-free genomics technologies and use them to understand how childhood cancers arise, evolve, and resist treatment.</p>
         <div class="social">
-          <a href="https://github.com/GAWAD-LAB-STANFORD" aria-label="GitHub">{ICONS['github']}</a>
+          <a href="{GITHUB_ORG}" aria-label="GitHub">{ICONS['github']}</a>
           <a href="https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ" aria-label="Google Scholar">{ICONS['scholar']}</a>
           <a href="mailto:cgawad@stanford.edu" aria-label="Email">{ICONS['mail']}</a>
         </div>
