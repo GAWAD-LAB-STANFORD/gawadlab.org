@@ -109,9 +109,9 @@ ui <- page_navbar(
                      "Chromosome 6 deletion" = "Chr6_1_Deletion"))),
     conditionalPanel("input.nav == 'Induction therapy'",
       radioButtons("ind_mark", "Tip marks",
-                   c("Sample the cell came from" = "tp",
-                     "Mutational signature (post-induction cells only)" = "sig"),
-                   selected = "tp"),
+                   c("Mutational signature (post-induction cells only)" = "sig",
+                     "Sample the cell came from" = "tp"),
+                   selected = "sig"),
       radioButtons("ind_type", "Layout",
                    c("Cladogram" = "phylogram", "Fan" = "fan", "Unrooted" = "unrooted")),
       checkboxInput("ind_node", "Clade pies: pre/post composition at each node", TRUE),
@@ -1019,8 +1019,11 @@ server <- function(input, output, session) {
 
   output$tipcol_ui <- renderUI({
     o <- avail_cols()
-    radioButtons("tipcol", "Colour tips by", choices = o,
-                 selected = if (length(o) > 1) o[[2]] else o[[1]])
+    # the per-cell signature pie is the default wherever the tree has signature
+    # fits; pick it by name, since which option sits at o[[2]] depends on which
+    # measurements that particular tree happens to carry
+    sel <- if ("pie" %in% o) "pie" else if (length(o) > 1) o[[2]] else o[[1]]
+    radioButtons("tipcol", "Colour tips by", choices = o, selected = sel)
   })
 
   # one row per tip, columns pooled to the signatures that actually show at this
