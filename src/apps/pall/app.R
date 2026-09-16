@@ -201,6 +201,13 @@ ui <- page_navbar(
               "topology is meaningful and the horizontal distances are not. Which variants each ",
               "cell carries is the heatmap below, not the tip marks.")),
 
+    card(card_header("Before and after, clade by clade"),
+         plotOutput("ind_pies", height = 460), uiOutput("ind_pies_head"),
+         note("One pie per clade, numbered as in Figure 7A, which uses the same internal-node ",
+              "indices. A pie that is entirely pink is a clade whose cells were all found after ",
+              "induction; entirely blue means the clade did not survive it. Use the slider to ",
+              "set how small a clade still earns a pie.")),
+
     card(card_header("Allele frequency before and after treatment"),
       plotOutput("af_plot", height = 470),
       uiOutput("af_head"),
@@ -611,6 +618,61 @@ server <- function(input, output, session) {
     if (identical(input$ind_mark, "tp")) TP_EDGE
     else { pm <- ind_pie()$m
            setNames(grDevices::hcl.colors(ncol(pm), "Spectral"), colnames(pm)) }
+  })
+
+  # Clade membership straight off the topology. Node numbers are ape's internal
+  # indices, which for this 113-tip tree run 114-135 and are the same numbers
+  # Figure 7A prints above its pies.
+  clade_tab <- reactive({
+    t <- IND_TREE; nt <- ape::Ntip(t)
+    tp <- as.character(TIPS$timepoint[match(IND_KEYS, TIPS$cell)])
+    rows <- lapply(seq_len(t$Nnode) + nt, function(nd) {
+      tips <- integer(0); stack <- nd
+      while (length(stack)) {
+        cur <- stack[1]; stack <- stack[-1]
+        kids <- t$edge[t$edge[, 1] == cur, 2]
+        tips <- c(tips, kids[kids <= nt]); stack <- c(stack, kids[kids > nt])
+      }
+      v <- tp[tips]
+      data.frame(node = nd, n = length(tips),
+                 pre  = sum(v == "Pretreatment",   na.rm = TRUE),
+                 post = sum(v == "Post-treatment", na.rm = TRUE))
+    })
+    d <- do.call(rbind, rows)
+    d[d$n < nt, ]                      # drop the root, which is every cell
+  })
+
+  output$ind_pies <- renderPlot({
+    d <- clade_tab()
+    d <- d[d$n >= input$ind_min & (d$pre + d$post) > 0, ]
+    validate(need(nrow(d) > 0, "No clade reaches that size."))
+    d <- d[order(-d$n), ]
+    lab <- setNames(sprintf("node %d  (%d cells)", d$node, d$n), d$node)
+    long <- do.call(rbind, lapply(seq_len(nrow(d)), function(i) data.frame(
+      node = factor(lab[as.character(d$node[i])], levels = unname(lab)),
+      sample = factor(c("Pretreatment", "Post-treatment"),
+                      levels = c("Pretreatment", "Post-treatment")),
+      frac = c(d$pre[i], d$post[i]) / (d$pre[i] + d$post[i]))))
+    ggplot(long, aes(x = "", y = frac, fill = sample)) +
+      geom_col(width = 1, colour = "white", linewidth = .5) +
+      coord_polar(theta = "y", direction = -1) +
+      facet_wrap(~ node, ncol = 6) +
+      scale_fill_manual(values = TP_EDGE, name = NULL) +
+      theme_void(base_size = 12) +
+      theme(legend.position = "top",
+            strip.text = element_text(size = 10, margin = margin(2, 2, 4, 2)))
+  })
+
+  output$ind_pies_head <- renderUI({
+    d <- clade_tab(); d <- d[d$n >= input$ind_min, ]
+    only_post <- d[d$pre == 0 & d$post > 0, ]
+    only_pre  <- d[d$post == 0 & d$pre > 0, ]
+    note(sprintf(paste("%d clades of at least %d cells. %d contain only post-induction cells",
+                       "(%s) and %d only pre-induction cells%s."),
+                 nrow(d), input$ind_min, nrow(only_post),
+                 if (nrow(only_post)) paste("nodes", paste(only_post$node, collapse = ", ")) else "none",
+                 nrow(only_pre),
+                 if (nrow(only_pre)) sprintf(" (nodes %s)", paste(only_pre$node, collapse = ", ")) else ""))
   })
 
   output$ind_title <- renderText(
