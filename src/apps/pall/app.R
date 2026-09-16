@@ -31,7 +31,7 @@ TREE_CHOICES <- local({
   n <- vapply(TREES, function(x) length(gregexpr("[,(]", x)[[1]]) , integer(1))
   lab <- c("4295" = "Patient 4295", "445" = "Patient 445", "417" = "Patient 417",
            "4084" = "Patient 4084", "Invitro" = "In vitro benchmark",
-           "clone" = "Clone tree, both timepoints")
+           "clone" = "Patient 4295, before and after treatment")
   k <- intersect(names(lab), names(TREES))
   setNames(k, sprintf("%s", lab[k]))
 })
@@ -155,11 +155,11 @@ ui <- page_navbar(
     layout_columns(col_widths = c(7, 5),
       card(card_header("115 single-cell genomes, before and after treatment"),
            plotOutput("cell_plot", height = 430),
-           note("Two paired samples from the same patient: 4272 before treatment and ",
-                "4295 after. Axes are the measured surface-marker intensities used to ",
+           note("Two samples from patient 4295: 4272 drawn before treatment (30 cells) and ",
+                "4295 drawn after (85 cells). Axes are the measured surface-marker intensities used to ",
                 "separate leukemic from normal and premalignant cells.")),
       card(card_header("Clone composition"), plotOutput("clone_plot", height = 430),
-           note("Each bar is the percentage of that timepoint's cells, not a raw count, ",
+           note("Each bar is the percentage of that sample's cells, not a raw count, ",
                 "because 30 cells were sequenced before treatment against 85 after. Clones ",
                 strong(paste(EMERGENT, collapse = " and ")),
                 " are absent from the pretreatment sample entirely and appear only after ",
@@ -197,9 +197,11 @@ ui <- page_navbar(
     card(fill = FALSE, card_header(textOutput("tree_title")),
          plotOutput("tree_plot", height = "auto"),
          uiOutput("tree_legend"), uiOutput("tree_head"),
-         note("A tip pie is that one cell's own mutations split by signature. Where a tree ",
-              "holds both samples, the branch leading to each cell is coloured by the sample it ",
-              "came from, so before and after treatment read off the topology directly. ",
+         note("A tip pie is that one cell's own mutations split by signature. The last tree ",
+              "holds two samples from patient 4295: 4272 drawn before treatment (29 cells) and ",
+              "4295 drawn after (84 cells). The branch leading to each cell is coloured by the ",
+              "sample it came from, so before against after reads off the topology directly. The ",
+              "four patient trees each hold one sample, so their branches are uniform. ",
               "The patient trees are maximum-likelihood phylogenies built by CellPhy from ",
               "somatic single-nucleotide variants, with support from 100 bootstrap replicates; ",
               "branch lengths are substitutions per site. The clone tree is the ConDoR ",
