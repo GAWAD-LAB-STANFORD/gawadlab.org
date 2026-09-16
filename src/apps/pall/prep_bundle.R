@@ -156,6 +156,16 @@ build_bundle <- function(D) {
   af <- af[is.finite(af$pre) & is.finite(af$post), ]
   rownames(af) <- NULL
 
+  # Per-cell mutation composition for the exome tree: each cell's alternate reads
+  # split across the panel's genes. Signature fits exist only for the
+  # post-treatment cells, so they cannot colour a before-and-after tree; these
+  # read counts cover 110 of its 113 tips including 29 of 30 pretreatment cells.
+  gene_of <- sub("^.*_", "", vc)
+  mut <- t(rowsum(t(A), gene_of, na.rm = TRUE))          # cells x gene, alt reads
+  rownames(mut) <- gsub("[._]", "-", ar[[1]])
+  mut <- mut[, colSums(mut, na.rm = TRUE) > 0, drop = FALSE]
+  storage.mode(mut) <- "double"
+
   # --- 8. phylogenies (Fig 5E/5G maximum likelihood, Fig 7A clone tree) ---
   #     Newick is kept as text and parsed in the browser, so the bundle carries
   #     kilobytes rather than a serialised tree object.
@@ -180,7 +190,7 @@ build_bundle <- function(D) {
     chr6      = cells$Chr6_1_Deletion,
     stringsAsFactors = FALSE)
 
-  list(trees = trees, tips = tips, af = af, cellmeta = cellmeta, sig = sig,
+  list(trees = trees, tips = tips, af = af, cellmeta = cellmeta, sig = sig, mut = mut,
        burden = burden, pan = pan, ras = ras,
        drug = drug, dmat = dmat, sj = sj,
        cells = cells, gmat = gmat, emergent = em,
@@ -218,6 +228,8 @@ if (!interactive() && sys.nframe() == 0L) {
   cat(sprintf("  signatures  %d cells x %d active COSMIC signatures; most common top signature %s\n",
               nrow(B$sig), ncol(B$sig),
               names(sort(table(B$cellmeta$top_signature), decreasing = TRUE))[1]))
+  cat(sprintf("  mutation pie %d cells x %d genes from alternate reads; %d cells carry any\n",
+              nrow(B$mut), ncol(B$mut), sum(rowSums(B$mut, na.rm = TRUE) > 0)))
   cat(sprintf("  before/after %d variants with pseudobulk VAF at both timepoints; largest rise %s %+.3f, largest fall %s %+.3f\n",
               nrow(B$af), B$af$gene[which.max(B$af$delta)], max(B$af$delta),
               B$af$gene[which.min(B$af$delta)], min(B$af$delta)))
