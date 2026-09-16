@@ -56,7 +56,7 @@ TREE_CHOICES <- local({
   n <- vapply(TREES, function(x) length(gregexpr("[,(]", x)[[1]]) , integer(1))
   lab <- c("4295" = "Patient 4295", "445" = "Patient 445", "417" = "Patient 417",
            "4084" = "Patient 4084", "Invitro" = "In vitro benchmark",
-           "clone" = "Patient 4295, before and after treatment")
+           "clone" = "Patient 4295, before and after induction")
   k <- intersect(names(lab), names(TREES))
   setNames(k, sprintf("%s", lab[k]))
 })
@@ -137,7 +137,7 @@ ui <- page_navbar(
                      "Chromosome 6 deletion" = "Chr6_1_Deletion"))),
     conditionalPanel("input.nav == 'Induction therapy'",
       radioButtons("ind_mark", "Tip marks",
-                   c("Mutational signature (post-induction cells only)" = "sig",
+                   c("Mutational signature (cells after induction only)" = "sig",
                      "Sample the cell came from" = "tp"),
                    selected = "sig"),
       radioButtons("ind_type", "Layout",
@@ -167,6 +167,13 @@ ui <- page_navbar(
              ext("Source data and count matrices", "https://gawadlab.org/apps.html"),
              ext("Code on GitHub", "https://github.com/GAWAD-LAB-STANFORD"),
              ext("Gawad Lab", "https://gawadlab.org")),
+         div(style = "margin-top:.5rem",
+             strong("Reading the sample names. "),
+             "Each patient was sampled twice, and is named for the later sample. ",
+             "For patient 4295 the pair is 4272 before induction and 4295 after it; ",
+             "the others are 368/417, 380/445 and 4072/4084, earlier number first. ",
+             "Before and after induction mean the same thing on every tab: before is ",
+             "diagnosis, after is four weeks of induction therapy."),
          div(style = "margin-top:.5rem",
              "Every table on every tab has a CSV download beneath it."))
   ),
@@ -221,21 +228,21 @@ ui <- page_navbar(
       note("Every patient's cells are here. Allelic dropout and depth are the two ",
            "measurements that decide whether a single-cell genome can be called at all, ",
            "and the signature panel is the COSMIC exposure fitted to each cell's own ",
-           "mutations. The panels below need the paired pretreatment and post-treatment ",
+           "mutations. The panels below need the paired before- and after-induction ",
            "samples, which exist for one patient only.")),
 
     layout_columns(col_widths = c(7, 5),
-      card(card_header("115 single-cell genomes, before and after treatment"),
+      card(card_header("115 single-cell genomes, before and after induction"),
            plotOutput("cell_plot", height = 430),
-           note("Two samples from patient 4295: 4272 drawn before treatment (30 cells) and ",
-                "4295 drawn after (85 cells). Axes are the measured surface-marker intensities used to ",
+           note("Two samples from patient 4295: 4272 drawn before induction (30 cells) and ",
+                "4295 drawn after it (85 cells). Axes are the measured surface-marker intensities used to ",
                 "separate leukemic from normal and premalignant cells.")),
       card(card_header("Clone composition"), plotOutput("clone_plot", height = 430),
            note("Each bar is the percentage of that sample's cells, not a raw count, ",
-                "because 30 cells were sequenced before treatment against 85 after. Clones ",
+                "because 30 cells were sequenced before induction against 85 after. Clones ",
                 strong(paste(EMERGENT, collapse = " and ")),
-                " are absent from the pretreatment sample entirely and appear only after ",
-                "treatment, but they are 3 and 1 cells, so read them as the observation ",
+                " are absent from the before-induction sample entirely and appear only after ",
+                "it, but they are 3 and 1 cells, so read them as the observation ",
                 "they are rather than as a reliable frequency."))),
 
     card(card_header(textOutput("pie_title")),
@@ -255,7 +262,7 @@ ui <- page_navbar(
     card(fill = FALSE, card_header(textOutput("tree_title")),
          plotOutput("tree_plot", height = "auto"),
          uiOutput("tree_legend"), uiOutput("tree_muts"), uiOutput("tree_head"),
-         note("The four patient trees hold post-induction cells only: every cell in them was ",
+         note("The four patient trees hold cells from after induction only: every cell in them was ",
               "taken after four weeks of induction therapy, which is why their branches are ",
               "uniform. Only the last tree spans two samples from patient 4295, 4272 drawn ",
               "before induction (29 cells) and 4295 after (84 cells), and there the branch into ",
@@ -333,15 +340,15 @@ ui <- page_navbar(
 
     card(card_header("Every variant, by percent of cells"), tagList(DTOutput("pos_tbl"), dl_link("pos_tbl"))),
 
-    card(card_header("Allele frequency before and after treatment"),
+    card(card_header("Allele frequency before and after induction"),
       plotOutput("af_plot", height = 470),
       uiOutput("af_head"),
       note("Each point is one somatic variant, pooling the alt and total reads of every cell ",
            "in that sample, so this is a pseudobulk allele frequency rather than a per-cell ",
            "call. Points above the diagonal rose under treatment. Read counts come from a ",
            "targeted panel of 31 variants, so this is not a genome-wide survey, and the ",
-           "pretreatment sample carries 30 cells against 85 after, which makes the ",
-           "pretreatment estimate the noisier of the two.")),
+           "before-induction sample carries 30 cells against 85 after, which makes the ",
+           "before-induction estimate the noisier of the two.")),
 
     card(card_header("Every variant, before and after"), tagList(DTOutput("af_tbl"), dl_link("af_tbl"))),
 
@@ -548,11 +555,11 @@ server <- function(input, output, session) {
       geom_point(size = 3, alpha = .85) +
       scale_colour_manual(values = grDevices::hcl.colors(length(unique(d$fill)), "Spectral"),
                           name = NULL) +
-      scale_shape_manual(values = c(Pretreatment = 1, `Post-treatment` = 16), name = NULL) +
+      scale_shape_manual(values = c(`Before induction` = 1, `After induction` = 16), name = NULL) +
       labs(x = "CD19", y = "CD34") + theme_lab()
   })
 
-  # Raw counts would mislead: 30 cells were sequenced before treatment against 85
+  # Raw counts would mislead: 30 cells were sequenced before induction against 85
   # after, so every clone looks larger afterwards. Each bar is the share of the
   # cells sequenced at that timepoint.
   clone_fig <- reactive({
@@ -600,7 +607,7 @@ server <- function(input, output, session) {
   output$qc_title <- renderText(sprintf("Patient %s: %d single-cell genomes",
                                         input$cpat, nrow(cm())))
   output$paired_head <- renderText(
-    sprintf("Paired pretreatment and post-treatment samples \u2014 patient 4295 only%s",
+    sprintf("Paired before- and after-induction samples \u2014 patient 4295 only%s",
             if (identical(input$cpat, "4295")) "" else
               sprintf(" (you have patient %s selected above)", input$cpat)))
 
@@ -664,9 +671,9 @@ server <- function(input, output, session) {
     d <- pos_d()
     validate(need(nrow(d) > 0, "No genotype calls available."))
     long <- rbind(
-      data.frame(mutation = d$mutation, fate = d$fate, when = "Pretreatment",   pct = d$pct_pre),
-      data.frame(mutation = d$mutation, fate = d$fate, when = "Post-induction", pct = d$pct_post))
-    long$when <- factor(long$when, levels = c("Pretreatment", "Post-induction"))
+      data.frame(mutation = d$mutation, fate = d$fate, when = "Before induction", pct = d$pct_pre),
+      data.frame(mutation = d$mutation, fate = d$fate, when = "After induction",  pct = d$pct_post))
+    long$when <- factor(long$when, levels = c("Before induction", "After induction"))
     lab <- d[order(-d$pct_post), ]
     lab$shifted <- stack_labels(lab$pct_post, 0, max(c(d$pct_pre, d$pct_post)), frac = .040)
     ggplot(long, aes(when, pct, group = mutation, colour = fate)) +
@@ -687,8 +694,8 @@ server <- function(input, output, session) {
 
   output$pos_head <- renderUI({
     d <- pos_d(); e <- d[d$emergent, ]
-    note(sprintf(paste("%d variants across %d pretreatment and %d post-induction cells.",
-                       "%d were carried by no pretreatment cell and appear only after",
+    note(sprintf(paste("%d variants across %d cells before induction and %d after.",
+                       "%d were carried by no cell before induction and appear only after",
                        "induction: %s. %d rose, %d fell."),
                  nrow(d), d$cells_pre[1], d$cells_post[1], nrow(e),
                  if (nrow(e)) paste(sprintf("%s in %d of %d cells (%s)", e$gene, e$n_post,
@@ -723,8 +730,8 @@ server <- function(input, output, session) {
       scale_colour_manual(values = c(rose = CARD, fell = TEAL, unchanged = GREY), name = NULL) +
       scale_size_continuous(range = c(2, 6), guide = "none") +
       coord_equal(xlim = lim, ylim = lim) +
-      labs(x = "allele frequency before treatment (sample 4272)",
-           y = "allele frequency after treatment (sample 4295)") + theme_lab()
+      labs(x = "allele frequency before induction (sample 4272)",
+           y = "allele frequency after induction (sample 4295)") + theme_lab()
   })
 
   af_tbl_df <- reactive({
@@ -816,9 +823,9 @@ server <- function(input, output, session) {
   IND_TREE <- local({ t <- ape::read.tree(text = TREES[["clone"]]); t })
   IND_KEYS <- gsub("[._]", "-", IND_TREE$tip.label)
 
-  # Per-tip composition. Signature fits exist only for the post-treatment cells,
+  # Per-tip composition. Signature fits exist only for the after-induction cells,
   # so the default is the cell's own alternate reads split by gene, which covers
-  # 110 of the 113 tips including 29 of the 30 pretreatment cells.
+  # 110 of the 113 tips including 29 of the 30 before-induction cells.
   ind_pie <- reactive({
     src <- SIG
     m <- matrix(0, nrow = length(IND_KEYS), ncol = ncol(src),
@@ -858,8 +865,8 @@ server <- function(input, output, session) {
       }
       v <- tp[tips]
       data.frame(node = nd, n = length(tips),
-                 pre  = sum(v == "Pretreatment",   na.rm = TRUE),
-                 post = sum(v == "Post-treatment", na.rm = TRUE))
+                 pre  = sum(v == "Before induction", na.rm = TRUE),
+                 post = sum(v == "After induction",  na.rm = TRUE))
     })
     d <- do.call(rbind, rows)
     d[d$n < nt, ]                      # drop the root, which is every cell
@@ -883,9 +890,9 @@ server <- function(input, output, session) {
     b <- wgs_bulk()
     validate(need(nrow(b) > 0, "No bulk measurement for this patient."))
     long <- rbind(
-      data.frame(mutation = b$mutation, fate = b$fate, when = "Diagnosis",  vaf = b$before),
-      data.frame(mutation = b$mutation, fate = b$fate, when = "Remission",  vaf = b$after))
-    long$when <- factor(long$when, levels = c("Diagnosis", "Remission"))
+      data.frame(mutation = b$mutation, fate = b$fate, when = "Before induction", vaf = b$before),
+      data.frame(mutation = b$mutation, fate = b$fate, when = "After induction",  vaf = b$after))
+    long$when <- factor(long$when, levels = c("Before induction", "After induction"))
     # ggrepel is not in the webR repo, so labels are de-overlapped here: work in
     # the sqrt space the axis actually uses, then push each label down until it
     # clears the one above by a fixed fraction of the panel.
@@ -927,9 +934,9 @@ server <- function(input, output, session) {
   wgs_tbl_df <- reactive({
     b <- wgs_bulk()
     data.frame(Mutation = b$mutation, Effect = b$effect, Locus = b$locus,
-                    Diagnosis = round(b$before, 4), Remission = round(b$after, 4),
+                    `Before induction` = round(b$before, 4), `After induction` = round(b$after, 4),
                     `Fold change` = ifelse(b$after > 0, round(b$before / b$after, 1), NA),
-               `Depth dx` = b$dp_before, `Depth rem` = b$dp_after,
+               `Depth before` = b$dp_before, `Depth after` = b$dp_after,
                check.names = FALSE)
   })
   output$wgs_tbl <- renderDT(
@@ -943,8 +950,8 @@ server <- function(input, output, session) {
     lab <- setNames(sprintf("node %d  (%d cells)", d$node, d$n), d$node)
     long <- do.call(rbind, lapply(seq_len(nrow(d)), function(i) data.frame(
       node = factor(unname(lab[as.character(d$node[i])]), levels = unname(lab)),
-      sample = factor(c("Pretreatment", "Post-treatment"),
-                      levels = c("Pretreatment", "Post-treatment")),
+      sample = factor(c("Before induction", "After induction"),
+                      levels = c("Before induction", "After induction")),
       frac = c(d$pre[i], d$post[i]) / (d$pre[i] + d$post[i]))))
     ggplot(long, aes(x = "", y = frac, fill = sample)) +
       geom_col(width = 1, colour = "white", linewidth = .5) +
@@ -960,8 +967,8 @@ server <- function(input, output, session) {
     d <- clade_tab(); d <- d[d$n >= input$ind_min, ]
     only_post <- d[d$pre == 0 & d$post > 0, ]
     only_pre  <- d[d$post == 0 & d$pre > 0, ]
-    note(sprintf(paste("%d clades of at least %d cells. %d contain only post-induction cells",
-                       "(%s) and %d only pre-induction cells%s."),
+    note(sprintf(paste("%d clades of at least %d cells. %d hold only cells from after induction",
+                       "(%s) and %d only cells from before it%s."),
                  nrow(d), input$ind_min, nrow(only_post),
                  if (nrow(only_post)) paste("nodes", paste(only_post$node, collapse = ", ")) else "none",
                  nrow(only_pre),
@@ -1016,8 +1023,8 @@ server <- function(input, output, session) {
       if (length(sel)) {
         pm <- t(vapply(desc[sel], function(ti) {
           v <- as.character(tp)[ti]
-          c(Pretreatment = sum(v == "Pretreatment", na.rm = TRUE),
-            `Post-treatment` = sum(v == "Post-treatment", na.rm = TRUE))
+          c(`Before induction` = sum(v == "Before induction", na.rm = TRUE),
+            `After induction`  = sum(v == "After induction",  na.rm = TRUE))
         }, numeric(2)))
         rs <- rowSums(pm); ok <- rs > 0
         pm[ok, ] <- pm[ok, , drop = FALSE] / rs[ok]
@@ -1059,12 +1066,12 @@ server <- function(input, output, session) {
     tp <- TIPS$timepoint[match(IND_KEYS, TIPS$cell)]
     miss <- sum(!pq$has)
     bits <- sprintf("%d cells: %d before induction, %d after",
-                    length(IND_KEYS), sum(tp == "Pretreatment", na.rm = TRUE),
-                    sum(tp == "Post-treatment", na.rm = TRUE))
+                    length(IND_KEYS), sum(tp == "Before induction", na.rm = TRUE),
+                    sum(tp == "After induction", na.rm = TRUE))
     if (!identical(input$ind_mark, "tp"))
       bits <- c(bits, sprintf("%d %s no %s and are drawn as a plain dot", miss,
                               if (miss == 1) "tip has" else "tips have",
-                              "signature fit (none of the pre-induction cells were fitted)"))
+                              "signature fit (no cell from before induction was fitted)"))
     bits <- c(bits, sprintf("clones %s appear only after induction",
                             paste(EMERGENT, collapse = " and ")))
     note(paste0(paste(bits, collapse = "; "), "."))
@@ -1135,7 +1142,7 @@ server <- function(input, output, session) {
   })
 
   # the figure's own palette: 4272 = pre, 4295 = post
-  TP_EDGE <- c(Pretreatment = "#56B4E9", `Post-treatment` = "#CC79A7")
+  TP_EDGE <- c(`Before induction` = "#56B4E9", `After induction` = "#CC79A7")
 
   BINS <- function(x, n = 5) {
     ok <- is.finite(x); if (!any(ok)) return(rep(NA_character_, length(x)))
@@ -1174,7 +1181,7 @@ server <- function(input, output, session) {
     } else {
       lv <- sort(unique(tip_ann()))
       if (identical(input$tipcol, "timepoint"))
-        c(Pretreatment = "#4A555F", `Post-treatment` = CARD, `not annotated` = GREY)[lv]
+        c(`Before induction` = "#4A555F", `After induction` = CARD, `not annotated` = GREY)[lv]
       else if (input$tipcol %in% c("ado", "depth")) {
         o <- lv[order(suppressWarnings(as.numeric(sub("^[\\[(]", "", sub(",.*", "", lv)))))]
         setNames(grDevices::hcl.colors(length(o), "Viridis"), o)[lv]
@@ -1261,7 +1268,7 @@ server <- function(input, output, session) {
     t <- cur_tree(); ann <- tip_ann()
     lv <- sort(unique(ann))
     pal <- if (identical(input$tipcol, "timepoint"))
-             c(Pretreatment = "#4A555F", `Post-treatment` = CARD, `not annotated` = GREY)[lv]
+             c(`Before induction` = "#4A555F", `After induction` = CARD, `not annotated` = GREY)[lv]
            else if (input$tipcol %in% c("ado", "depth")) {
              o <- lv[order(suppressWarnings(as.numeric(sub("^[\\[(]", "", sub(",.*", "", lv)))))]
              setNames(grDevices::hcl.colors(length(o), "Viridis"), o)[lv]
@@ -1269,7 +1276,7 @@ server <- function(input, output, session) {
     pal[is.na(pal)] <- GREY
     cols <- pal[ann]
     # The terminal branch of each cell is coloured by the sample that cell came
-    # from, so before and after treatment are readable straight off the topology.
+    # from, so before and after induction are readable straight off the topology.
     tp <- tip_timepoint()
     ecol <- rep("#5A6570", nrow(t$edge)); ewid <- rep(.9, nrow(t$edge))
     if (!is.null(tp)) {

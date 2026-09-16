@@ -68,8 +68,13 @@ build_bundle <- function(D) {
   # 4272 holds no cells from clusters 6 or 7, which is what makes those emergent
   em <- setdiff(unique(clone$Cluster[clone$sample == "4295"]),
                 unique(clone$Cluster[clone$sample == "4272"]))
-  cells$timepoint <- factor(ifelse(cells$TimeLine == "4272", "Pretreatment", "Post-treatment"),
-                            levels = c("Pretreatment", "Post-treatment"))
+  # One pair of words for this axis everywhere in the app. The single-cell panels
+  # and the bulk panels are the same before-and-after, so they say the same thing;
+  # prose still calls the bulk samples diagnostic and remission, which is what
+  # they are clinically, but no axis, legend or column uses a second vocabulary.
+  cells$timepoint <- factor(ifelse(cells$TimeLine == "4272",
+                                   "Before induction", "After induction"),
+                            levels = c("Before induction", "After induction"))
   # Genotypes come from ConDoR_matrix.csv, which README_Figure7.md names as the
   # figure's input and figure7_tree_genotype_cnv_csf.R reads. An earlier version
   # of this bundle used _B.csv, which the README lists under "also present but
