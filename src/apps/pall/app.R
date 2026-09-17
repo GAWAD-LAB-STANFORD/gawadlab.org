@@ -258,14 +258,11 @@ ui <- page_navbar(
               tags$em("below the calling threshold"), " rather than as proven absent.")),
     layout_columns(col_widths = c(6, 6),
       card(card_header(textOutput("dmut_title")),
-           note(tags$b("All five patients, side by side."), " This panel deliberately ignores ",
-                "the Patient selector so one mutation can be compared across the cohort."),
+           note(tags$b("All five patients, side by side,"), " so one mutation can be compared ",
+                "across the cohort; the selected patient's panel is boxed in amber."),
            plotOutput("dmut_plot", height = 340)),
-      card(card_header("SJETV077 (patient 4) across nine ex vivo conditions - not driven by the Patient selector"),
-           plotOutput("sj_plot", height = 340),
-           note("A separate single-patient experiment covering six agents plus controls. ",
-                "Grey tiles are combinations with no reported measurement, not zeros - ",
-                "roughly half this grid was not reported."))),
+      card(card_header("Where this mutation sits in the composite ranking"),
+           uiOutput("dmut_rank_note"))),
     card(card_header("Patient key - the same patients appear under three identifiers"),
          DTOutput("ptkey_tbl"),
          note("From Table S1 of the manuscript. The drug-response experiment names ",
@@ -277,6 +274,15 @@ ui <- page_navbar(
     card(card_header(textOutput("sel_title")),
          tagList(DTOutput("sel_tbl"), dl_link("sel_tbl")),
          uiOutput("sel_note"))),
+
+  nav_panel("SJETV077 panel",
+    card(card_header("SJETV077 (patient 4) across nine ex vivo conditions"),
+         plotOutput("sj_plot", height = 620),
+         note("A separate single-patient experiment covering six agents plus controls. ",
+              "It has its own tab because it is not one of the five patients on the Drug ",
+              "response tab, so no patient selector applies to it. Grey tiles are ",
+              "combinations with no reported measurement, not zeros - roughly half of this ",
+              "grid was not reported."))),
 
   nav_panel("Single cells",
     card(card_header(textOutput("qc_title")),
@@ -290,15 +296,12 @@ ui <- page_navbar(
            "samples, which exist for one patient only.")),
 
     layout_columns(col_widths = c(7, 5),
-      card(card_header("Patient 4295 only - 115 single-cell genomes, before and after induction"),
-           note(tags$b("The Patient selector does not change these two panels."),
-                " They are the single-cell ", tags$b("exome"), " experiment, which exists for ",
-                "one patient; the Patient selector drives the whole-genome panels above."),
-           plotOutput("cell_plot", height = 430),
+      card(card_header(textOutput("cell_plot_title")),
+           uiOutput("cell_plot_slot"),
            note("Two samples from patient 4295: 4272 drawn before induction (30 cells) and ",
                 "4295 drawn after it (85 cells). Axes are the measured surface-marker intensities used to ",
                 "separate leukemic from normal and premalignant cells.")),
-      card(card_header("Patient 4295 only - clone composition"), plotOutput("clone_plot", height = 430),
+      card(card_header(textOutput("clone_plot_title")), uiOutput("clone_plot_slot"),
            note("Each bar is the percentage of that sample's cells, not a raw count, ",
                 "because 30 cells were sequenced before induction against 85 after. Clones ",
                 strong(paste(EMERGENT, collapse = " and ")),
@@ -368,34 +371,26 @@ ui <- page_navbar(
     card(card_header(textOutput("wgs_tbl_title")), tagList(DTOutput("wgs_tbl"), dl_link("wgs_tbl"))),
 
     card(class = "border-0 bg-transparent",
-         note(tags$b("Everything below is patient 4295 only."), " The patient buttons above ",
-              "change the two panels above them and nothing else: 4295 is the one patient with ",
-              "single-cell exomes from before and after induction, so the phylogeny and every ",
-              "panel under it can only be drawn for that patient.")),
+         note(tags$b("Everything below is the single-cell exome experiment."), " It was run ",
+              "on patient 4295 only - the one patient sequenced cell by cell both before and ",
+              "after induction - so selecting any other patient above turns these panels into ",
+              "a note saying so rather than leaving 4295 on screen.")),
 
     card(fill = FALSE, card_header(textOutput("ind_title")),
-         plotOutput("ind_tree", height = "auto"),
-         uiOutput("ind_legend"), uiOutput("ind_head"),
-         note("The Figure 7A single-cell phylogeny of patient 4295, spanning both samples: ",
-              "4272 taken before induction and 4295 after four weeks of it. The branch into each ",
-              "cell carries the sample it came from, and the pie at each internal node is the ",
-              "before/after split of the cells beneath it, exactly as in Figure 7A. A node that ",
-              "is entirely pink is a clade found only after induction. The pies are computed from ",
-              "the topology here, rather than fixed to one tree as the figure script's hard-coded ",
-              "clade vector is. The tree carries no branch lengths, so it is a cladogram: the ",
-              "topology is meaningful and the horizontal distances are not. Which variants each ",
-              "cell carries is the heatmap below, not the tip marks.")),
+         uiOutput("ind_tree_slot"),
+         uiOutput("ind_legend_slot"), uiOutput("ind_head_slot"),
+         uiOutput("ind_desc_slot")),
 
-    card(card_header("Patient 4295 - before and after, clade by clade"),
-         plotOutput("ind_pies", height = 460), uiOutput("ind_pies_head"),
+    card(card_header(textOutput("clade_hdr")),
+         uiOutput("ind_pies_slot"), uiOutput("ind_pies_head_slot"),
          note("One pie per clade, numbered as in Figure 7A, which uses the same internal-node ",
               "indices. A pie that is entirely pink is a clade whose cells were all found after ",
               "induction; entirely blue means the clade did not survive it. Use the slider to ",
               "set how small a clade still earns a pie.")),
 
-    card(card_header("Patient 4295 - before and after induction, by percent of cells carrying the mutation"),
-      plotOutput("pos_plot", height = 520),
-      uiOutput("pos_head"),
+    card(card_header(textOutput("pospct_hdr")),
+      uiOutput("pos_plot_slot"),
+      uiOutput("pos_head_slot"),
       note("Each line is one variant, and the axis is the percentage of that ",
            "timepoint's cells that carry it \u2014 a carrier frequency, not an allele ",
            "frequency. Cells are all 115 with a genotype call, 30 before induction and ",
@@ -405,11 +400,11 @@ ui <- page_navbar(
            "previous tab holds 113. Variants drawn in red were carried by no cell before ",
            "induction and appear only after it.")),
 
-    card(card_header("Patient 4295 - every variant, by percent of cells"), tagList(DTOutput("pos_tbl"), dl_link("pos_tbl"))),
+    card(card_header(textOutput("postbl_hdr")), uiOutput("pos_tbl_slot")),
 
-    card(card_header("Patient 4295 - allele frequency before and after induction"),
-      plotOutput("af_plot", height = 470),
-      uiOutput("af_head"),
+    card(card_header(textOutput("afplot_hdr")),
+      uiOutput("af_plot_slot"),
+      uiOutput("af_head_slot"),
       note("Each point is one somatic variant, pooling the alt and total reads of every cell ",
            "in that sample, so this is a pseudobulk allele frequency rather than a per-cell ",
            "call. Points above the diagonal rose under treatment. Read counts come from a ",
@@ -417,15 +412,15 @@ ui <- page_navbar(
            "before-induction sample carries 30 cells against 85 after, which makes the ",
            "before-induction estimate the noisier of the two.")),
 
-    card(card_header("Patient 4295 - every variant, before and after"), tagList(DTOutput("af_tbl"), dl_link("af_tbl"))),
+    card(card_header(textOutput("aftbl_hdr")), uiOutput("af_tbl_slot")),
 
-    card(card_header("Patient 4295 - genotypes across 31 variants"), plotOutput("geno_plot", height = 420),
+    card(card_header(textOutput("geno_title")), uiOutput("geno_plot_slot"),
          note("Presence or absence of each somatic variant in each cell, cells ordered by ",
               "timepoint then clone. These are the called genotypes from the ConDoR matrix, ",
               "not dropout-corrected, so a blank cell means the variant was not called in ",
               "that cell rather than that it is certainly absent.")),
 
-    card(card_header("Patient 4295 - clone composition before and after"), plotOutput("clone_plot2", height = 430),
+    card(card_header(textOutput("clone2_title")), uiOutput("clone_plot2_slot"),
          note("Each bar is the percentage of that sample's cells, not a raw count, because 30 ",
               "cells were sequenced before induction against 85 after."))
   ),
@@ -597,7 +592,12 @@ server <- function(input, output, session) {
     d$condition <- factor(d$condition, levels = names(COND_COL))
     ggplot(d, aes(condition, af, colour = condition)) +
       geom_point(position = position_jitter(width = .12, seed = 3), size = 3, alpha = .9) +
+      # the facet for the selected patient is boxed, so this panel still responds
+      # to the Patient selector rather than sitting unchanged
       facet_wrap(~ patient, nrow = 1) +
+      theme(strip.background = element_rect(
+        fill = ifelse(levels(factor(d$patient)) == input$dpat, "#F6A30C", "grey92"),
+        colour = NA)) +
       scale_colour_manual(values = COND_COL, guide = "none") +
       labs(x = NULL, y = "mutant allele frequency (%)") + theme_lab(45)
   })
@@ -671,6 +671,22 @@ server <- function(input, output, session) {
          hit, " do. Read a single hit as a candidate to check, not as evidence of selection. ",
          "Variants flagged multi-mapped sit in paralogous loci where allele frequency is ",
          "unreliable, and synonymous changes are unlikely resistance drivers.")
+  })
+
+  output$dmut_rank_note <- renderUI({
+    r <- sel_rank()$d
+    if (!nrow(r)) return(note("No ranking for this drug."))
+    i <- which(r$Mutation == input$dmut)
+    drg <- if (identical(input$sel_drug, "DNR-Hi")) "daunorubicin" else "prednisolone"
+    if (!length(i))
+      return(note(sprintf("%s was not called in any patient under %s, so it is not in that ranking.",
+                          input$dmut, drg)))
+    row <- r[i[1], ]
+    note(sprintf("Under %s in patient %s, %s goes from %.1f%% in DMSO to %.1f%% treated, a rise of %.1f points, ranked %d of %d. ",
+                 drg, row$Patient, input$dmut, row$`DMSO %`, row$`Treated %`, row$Rise, i[1], nrow(r)),
+         if (isTRUE(row$`Every replicate above`))
+           "Every treated replicate exceeded every DMSO replicate - which about one comparison in twenty does by chance."
+         else "Not every treated replicate exceeded every DMSO replicate.")
   })
 
   output$sj_plot <- renderPlot({
@@ -1038,6 +1054,70 @@ server <- function(input, output, session) {
     b[order(-b$before), ]
   })
 
+
+  # No panel should sit unchanged while a selector moves - a stale panel is
+  # indistinguishable from a broken one. The single-cell exome experiment exists
+  # for patient 4295 alone, so for any other patient these panels say so rather
+  # than keep showing 4295.
+  EXOME_PT <- "4295"
+  exome_note <- function(q, what) div(
+    class = "border rounded p-3 my-2", style = "background:#F7F9FA",
+    tags$b(sprintf("Patient %s has no %s.", q, what)),
+    div(style = "color:#5A6773;margin-top:.3rem",
+        "The single-cell exome experiment, which sequenced cells from before and after ",
+        "induction, was run on patient 4295 only. Select patient 4295 to see it."))
+  exome_slot <- function(q, what, id, h)
+    if (identical(as.character(q), EXOME_PT)) plotOutput(id, height = h) else exome_note(q, what)
+  exome_tbl_slot <- function(q, what, id)
+    if (identical(as.character(q), EXOME_PT)) tagList(DTOutput(id), dl_link(id)) else exome_note(q, what)
+
+
+  ex <- function(x) identical(as.character(input$wgs_pt), EXOME_PT)
+  output$ind_pies_head_slot <- renderUI(if (ex()) uiOutput("ind_pies_head"))
+  output$pos_head_slot      <- renderUI(if (ex()) uiOutput("pos_head"))
+  output$af_head_slot       <- renderUI(if (ex()) uiOutput("af_head"))
+
+  # the descriptive text belongs to the 4295 phylogeny, so it goes with it
+  output$ind_desc_slot <- renderUI({
+    if (!identical(as.character(input$wgs_pt), EXOME_PT)) return(NULL)
+    note("The Figure 7A single-cell phylogeny of patient 4295, spanning both samples: ",
+         "4272 taken before induction and 4295 after four weeks of it. The branch into each ",
+         "cell carries the sample it came from, and the pie at each internal node is the ",
+         "before/after split of the cells beneath it, exactly as in Figure 7A. A node that ",
+         "is entirely pink is a clade found only after induction. The pies are computed from ",
+         "the topology here, rather than fixed to one tree as the figure script's hard-coded ",
+         "clade vector is. The tree carries no branch lengths, so it is a cladogram: the ",
+         "topology is meaningful and the horizontal distances are not. Which variants each ",
+         "cell carries is the heatmap below, not the tip marks.")
+  })
+  output$clade_hdr  <- renderText(sprintf("Patient %s - before and after, clade by clade", input$wgs_pt))
+  output$pospct_hdr <- renderText(sprintf("Patient %s - before and after induction, by percent of cells carrying the mutation", input$wgs_pt))
+  output$postbl_hdr <- renderText(sprintf("Patient %s - every variant, by percent of cells", input$wgs_pt))
+  output$afplot_hdr <- renderText(sprintf("Patient %s - allele frequency before and after induction", input$wgs_pt))
+  output$aftbl_hdr  <- renderText(sprintf("Patient %s - every variant, before and after", input$wgs_pt))
+
+  output$ind_legend_slot <- renderUI(
+    if (identical(as.character(input$wgs_pt), EXOME_PT)) uiOutput("ind_legend"))
+  output$ind_head_slot <- renderUI(
+    if (identical(as.character(input$wgs_pt), EXOME_PT)) uiOutput("ind_head"))
+
+  output$cell_plot_title <- renderText(sprintf(
+    "Patient %s - single-cell genomes, before and after induction", input$cpat))
+  output$clone_plot_title <- renderText(sprintf("Patient %s - clone composition", input$cpat))
+  output$cell_plot_slot  <- renderUI(exome_slot(input$cpat, "paired single-cell exome samples", "cell_plot", 430))
+  output$clone_plot_slot <- renderUI(exome_slot(input$cpat, "clone composition from paired exomes", "clone_plot", 430))
+
+  output$ind_tree_slot   <- renderUI(exome_slot(input$wgs_pt, "single-cell exome phylogeny", "ind_tree", "auto"))
+  output$ind_pies_slot   <- renderUI(exome_slot(input$wgs_pt, "clade composition", "ind_pies", 460))
+  output$pos_plot_slot   <- renderUI(exome_slot(input$wgs_pt, "per-cell carrier frequencies", "pos_plot", 520))
+  output$af_plot_slot    <- renderUI(exome_slot(input$wgs_pt, "single-cell allele frequencies", "af_plot", 470))
+  output$geno_plot_slot  <- renderUI(exome_slot(input$wgs_pt, "single-cell genotype matrix", "geno_plot", 420))
+  output$clone_plot2_slot<- renderUI(exome_slot(input$wgs_pt, "clone composition", "clone_plot2", 430))
+  output$pos_tbl_slot    <- renderUI(exome_tbl_slot(input$wgs_pt, "per-cell carrier frequencies", "pos_tbl"))
+  output$af_tbl_slot     <- renderUI(exome_tbl_slot(input$wgs_pt, "single-cell allele frequencies", "af_tbl"))
+  output$geno_title  <- renderText(sprintf("Patient %s - genotypes across 31 variants", input$wgs_pt))
+  output$clone2_title<- renderText(sprintf("Patient %s - clone composition before and after", input$wgs_pt))
+
   output$wgs_card_title <- renderText(
     sprintf("Patient %s - before and after induction, measured in the bulk", input$wgs_pt))
   output$wgs_tbl_title <- renderText(
@@ -1133,6 +1213,8 @@ server <- function(input, output, session) {
   })
 
   output$ind_title <- renderText(
+    if (!identical(as.character(input$wgs_pt), EXOME_PT))
+      sprintf("Single-cell exome phylogeny \u2014 not available for patient %s", input$wgs_pt) else
     sprintf("Patient 4295, before and after induction \u2014 %d single-cell genomes",
             ape::Ntip(IND_TREE)))
 
