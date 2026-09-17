@@ -1355,9 +1355,21 @@ server <- function(input, output, session) {
   output$clone_plot2 <- renderPlot(print(clone_fig()))
 
   # ---- Phylogeny ----
+  # The CellPhy newicks in the bundle are unrooted, so ape would place the root
+  # wherever it liked and the branching order would not match Figure 5. The paper
+  # roots each patient on a named cell (07_Code/Figure_5/PlotTrees.R), and
+  # ladderizes; doing the same here reproduces the published orientation.
+  ROOT_TIP <- c("4295" = "A11", "417" = "B10", "4084" = "F1", "445" = "A3")
   cur_tree <- reactive({
     txt <- TREES[[input$tree]]; req(!is.null(txt))
     t <- ape::read.tree(text = txt); req(!is.null(t))
+    og <- ROOT_TIP[[input$tree]]
+    if (!is.null(og)) {
+      tip <- paste0(input$tree, "_", og)
+      if (tip %in% t$tip.label)
+        t <- tryCatch(ape::ladderize(ape::root(t, tip, resolve.root = TRUE)),
+                      error = function(e) t)
+    }
     t
   })
 
