@@ -124,7 +124,7 @@ PTKEY <- data.frame(
          "SJETV022","SJETV024","SJETV025","SJETV026","SJETV075","SJETV077","SJETV078",
          "SJETV083","SJETV092","-","-","-","-"),
   bulk = c("1678","2364","2488","2788","3072",
-           "1678","2364","2788","3072","-","-","2488","-","-","-","-","-","-"),
+           "1678","2364","2788","3072","2185","2295","2488","1178","0060","-","-","-","-"),
   patient = c(14,15,5,8,2, 14,15,8,2,3,4,5, 6,7, 16,17,18,19),
   subtype = c(rep("ETV6-RUNX1", 14),
               "Ph-like (CRLF2, JAK-mutant)","Ph-like (IGH-CRLF2)",
@@ -247,6 +247,10 @@ ui <- page_navbar(
       card(card_header("Every RAS mutation"), tagList(DTOutput("ras_tbl"), dl_link("ras_tbl"))))),
 
   nav_panel("Drug response",
+    card(card_header(textOutput("sel_plot_title")),
+         plotOutput("sel_plot", height = 520),
+         uiOutput("sel_note")),
+
     card(card_header(textOutput("drug_title")), plotOutput("drug_heat", height = 460),
          note("Mutant allele frequency in percent, one row per sequenced sample and one ",
               "column per recurrent mutation. Pred-Hi is prednisolone and DNR-Hi is ",
@@ -263,6 +267,7 @@ ui <- page_navbar(
            plotOutput("dmut_plot", height = 340)),
       card(card_header("Where this mutation sits in the composite ranking"),
            uiOutput("dmut_rank_note"))),
+
     card(card_header("Patient key - the same patients appear under three identifiers"),
          DTOutput("ptkey_tbl"),
          note("From Table S1 of the manuscript. The drug-response experiment names ",
@@ -272,11 +277,10 @@ ui <- page_navbar(
               tags$b("2488"), " and ", tags$b("SJETV078"), ", and ", tags$b("2788"),
               " and ", tags$b("SJETV025"), ".")),
     card(card_header(textOutput("sel_title")),
-         tagList(DTOutput("sel_tbl"), dl_link("sel_tbl")),
-         uiOutput("sel_note"))),
+         tagList(DTOutput("sel_tbl"), dl_link("sel_tbl")))),
 
   nav_panel("SJETV077 panel",
-    card(card_header("SJETV077 (patient 4) across nine ex vivo conditions"),
+    card(card_header("SJETV077 = sample 2295, patient 4 - across nine ex vivo conditions"),
          plotOutput("sj_plot", height = 620),
          note("A separate single-patient experiment covering six agents plus controls. ",
               "It has its own tab because it is not one of the five patients on the Drug ",
@@ -656,6 +660,38 @@ server <- function(input, output, session) {
     "Mutations ranked by rise under %s%s",
     if (identical(input$sel_drug, "DNR-Hi")) "daunorubicin" else "prednisolone",
     if (identical(input$sel_scope, "one")) sprintf(" - patient %s", input$dpat) else " - all patients"))
+
+  output$sel_plot_title <- renderText(sprintf(
+    "What did %s select for?%s",
+    if (identical(input$sel_drug, "DNR-Hi")) "daunorubicin" else "prednisolone",
+    if (identical(input$sel_scope, "one")) sprintf("  Patient %s.", input$dpat) else "  All five patients."))
+
+  # One row per mutation: where it sat in DMSO, where it sat under the drug, and the
+  # move between them. Reading a 92-row table to find that was the wrong ask.
+  output$sel_plot <- renderPlot({
+    d <- sel_tbl_df()
+    validate(need(nrow(d) > 0, "No mutation was called under this drug in this selection."))
+    d <- head(d[order(-d$Rise), ], 20)
+    # gene AND the amino-acid change, or two variants in one gene collide
+    d$lab <- make.unique(sprintf("%s  (pt %s)", d$Mutation, d$Patient))
+    d$lab <- factor(d$lab, levels = rev(d$lab))
+    d$evid <- ifelse(d$`Every replicate above`,
+                     "every treated replicate above every control",
+                     "replicates overlap the control")
+    long <- rbind(
+      data.frame(lab = d$lab, af = d$`DMSO %`,    what = "DMSO control", stringsAsFactors = FALSE),
+      data.frame(lab = d$lab, af = d$`Treated %`, what = "Drug",         stringsAsFactors = FALSE))
+    ggplot() +
+      geom_segment(data = d, aes(y = lab, yend = lab, x = `DMSO %`, xend = `Treated %`,
+                                 colour = evid),
+                   arrow = arrow(length = unit(.16, "cm"), type = "closed"), linewidth = 1) +
+      geom_point(data = long, aes(y = lab, x = af, shape = what), size = 2.6, colour = "#17212B") +
+      scale_shape_manual(values = c(`DMSO control` = 1, Drug = 16), name = NULL) +
+      scale_colour_manual(values = c(`every treated replicate above every control` = "#B03A2E",
+                                     `replicates overlap the control` = "#B9C0C7"), name = NULL) +
+      labs(x = "mutant allele frequency (%), DMSO to drug", y = NULL) +
+      theme_lab(0) + theme(legend.position = "top", legend.box = "vertical")
+  })
 
   output$sel_tbl <- renderDT(
     datatable(sel_tbl_df(), rownames = FALSE, options = list(pageLength = 10, dom = "ftip")))
