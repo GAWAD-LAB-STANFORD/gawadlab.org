@@ -104,7 +104,7 @@ p { margin: 0 0 1em; }
 /* GitHub sits in the header on every page: icon only once the bar gets tight,
    icon plus label in the collapsed mobile menu where there is room for words. */
 .nav-links .nav-gh a { display: flex; align-items: center; gap: .4rem; padding: .5rem .6rem; margin-left: .3rem; }
-.nav-links .nav-gh svg { width: 21px; height: 21px; display: block; flex: none; }
+.nav-links .nav-gh svg { width: 28px; height: 28px; display: block; flex: none; }
 .nav-links .nav-gh a::after { content: none; }
 .nav-links .nav-gh a:hover { color: var(--cardinal); }
 @media (min-width: 1201px) { .nav-links .nav-gh span { display: none; } }
