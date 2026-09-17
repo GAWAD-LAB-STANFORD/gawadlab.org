@@ -107,6 +107,38 @@ dl_link <- function(id) div(
   downloadLink(paste0("dl_", id), "Download this table (CSV)",
                style = "font-size:.85rem;color:#64707C"))
 
+
+# ---------------------------------------------------------------------------
+# The same patients appear under three different identifiers in this study: the
+# short bulk name on the drug-response experiment (1678), the St Jude accession
+# on the RAS and targeted work (SJETV022), and the numbered patient in the
+# manuscript (patient 14). Table S1 of the paper is the cross-reference; it is
+# reproduced here so a reader never has to guess whether two tabs are showing
+# the same person. Drug-response 3072 and RAS SJETV026 are one patient.
+# ---------------------------------------------------------------------------
+PTKEY <- data.frame(
+  id = c("1678","2364","2488","2788","3072",
+         "SJETV022","SJETV024","SJETV025","SJETV026","SJETV075","SJETV077","SJETV078",
+         "SJETV083","SJETV092","4295","417","445","4084"),
+  sj = c("SJETV022","SJETV024","SJETV078","SJETV025","SJETV026",
+         "SJETV022","SJETV024","SJETV025","SJETV026","SJETV075","SJETV077","SJETV078",
+         "SJETV083","SJETV092","-","-","-","-"),
+  bulk = c("1678","2364","2488","2788","3072",
+           "1678","2364","2788","3072","-","-","2488","-","-","-","-","-","-"),
+  patient = c(14,15,5,8,2, 14,15,8,2,3,4,5, 6,7, 16,17,18,19),
+  subtype = c(rep("ETV6-RUNX1", 14),
+              "Ph-like (CRLF2, JAK-mutant)","Ph-like (IGH-CRLF2)",
+              "Hypodiploid (45, -X, -7)","No recurrent lesion (normal karyotype)"),
+  stringsAsFactors = FALSE)
+pt_label <- function(x) {
+  i <- match(as.character(x), PTKEY$id)
+  ifelse(is.na(i), as.character(x),
+         ifelse(PTKEY$sj[i] == "-" | PTKEY$sj[i] == as.character(x),
+                sprintf("%s  (patient %d)", x, PTKEY$patient[i]),
+                sprintf("%s  = %s, patient %d", x, PTKEY$sj[i], PTKEY$patient[i])))
+}
+pt_choices <- function(v) { v <- sort(unique(as.character(v))); setNames(v, pt_label(v)) }
+
 DRUG_GENES <- sort(unique(sub(" .*$", "", colnames(DMAT))))
 ALL_GENES  <- sort(unique(c(DRUG_GENES, rec$gene, am$gene, sj$gene)))
 
@@ -126,7 +158,7 @@ ui <- page_navbar(
   sidebar = sidebar(
     width = 300,
     conditionalPanel("input.nav == 'Drug response'",
-      selectInput("dpat", "Patient", sort(unique(drug$patient))),
+      selectInput("dpat", "Patient", pt_choices(drug$patient)),
       selectizeInput("dmut", "Highlight a mutation", choices = colnames(DMAT),
                      options = list(maxOptions = 200)),
       hr(),
@@ -137,7 +169,7 @@ ui <- page_navbar(
                    c("All five patients" = "all", "This patient only" = "one")),
       checkboxInput("sel_consist", "Only where every treated replicate exceeds every DMSO replicate", FALSE)),
     conditionalPanel("input.nav == 'Single cells'",
-      selectInput("cpat", "Patient", sort(unique(CELLMETA$patient))),
+      selectInput("cpat", "Patient", pt_choices(CELLMETA$patient)),
       radioButtons("cfill", "Colour the paired-sample plot by",
                    c("Clone" = "clone", "Timepoint" = "timepoint",
                      "Chromosome 4 deletion" = "Chr4_Deletion",
@@ -225,12 +257,23 @@ ui <- page_navbar(
               , "called frequencies in this experiment start at 15%, so grey reads as ",
               tags$em("below the calling threshold"), " rather than as proven absent.")),
     layout_columns(col_widths = c(6, 6),
-      card(card_header(textOutput("dmut_title")), plotOutput("dmut_plot", height = 340)),
-      card(card_header("SJETV077 across nine ex vivo conditions"),
+      card(card_header(textOutput("dmut_title")),
+           note(tags$b("All five patients, side by side."), " This panel deliberately ignores ",
+                "the Patient selector so one mutation can be compared across the cohort."),
+           plotOutput("dmut_plot", height = 340)),
+      card(card_header("SJETV077 (patient 4) across nine ex vivo conditions - not driven by the Patient selector"),
            plotOutput("sj_plot", height = 340),
            note("A separate single-patient experiment covering six agents plus controls. ",
                 "Grey tiles are combinations with no reported measurement, not zeros - ",
                 "roughly half this grid was not reported."))),
+    card(card_header("Patient key - the same patients appear under three identifiers"),
+         DTOutput("ptkey_tbl"),
+         note("From Table S1 of the manuscript. The drug-response experiment names ",
+              "patients by the short bulk sample name, the RAS and targeted work uses the ",
+              "St Jude accession, and the manuscript numbers them. Drug-response ",
+              tags$b("3072"), " and RAS ", tags$b("SJETV026"), " are the same patient, as are ",
+              tags$b("2488"), " and ", tags$b("SJETV078"), ", and ", tags$b("2788"),
+              " and ", tags$b("SJETV025"), ".")),
     card(card_header(textOutput("sel_title")),
          tagList(DTOutput("sel_tbl"), dl_link("sel_tbl")),
          uiOutput("sel_note"))),
@@ -309,7 +352,7 @@ ui <- page_navbar(
 
     card(card_header(textOutput("wgs_card_title")),
       radioButtons("wgs_pt", NULL, inline = TRUE,
-                   choices = setNames(WGS_PT, paste("Patient", WGS_PT)),
+                   choices = setNames(WGS_PT, pt_label(WGS_PT)),
                    selected = if ("4295" %in% WGS_PT) "4295" else WGS_PT[1]),
       plotOutput("wgs_slope", height = 480),
       uiOutput("wgs_slope_head"),
@@ -522,7 +565,7 @@ server <- function(input, output, session) {
   # ---- Drug response ----
   dsub <- reactive({ i <- drug$patient == input$dpat; list(meta = drug[i, ], m = DMAT[i, , drop = FALSE]) })
 
-  output$drug_title <- renderText(sprintf("Patient %s: ex vivo response of every recurrent mutation", input$dpat))
+  output$drug_title <- renderText(sprintf("%s: ex vivo response of every recurrent mutation", pt_label(input$dpat)))
   output$drug_heat <- renderPlot({
     s <- dsub(); m <- s$m
     keep <- colSums(m > 0, na.rm = TRUE) > 0
@@ -598,6 +641,16 @@ server <- function(input, output, session) {
   })
   # the CSV download resolves "<id>_df", so the table needs its own data-frame reactive
   sel_tbl_df <- reactive(sel_rank()$d)
+
+  output$ptkey_tbl <- renderDT(datatable(
+    unique(data.frame(`Manuscript patient` = PTKEY$patient,
+                      `St Jude accession` = PTKEY$sj,
+                      `Drug-response name` = PTKEY$bulk,
+                      `Phylogeny / induction name` =
+                        ifelse(PTKEY$id %in% c("4295","417","445","4084"), PTKEY$id, "-"),
+                      `Genetic subtype` = PTKEY$subtype,
+                      check.names = FALSE)),
+    rownames = FALSE, options = list(pageLength = 8, dom = "tip")))
 
   output$sel_title <- renderText(sprintf(
     "Mutations ranked by rise under %s%s",
