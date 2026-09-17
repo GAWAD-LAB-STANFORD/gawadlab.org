@@ -128,7 +128,14 @@ ui <- page_navbar(
     conditionalPanel("input.nav == 'Drug response'",
       selectInput("dpat", "Patient", sort(unique(drug$patient))),
       selectizeInput("dmut", "Highlight a mutation", choices = colnames(DMAT),
-                     options = list(maxOptions = 200))),
+                     options = list(maxOptions = 200)),
+      hr(),
+      radioButtons("sel_drug", "Rank mutations selected by",
+                   c("Daunorubicin (DNR-Hi)" = "DNR-Hi",
+                     "Prednisolone (Pred-Hi)" = "Pred-Hi")),
+      radioButtons("sel_scope", "Across",
+                   c("All five patients" = "all", "This patient only" = "one")),
+      checkboxInput("sel_consist", "Only where every treated replicate exceeds every DMSO replicate", FALSE)),
     conditionalPanel("input.nav == 'Single cells'",
       selectInput("cpat", "Patient", sort(unique(CELLMETA$patient))),
       radioButtons("cfill", "Colour the paired-sample plot by",
@@ -213,12 +220,20 @@ ui <- page_navbar(
               "column per recurrent mutation. Pred-Hi is prednisolone and DNR-Hi is ",
               "daunorubicin, each against its own DMSO control and the diagnostic bulk ",
               "sample. A column that rises under one drug and not the other marks a ",
-              "population with differential sensitivity.")),
+              "population with differential sensitivity. ", tags$b("Grey tiles are not missing data"),
+              " - every tile was measured. Grey means the variant was not called in that sample; "
+              , "called frequencies in this experiment start at 15%, so grey reads as ",
+              tags$em("below the calling threshold"), " rather than as proven absent.")),
     layout_columns(col_widths = c(6, 6),
       card(card_header(textOutput("dmut_title")), plotOutput("dmut_plot", height = 340)),
       card(card_header("SJETV077 across nine ex vivo conditions"),
            plotOutput("sj_plot", height = 340),
-           note("A separate single-patient experiment covering six agents plus controls.")))),
+           note("A separate single-patient experiment covering six agents plus controls. ",
+                "Grey tiles are combinations with no reported measurement, not zeros - ",
+                "roughly half this grid was not reported."))),
+    card(card_header(textOutput("sel_title")),
+         tagList(DTOutput("sel_tbl"), dl_link("sel_tbl")),
+         uiOutput("sel_note"))),
 
   nav_panel("Single cells",
     card(card_header(textOutput("qc_title")),
@@ -232,12 +247,15 @@ ui <- page_navbar(
            "samples, which exist for one patient only.")),
 
     layout_columns(col_widths = c(7, 5),
-      card(card_header("115 single-cell genomes, before and after induction"),
+      card(card_header("Patient 4295 only - 115 single-cell genomes, before and after induction"),
+           note(tags$b("The Patient selector does not change these two panels."),
+                " They are the single-cell ", tags$b("exome"), " experiment, which exists for ",
+                "one patient; the Patient selector drives the whole-genome panels above."),
            plotOutput("cell_plot", height = 430),
            note("Two samples from patient 4295: 4272 drawn before induction (30 cells) and ",
                 "4295 drawn after it (85 cells). Axes are the measured surface-marker intensities used to ",
                 "separate leukemic from normal and premalignant cells.")),
-      card(card_header("Clone composition"), plotOutput("clone_plot", height = 430),
+      card(card_header("Patient 4295 only - clone composition"), plotOutput("clone_plot", height = 430),
            note("Each bar is the percentage of that sample's cells, not a raw count, ",
                 "because 30 cells were sequenced before induction against 85 after. Clones ",
                 strong(paste(EMERGENT, collapse = " and ")),
@@ -289,7 +307,7 @@ ui <- page_navbar(
            "patient, 4295, and it is the rest of this tab. The trees themselves are on the ",
            "Phylogeny tab.")),
 
-    card(card_header("Before and after induction, measured in the bulk"),
+    card(card_header(textOutput("wgs_card_title")),
       radioButtons("wgs_pt", NULL, inline = TRUE,
                    choices = setNames(WGS_PT, paste("Patient", WGS_PT)),
                    selected = if ("4295" %in% WGS_PT) "4295" else WGS_PT[1]),
@@ -304,7 +322,13 @@ ui <- page_navbar(
            "and the residual cells are rare. That gap is exactly why the single-cell work in ",
            "Figure 7 was needed.")),
 
-    card(card_header("Every branch mutation, before and after"), tagList(DTOutput("wgs_tbl"), dl_link("wgs_tbl"))),
+    card(card_header(textOutput("wgs_tbl_title")), tagList(DTOutput("wgs_tbl"), dl_link("wgs_tbl"))),
+
+    card(class = "border-0 bg-transparent",
+         note(tags$b("Everything below is patient 4295 only."), " The patient buttons above ",
+              "change the two panels above them and nothing else: 4295 is the one patient with ",
+              "single-cell exomes from before and after induction, so the phylogeny and every ",
+              "panel under it can only be drawn for that patient.")),
 
     card(fill = FALSE, card_header(textOutput("ind_title")),
          plotOutput("ind_tree", height = "auto"),
@@ -319,14 +343,14 @@ ui <- page_navbar(
               "topology is meaningful and the horizontal distances are not. Which variants each ",
               "cell carries is the heatmap below, not the tip marks.")),
 
-    card(card_header("Before and after, clade by clade"),
+    card(card_header("Patient 4295 - before and after, clade by clade"),
          plotOutput("ind_pies", height = 460), uiOutput("ind_pies_head"),
          note("One pie per clade, numbered as in Figure 7A, which uses the same internal-node ",
               "indices. A pie that is entirely pink is a clade whose cells were all found after ",
               "induction; entirely blue means the clade did not survive it. Use the slider to ",
               "set how small a clade still earns a pie.")),
 
-    card(card_header("Before and after induction, by percent of cells carrying the mutation"),
+    card(card_header("Patient 4295 - before and after induction, by percent of cells carrying the mutation"),
       plotOutput("pos_plot", height = 520),
       uiOutput("pos_head"),
       note("Each line is one variant, and the axis is the percentage of that ",
@@ -338,9 +362,9 @@ ui <- page_navbar(
            "previous tab holds 113. Variants drawn in red were carried by no cell before ",
            "induction and appear only after it.")),
 
-    card(card_header("Every variant, by percent of cells"), tagList(DTOutput("pos_tbl"), dl_link("pos_tbl"))),
+    card(card_header("Patient 4295 - every variant, by percent of cells"), tagList(DTOutput("pos_tbl"), dl_link("pos_tbl"))),
 
-    card(card_header("Allele frequency before and after induction"),
+    card(card_header("Patient 4295 - allele frequency before and after induction"),
       plotOutput("af_plot", height = 470),
       uiOutput("af_head"),
       note("Each point is one somatic variant, pooling the alt and total reads of every cell ",
@@ -350,15 +374,15 @@ ui <- page_navbar(
            "before-induction sample carries 30 cells against 85 after, which makes the ",
            "before-induction estimate the noisier of the two.")),
 
-    card(card_header("Every variant, before and after"), tagList(DTOutput("af_tbl"), dl_link("af_tbl"))),
+    card(card_header("Patient 4295 - every variant, before and after"), tagList(DTOutput("af_tbl"), dl_link("af_tbl"))),
 
-    card(card_header("Genotypes across 31 variants"), plotOutput("geno_plot", height = 420),
+    card(card_header("Patient 4295 - genotypes across 31 variants"), plotOutput("geno_plot", height = 420),
          note("Presence or absence of each somatic variant in each cell, cells ordered by ",
               "timepoint then clone. These are the called genotypes from the ConDoR matrix, ",
               "not dropout-corrected, so a blank cell means the variant was not called in ",
               "that cell rather than that it is certainly absent.")),
 
-    card(card_header("Clone composition before and after"), plotOutput("clone_plot2", height = 430),
+    card(card_header("Patient 4295 - clone composition before and after"), plotOutput("clone_plot2", height = 430),
          note("Each bar is the percentage of that sample's cells, not a raw count, because 30 ",
               "cells were sequenced before induction against 85 after."))
   ),
@@ -447,7 +471,8 @@ server <- function(input, output, session) {
       wgs_tbl    = "pALL_branch_mutations_bulk_before_after",
       pos_tbl    = "pALL_carrier_frequency_before_after",
       af_tbl     = "pALL_allele_frequency_before_after",
-      gene_tbl   = "pALL_gene_recurrence_alphamissense")
+      gene_tbl   = "pALL_gene_recurrence_alphamissense",
+      sel_tbl    = "pALL_mutations_ranked_by_drug_selection")
     for (id in names(specs)) local({
       i <- id; stem <- specs[[id]]
       output[[paste0("dl_", i)]] <- downloadHandler(
@@ -509,9 +534,15 @@ server <- function(input, output, session) {
     d <- data.frame(sample = factor(rep(lab, ncol(m)), levels = rev(lab[order(s$meta$condition)])),
                     mutation = factor(rep(colnames(m), each = nrow(m)), levels = colnames(m)),
                     af = as.vector(m), stringsAsFactors = FALSE)
+    # Nothing here is missing: every tile has a number. A zero means the variant was
+    # not called in that sample, and the called values start at 15% - there is nothing
+    # between. Showing zero as the pale end of a gradient implies a measured low
+    # frequency, so it gets its own flat colour instead.
+    d$af <- ifelse(d$af == 0, NA_real_, d$af)
     ggplot(d, aes(mutation, sample, fill = af)) +
       geom_tile(colour = "white", linewidth = .25) +
-      scale_fill_viridis_c(option = "rocket", direction = -1, name = "AF %") +
+      scale_fill_viridis_c(option = "rocket", direction = -1, name = "AF %",
+                           na.value = "#E8ECEF") +
       labs(x = NULL, y = NULL) + theme_lab(90) +
       theme(axis.text.x = element_text(size = 7), panel.grid = element_blank())
   })
@@ -528,14 +559,82 @@ server <- function(input, output, session) {
       labs(x = NULL, y = "mutant allele frequency (%)") + theme_lab(45)
   })
 
+  # Which mutations did each drug select for? The heatmap and the single-mutation
+  # viewer can only answer this one mutation at a time, which is no way to search
+  # 79 of them. This ranks every mutation by its rise over that patient's own DMSO
+  # control, and says plainly how many such rises chance alone would produce.
+  sel_rank <- reactive({
+    drg <- input$sel_drug
+    pats <- if (identical(input$sel_scope, "one")) input$dpat else unique(drug$patient)
+    out <- list(); n_testable <- 0
+    for (p in pats) {
+      i <- drug$patient == p
+      meta <- drug[i, ]; mm <- DMAT[i, , drop = FALSE]
+      keep <- colSums(mm > 0, na.rm = TRUE) > 0
+      if (!any(keep)) next
+      mm <- mm[, keep, drop = FALSE]
+      ctrl <- meta$condition == "DMSO"; tr <- meta$condition == drg
+      if (!any(ctrl) || !any(tr)) next
+      for (gmut in colnames(mm)) {
+        cv <- mm[ctrl, gmut]; tv <- mm[tr, gmut]
+        if (any(tv > 0, na.rm = TRUE) && length(unique(c(cv, tv))) > 1) n_testable <- n_testable + 1
+        out[[length(out) + 1]] <- data.frame(
+          Patient = p, Mutation = gmut,
+          `DMSO %` = round(mean(cv, na.rm = TRUE), 1),
+          `Treated %` = round(mean(tv, na.rm = TRUE), 1),
+          `Rise` = round(mean(tv, na.rm = TRUE) - mean(cv, na.rm = TRUE), 1),
+          `Every replicate above` = all(tv > max(cv, na.rm = TRUE), na.rm = TRUE),
+          Flag = paste(c(if (grepl(";", gmut)) "multi-mapped",
+                         if (grepl("p\\.([A-Z])[0-9]+\\1$", gmut)) "synonymous"),
+                       collapse = ", "),
+          check.names = FALSE, stringsAsFactors = FALSE)
+      }
+    }
+    d <- if (length(out)) do.call(rbind, out) else
+      data.frame(Patient = character(0), Mutation = character(0))
+    if (nrow(d) && input$sel_consist) d <- d[d$`Every replicate above`, ]
+    if (nrow(d)) d <- d[order(-d$Rise), ]
+    list(d = d, n = n_testable)
+  })
+  # the CSV download resolves "<id>_df", so the table needs its own data-frame reactive
+  sel_tbl_df <- reactive(sel_rank()$d)
+
+  output$sel_title <- renderText(sprintf(
+    "Mutations ranked by rise under %s%s",
+    if (identical(input$sel_drug, "DNR-Hi")) "daunorubicin" else "prednisolone",
+    if (identical(input$sel_scope, "one")) sprintf(" - patient %s", input$dpat) else " - all patients"))
+
+  output$sel_tbl <- renderDT(
+    datatable(sel_tbl_df(), rownames = FALSE, options = list(pageLength = 10, dom = "ftip")))
+
+  output$sel_note <- renderUI({
+    s <- sel_rank(); n <- s$n
+    hit <- if (nrow(s$d)) sum(s$d$`Every replicate above`) else 0
+    note("Rise is mean treated minus mean DMSO for that patient, in allele-frequency ",
+         "percent. With three treated against three control replicates, ", tags$b("every "),
+         "treated replicate landing above every control replicate happens by chance with ",
+         "p = 0.05, so across the ", n, " testable mutation-by-patient comparisons here ",
+         "about ", round(n * 0.05), " would pass that filter with no drug effect at all; ",
+         hit, " do. Read a single hit as a candidate to check, not as evidence of selection. ",
+         "Variants flagged multi-mapped sit in paralogous loci where allele frequency is ",
+         "unreliable, and synonymous changes are unlikely resistance drivers.")
+  })
+
   output$sj_plot <- renderPlot({
     d <- sj
     top <- names(sort(tapply(d$af, d$Mutation, max, na.rm = TRUE), decreasing = TRUE))[1:25]
     d <- d[d$Mutation %in% top, ]
+    # Only 117 of the 25 x 9 combinations exist in the data. Left as-is, ggplot drops
+    # them and the panel background shows through, which looks identical to a low
+    # value. Completing the grid makes the gap explicit and colours it as missing.
+    grid <- expand.grid(Treatment = sort(unique(d$Treatment)), Mutation = top,
+                        stringsAsFactors = FALSE)
+    d <- merge(grid, d[, c("Treatment", "Mutation", "af")], all.x = TRUE)
     d$Mutation <- factor(d$Mutation, levels = rev(top))
     ggplot(d, aes(Treatment, Mutation, fill = af)) +
       geom_tile(colour = "white", linewidth = .25) +
-      scale_fill_viridis_c(option = "mako", direction = -1, name = "AF %") +
+      scale_fill_viridis_c(option = "mako", direction = -1, name = "AF %",
+                           na.value = "#E8ECEF") +
       scale_y_discrete(labels = function(x) sub(":.*$", "", x)) +
       labs(x = NULL, y = NULL) + theme_lab(45) +
       theme(axis.text.y = element_text(size = 7), panel.grid = element_blank())
@@ -885,6 +984,11 @@ server <- function(input, output, session) {
     b$fate <- ifelse(b$after > 0, "Still detectable", "Not detected after")
     b[order(-b$before), ]
   })
+
+  output$wgs_card_title <- renderText(
+    sprintf("Patient %s - before and after induction, measured in the bulk", input$wgs_pt))
+  output$wgs_tbl_title <- renderText(
+    sprintf("Patient %s - every branch mutation, before and after", input$wgs_pt))
 
   output$wgs_slope <- renderPlot({
     b <- wgs_bulk()
