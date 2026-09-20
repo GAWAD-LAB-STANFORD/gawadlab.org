@@ -25,7 +25,7 @@ LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", 
                "Youssef S", "Agarwal V", "Cherian A"}
 
 NAV = [("index.html", "Home"), ("research.html", "Research"), ("ai.html", "Agents"), ("people.html", "People"),
-       ("publications.html", "Publications"), ("apps.html", "Apps"), ("news.html", "News"),
+       ("publications.html", "Publications"), ("apps.html", "Data"), ("news.html", "News"),
        ("resources.html", "Resources"), ("join.html", "Join")]
 SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
 GITHUB_ORG = "https://github.com/GAWAD-LAB-STANFORD"
