@@ -24,7 +24,7 @@ LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", 
                "Schulz S", "Xia Y", "Natarajan S", "Carter RA", "Carter R", "Mahmud O", "Inaba Y",
                "Youssef S", "Agarwal V", "Cherian A"}
 
-NAV = [("index.html", "Home"), ("research.html", "Research"), ("people.html", "People"),
+NAV = [("index.html", "Home"), ("research.html", "Research"), ("ai.html", "AI"), ("people.html", "People"),
        ("publications.html", "Publications"), ("apps.html", "Apps"), ("news.html", "News"),
        ("resources.html", "Resources"), ("join.html", "Join")]
 SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
@@ -85,7 +85,7 @@ def footer():
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="assets/logo.png" alt="Stanford Medicine · Gawad Lab">
-        <p>We invent single-cell and cell-free genomics technologies and use them to understand how childhood cancers arise, evolve, and resist treatment.</p>
+        <p>We invent single-cell genomics technologies, use them to understand how childhood cancers arise and resist treatment, and are building a lab where scientists and AI agents discover together.</p>
         <div class="social">
           <a href="{GITHUB_ORG}" aria-label="GitHub">{ICONS['github']}</a>
           <a href="https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ" aria-label="Google Scholar">{ICONS['scholar']}</a>

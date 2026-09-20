@@ -1,0 +1,181 @@
+<!-- title: AI | desc: The Gawad Lab is becoming an AI co-scientist laboratory: human scientists generate single-cell data from patients, teams of AI agents analyze it and propose the next experiment, and trainees learn to run both. -->
+<section class="page-hero"><div class="container">
+  <span class="eyebrow">Artificial intelligence</span>
+  <h1>A lab where scientists and AI agents work as <em class="accent">co-scientists</em></h1>
+  <p class="lede">We generate something an AI agent cannot: the genome, transcriptome, and methylome of individual cells from children being treated for cancer. We are rebuilding the lab so that teams of AI agents read that data, propose the next experiment, and draft the analysis, while human scientists decide what to test and verify what comes back. And we are making the lab a place where people learn to work this way.</p>
+</div></section>
+
+<section class="section section-alt" id="idea">
+  <div class="container">
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <span class="eyebrow">The idea</span>
+        <h2>Fleets of agents, one human judgment</h2>
+        <p>The model comes from James Zou's group in Stanford Biomedical Data Science. In their Virtual Lab, an AI "principal investigator" recruits specialist agents, immunology, computational biology, machine learning, holds meetings with them, and hands the human team a research plan. Set loose on a COVID-19 problem, the agents designed 92 candidate nanobodies in days; two bound new variants in the wet lab. A "devil's advocate" agent argues against the others, and a human expert reviews every design before anything is synthesized.</p>
+        <p>The same group then scaled the idea to a virtual biotech company of 37,000 agents organized into departments. In under a day, at a computing cost of about $46, the agents read the literature on the lung-cancer target B7-H3, ran their own single-cell analyses, and recommended a drug design. Weeks later a pharmaceutical company reported promising trial results with the same approach, which the agents could not have known about.</p>
+        <p>What the agents still cannot do is the part our lab is built for: put a patient's cells on a sequencer and produce a measurement no one has seen before.</p>
+      </div>
+      <div>
+        <blockquote class="pull">"It really does feel like a new era where one person plus a bunch of GPT or Claude models can really make significant, fast progress in drug discovery."<cite>Kyle Swanson, formerly of the Zou lab, in The New York Times, September 17, 2026</cite></blockquote>
+        <blockquote class="pull" style="margin-top:1.5rem">"By turning static papers into interactive AI agents, Paper2Agent introduces a paradigm for knowledge dissemination and a collaborative ecosystem of AI co-scientists."<cite>Miao, Davis, et al., Nature, September 16, 2026</cite></blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="loop">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">How it works here</span>
+      <h2>The co-scientist loop, built around <em class="accent">patient cells</em></h2>
+      <p>Every cycle starts and ends with a human. The middle, where most of the time used to go, is where the agents work.</p>
+    </div>
+    <figure class="loop-figure">
+      <svg viewBox="0 0 1200 560" role="img" aria-labelledby="loop-title" xmlns="http://www.w3.org/2000/svg">
+        <title id="loop-title">The Gawad Lab co-scientist loop: clinic question, single-cell data, AI agent team, human review, experiment, and back to the clinic.</title>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4D7A8E"/></marker>
+          <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#F6A30C"/></marker>
+        </defs>
+        <style>
+          .box{fill:#fff;stroke:#E3E7EA;stroke-width:1.5;rx:14}
+          .human{fill:#FFF4DF;stroke:#F6A30C}
+          .agent{fill:#E8F0F3;stroke:#4D7A8E}
+          .t{font-family:Inter,system-ui,sans-serif;font-size:15px;fill:#17212B}
+          .h{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:18px;fill:#17212B}
+          .k{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;fill:#8C1515}
+          .kb{fill:#2F5D70}
+          .s{font-family:Inter,system-ui,sans-serif;font-size:13px;fill:#64707C}
+          .flow{fill:none;stroke:#4D7A8E;stroke-width:2.5;marker-end:url(#arr)}
+          .flowA{fill:none;stroke:#F6A30C;stroke-width:2.5;marker-end:url(#arrA)}
+        </style>
+        <!-- 1 clinic -->
+        <rect class="box human" x="30" y="60" width="250" height="150"/>
+        <text class="k" x="50" y="90">HUMAN · CLINIC</text>
+        <text class="h" x="50" y="118">A question from a patient</text>
+        <text class="t" x="50" y="146">Which cells survived induction?</text>
+        <text class="t" x="50" y="168">Why did this child relapse?</text>
+        <text class="s" x="50" y="194">Pediatric oncologists, trial samples</text>
+        <!-- 2 wet lab -->
+        <rect class="box human" x="330" y="60" width="250" height="150"/>
+        <text class="k" x="350" y="90">HUMAN · WET LAB</text>
+        <text class="h" x="350" y="118">Single-cell measurement</text>
+        <text class="t" x="350" y="146">PTA: genome, transcriptome,</text>
+        <text class="t" x="350" y="168">methylome from the same cell</text>
+        <text class="s" x="350" y="194">Data that exists nowhere else</text>
+        <!-- 3 agents -->
+        <rect class="box agent" x="640" y="30" width="530" height="210"/>
+        <text class="k kb" x="660" y="60">AI AGENT TEAM</text>
+        <text class="h" x="660" y="88">Analysis, hypotheses, and the next experiment</text>
+        <rect x="660" y="106" width="150" height="54" rx="10" fill="#fff" stroke="#CFE0E7"/>
+        <text class="t" x="675" y="128">Variant calling and</text><text class="t" x="675" y="148">phylogenies</text>
+        <rect x="822" y="106" width="150" height="54" rx="10" fill="#fff" stroke="#CFE0E7"/>
+        <text class="t" x="837" y="128">Literature and</text><text class="t" x="837" y="148">paper agents</text>
+        <rect x="984" y="106" width="166" height="54" rx="10" fill="#fff" stroke="#CFE0E7"/>
+        <text class="t" x="999" y="128">Hypothesis generation</text><text class="t" x="999" y="148">and experiment design</text>
+        <rect x="660" y="170" width="230" height="54" rx="10" fill="#fff" stroke="#CFE0E7"/>
+        <text class="t" x="675" y="192">Devil's advocate agent:</text><text class="t" x="675" y="212">argues against every claim</text>
+        <rect x="902" y="170" width="248" height="54" rx="10" fill="#fff" stroke="#CFE0E7"/>
+        <text class="t" x="917" y="192">Drafts figures, methods,</text><text class="t" x="917" y="212">and the analysis notebook</text>
+        <!-- 4 review -->
+        <rect class="box human" x="640" y="330" width="250" height="150"/>
+        <text class="k" x="660" y="360">HUMAN · REVIEW</text>
+        <text class="h" x="660" y="388">Verify before believing</text>
+        <text class="t" x="660" y="416">Positive controls, held-out cells,</text>
+        <text class="t" x="660" y="438">orthogonal validation</text>
+        <text class="s" x="660" y="464">A scientist signs off on every result</text>
+        <!-- 5 experiment -->
+        <rect class="box human" x="330" y="330" width="250" height="150"/>
+        <text class="k" x="350" y="360">HUMAN · EXPERIMENT</text>
+        <text class="h" x="350" y="388">Test the best idea</text>
+        <text class="t" x="350" y="416">CRISPR screens, ex vivo models,</text>
+        <text class="t" x="350" y="438">new patient cohorts</text>
+        <text class="s" x="350" y="464">Only what survived review</text>
+        <!-- 6 back to clinic -->
+        <rect class="box human" x="30" y="330" width="250" height="150"/>
+        <text class="k" x="50" y="360">HUMAN · CLINIC</text>
+        <text class="h" x="50" y="388">Back to the patient</text>
+        <text class="t" x="50" y="416">Biomarkers, early-relapse tests,</text>
+        <text class="t" x="50" y="438">treatment decisions</text>
+        <text class="s" x="50" y="464">and the next question</text>
+        <!-- arrows -->
+        <path class="flowA" d="M280 135 H322"/>
+        <path class="flowA" d="M580 135 H632"/>
+        <path class="flow" d="M765 240 V322"/>
+        <path class="flowA" d="M640 405 H588"/>
+        <path class="flowA" d="M330 405 H288"/>
+        <path class="flowA" d="M155 330 V218"/>
+        <path class="flow" d="M890 405 H1040 V248" />
+        <text class="s" x="905" y="395">Rejected ideas go back to the agents</text>
+        <!-- legend -->
+        <rect x="30" y="515" width="14" height="14" rx="3" fill="#FFF4DF" stroke="#F6A30C"/><text class="s" x="52" y="527">Human decision</text>
+        <rect x="190" y="515" width="14" height="14" rx="3" fill="#E8F0F3" stroke="#4D7A8E"/><text class="s" x="212" y="527">AI agents</text>
+      </svg>
+      <figcaption class="img-credit">The loop as we are building it. Amber boxes are human steps; the blue box is where teams of AI agents work. Nothing leaves the blue box for the wet lab or the clinic without a scientist's review.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section section-alt" id="now">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Where we are</span>
+      <h2>Three things already <em class="accent">true</em> in the lab</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why"><h3>Agents write and run our analysis code</h3><p>Our variant-calling, phylogeny, and figure pipelines are now written with coding agents and reviewed by the scientists who own the question. The rule is simple: an agent can propose and run anything, and a human checks the denominator before a number leaves the lab.</p></div>
+      <div class="why"><h3>Our data is built for foundation models</h3><p>Same-cell genome, transcriptome, and methylation from thousands of primary human cells is exactly the training and evaluation data that DNA and single-cell foundation models lack. We are generating it at scale and preparing it so that models such as AlphaGenome can be fine-tuned and tested against ground truth from real patients.</p></div>
+      <div class="why"><h3>Our papers are becoming agents</h3><p>Following Paper2Agent, we intend to release each new method from the lab with an agent that can run it on a reader's own data, so a result is something a colleague can use the day it is published rather than something they must reimplement.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="paper2agent">
+  <div class="container feature reverse">
+    <div>
+      <span class="eyebrow">Why now</span>
+      <h2>The tools arrived this year</h2>
+      <p>In the space of eighteen months, the pieces of an AI co-scientist lab went from demonstration to routine. Coding agents now build and debug analysis pipelines from a sentence of intent. Agent teams with distinct personas hold meetings and design molecules. Papers can be converted automatically into agents that expose their code, data, and workflows through a standard protocol, so that a method from another lab becomes a tool ours can call in plain language. Genome foundation models can predict the effect of a noncoding variant, the exact class of mutation our leukemia work turns up in individual cells.</p>
+      <p>What has not arrived, and will not arrive from a data center, is new measurement. The value of an agent team is bounded by the data it can reason over. A lab that produces measurements no model has seen, and that knows the clinical question behind each one, is where these tools pay off first.</p>
+      <p class="status"><strong>Sources:</strong> Swanson et al., <em>Nature</em> 2025 (Virtual Lab); Miao et al., <em>Nature</em> 2026 (Paper2Agent); Zou and Zhang, <em>Science</em> 2026 (virtual biotech); reporting in The New York Times and Stanford Medicine News, September 2026.</p>
+    </div>
+    <div>
+      <a class="zoom" href="assets/paper2agent-fig1.png" title="Click to enlarge"><img src="assets/paper2agent-fig1.png" alt="Overview of Paper2Agent: a paper is converted into an MCP server exposing tools, resources, and prompts, which an AI agent can then use in conversation to apply the paper's methods to new data" loading="lazy"></a>
+      <p class="img-credit">Paper2Agent turns a research paper into an AI agent that can apply the paper's methods to a reader's data. Figure 1 from Miao, Davis, et al., <em>Nature</em> 2026, reproduced under CC BY-NC-ND 4.0.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="training">
+  <div class="container">
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <span class="eyebrow">Training</span>
+        <h2>A place to learn how to run a lab <em class="accent">this way</em></h2>
+        <p>The scientists who will lead biomedical research in ten years will direct teams of agents the way today's investigators direct teams of people. Almost nowhere teaches that. We are making it part of training in the lab, for postdocs, students, and visiting clinicians, alongside the bench and computational skills that make the agents useful.</p>
+        <p>Trainees leave able to do four things: frame a clinical question so that agents can work on it, produce single-cell data that no model has seen, run and supervise an agent team through analysis and hypothesis generation, and verify the output rigorously enough to publish it or act on it for a patient.</p>
+        <p><a class="btn btn-primary" href="join.html">Join the lab</a> <a class="btn btn-outline" href="resources.html" style="margin-left:.5rem">Open AI tools we use</a></p>
+      </div>
+      <div class="curriculum">
+        <h3>What a trainee learns</h3>
+        <ol>
+          <li><strong>The question.</strong> Shadow the clinic. Turn a relapse, a resistant clone, or an undiagnosed child into a testable question with a measurable answer.</li>
+          <li><strong>The measurement.</strong> Run PTA and same-cell multiomics on primary human cells. Know what the data can and cannot say.</li>
+          <li><strong>The agent team.</strong> Set up coding and analysis agents, give them the data and the literature, assign a devil's advocate, and direct the meetings.</li>
+          <li><strong>The verification.</strong> Positive controls, held-out cells, orthogonal assays. Learn the failure modes of agents on genomic data and how to catch them.</li>
+          <li><strong>The release.</strong> Publish the method with its agent, so the next lab can use it the same day.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="container">
+    <div>
+      <h2>Help build the co-scientist lab</h2>
+      <p>We are recruiting people who want to do this, and partners who want to fund it. If you are a computational biologist, a chemist, a clinician, or a donor who sees the same future, write to us.</p>
+    </div>
+    <a class="btn btn-ghost support-link" href="mailto:cgawad@stanford.edu?subject=AI%20co-scientist%20lab">Get in touch</a>
+  </div>
+</section>
