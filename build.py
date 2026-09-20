@@ -24,7 +24,7 @@ LAB_AUTHORS = {"Gawad C", "Gonzalez-Pena V", "Pang Y", "Wardhani K", "Klein D", 
                "Schulz S", "Xia Y", "Natarajan S", "Carter RA", "Carter R", "Mahmud O", "Inaba Y",
                "Youssef S", "Agarwal V", "Cherian A"}
 
-NAV = [("index.html", "Home"), ("research.html", "Research"), ("ai.html", "Agents"), ("people.html", "People"),
+NAV = [("index.html", "Home"), ("research.html", "Research"), ("people.html", "People"), ("ai.html", "Agents"),
        ("publications.html", "Publications"), ("apps.html", "Data"), ("news.html", "News"),
        ("resources.html", "Resources"), ("join.html", "Join")]
 SUPPORT_MAILTO = "mailto:cgawad@stanford.edu?subject=Supporting%20the%20Gawad%20Lab"
