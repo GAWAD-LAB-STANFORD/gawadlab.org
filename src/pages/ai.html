@@ -130,14 +130,32 @@
   </div>
 </section>
 
-<section class="section" id="paper2agent">
+<section class="section" id="landscape">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">The wider landscape</span>
+      <h2>Everyone is building the agent. Few are building the <em class="accent">lab</em>.</h2>
+      <p>The same idea is arriving from several directions at once. What they share is a division of labor: agents generate, critique, and analyze; humans choose, measure, and verify.</p>
+    </div>
+    <div class="landscape-grid">
+      <div class="land"><span class="who">Google DeepMind</span><h3>AI co-scientist</h3><p>A Gemini-based team of agents that generates hypotheses, debates them in self-play, and ranks them in tournaments. Proposed drug-repurposing candidates for acute myeloid leukemia that were then confirmed in the wet lab, and independently rediscovered a mechanism of bacterial gene transfer that an Imperial College group had found but not yet published.</p></div>
+      <div class="land"><span class="who">Stanford, James Zou</span><h3>Virtual Lab and the virtual biotech</h3><p>An AI principal investigator recruits specialist agents and holds meetings; a devil's-advocate agent attacks every claim; a human expert reviews before anything is made. Scaled to 37,000 agents, the system proposed a lung-cancer drug design that industry later matched, in under a day for about $46.</p></div>
+      <div class="land"><span class="who">FutureHouse</span><h3>Robin and Kosmos</h3><p>Robin generated the hypotheses, designed the experiments, analyzed the data, and drafted the figures that identified a glaucoma drug as a candidate for dry macular degeneration; humans ran only the physical experiments. Its successor, Kosmos, reads about 1,500 papers and writes tens of thousands of lines of analysis code in a single run.</p></div>
+      <div class="land"><span class="who">Anthropic</span><h3>Claude for Life Sciences and Claude Science</h3><p>An AI workbench that connects agents to genomics and structure models such as Evo 2 and Boltz-2, includes a reviewer agent that checks citations and calculations, and is being wired to microscopes and liquid handlers at Janelia and Genentech. Partnerships with the Allen Institute and HHMI focus on the months of routine analysis between experiments.</p></div>
+      <div class="land"><span class="who">Arc Institute</span><h3>The virtual cell</h3><p>Foundation models trained on hundreds of millions of cells to predict how a cell responds to a perturbation before the experiment is run, with an annual public challenge. Models like this are only as good as the ground-truth single-cell data they are tested against.</p></div>
+      <div class="land highlight"><span class="who">Gawad Lab</span><h3>The co-scientist lab</h3><p>We take these tools as given and build what they lack: measurements from patients that no model has seen, a clinic that supplies the question, a scientist who verifies every result before it acts on a child, and a training program that teaches the next generation to run research this way.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="paper2agent">
   <div class="container feature reverse">
     <div>
       <span class="eyebrow">Why now</span>
       <h2>The tools arrived this year</h2>
       <p>In the space of eighteen months, the pieces of an AI co-scientist lab went from demonstration to routine. Coding agents now build and debug analysis pipelines from a sentence of intent. Agent teams with distinct personas hold meetings and design molecules. Papers can be converted automatically into agents that expose their code, data, and workflows through a standard protocol, so that a method from another lab becomes a tool ours can call in plain language. Genome foundation models can predict the effect of a noncoding variant, the exact class of mutation our leukemia work turns up in individual cells.</p>
       <p>What has not arrived, and will not arrive from a data center, is new measurement. The value of an agent team is bounded by the data it can reason over. A lab that produces measurements no model has seen, and that knows the clinical question behind each one, is where these tools pay off first.</p>
-      <p class="status"><strong>Sources:</strong> Swanson et al., <em>Nature</em> 2025 (Virtual Lab); Miao et al., <em>Nature</em> 2026 (Paper2Agent); Zou and Zhang, <em>Science</em> 2026 (virtual biotech); reporting in The New York Times and Stanford Medicine News, September 2026.</p>
+      <p class="status"><strong>Sources:</strong> Swanson et al., <em>Nature</em> 2025 (Virtual Lab); Miao et al., <em>Nature</em> 2026 (Paper2Agent); Zou and Zhang, <em>Science</em> 2026 (virtual biotech); Google Research, February 2025 (AI co-scientist); FutureHouse, <em>Nature</em> 2026 (Robin); Anthropic, June 2026 (Claude Science); Arc Institute Virtual Cell Challenge, 2025; reporting in The New York Times and Stanford Medicine News, September 2026.</p>
     </div>
     <div>
       <a class="zoom" href="assets/paper2agent-fig1.png" title="Click to enlarge"><img src="assets/paper2agent-fig1.png" alt="Overview of Paper2Agent: a paper is converted into an MCP server exposing tools, resources, and prompts, which an AI agent can then use in conversation to apply the paper's methods to new data" loading="lazy"></a>
@@ -146,7 +164,7 @@
   </div>
 </section>
 
-<section class="section section-alt" id="training">
+<section class="section" id="training">
   <div class="container">
     <div class="grid-2" style="align-items:start">
       <div>

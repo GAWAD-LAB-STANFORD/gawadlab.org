@@ -550,3 +550,13 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .ai-band .stat b { display: block; font-family: var(--future); font-size: 2.2rem; font-weight: 700; color: #fff; line-height: 1; }
 .ai-band .stat span { font-size: .85rem; color: rgba(255,255,255,.7); }
 @media (max-width: 860px) { .ai-band .container { grid-template-columns: 1fr; } .ai-band .stats { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- AI landscape ---------- */
+.landscape-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.land { padding: 1.4rem 0 0; border-top: 2px solid var(--border); }
+.land .who { font-family: var(--future); font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); }
+.land h3 { font-family: var(--display); font-weight: 600; font-size: 1.25rem; margin: .3rem 0 .5rem; }
+.land p { font-size: .95rem; color: var(--ink-soft); margin: 0; }
+.land.highlight { border-top-color: var(--amber); background: var(--amber-tint); padding: 1.4rem 1.25rem 1.25rem; border-radius: 0 0 var(--radius-sm) var(--radius-sm); }
+.land.highlight .who { color: var(--cardinal); }
+@media (max-width: 900px) { .landscape-grid { grid-template-columns: 1fr; } }
