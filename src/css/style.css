@@ -571,3 +571,10 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 .tools-logos a:hover img { transform: translateY(-2px); }
 .tools-band .img-credit { text-align: right; margin-top: 1.25rem; }
 @media (max-width: 860px) { .tools-row { grid-template-columns: 1fr; gap: 1.5rem; } .tools-logos { justify-content: flex-start; } .tools-band .img-credit { text-align: left; } }
+
+/* ---------- AI page: make every link look like one ---------- */
+#main .land h3 a, #main .land .who a, #main .status a, #main blockquote.pull cite a, #main .why p a, #main .feature p a:not(.btn):not(.link-arrow), #main .grid-2 p a:not(.btn), #main .img-credit a, #main .tools-text p a {
+  color: var(--primary); text-decoration: underline; text-decoration-color: rgba(47,93,112,.35); text-underline-offset: 3px; text-decoration-thickness: 1.5px; transition: color .15s, text-decoration-color .15s;
+}
+#main .land h3 a:hover, #main .land .who a:hover, #main .status a:hover, #main blockquote.pull cite a:hover, #main .why p a:hover, #main .feature p a:not(.btn):hover, #main .grid-2 p a:hover, #main .img-credit a:hover, #main .tools-text p a:hover { color: var(--cardinal); text-decoration-color: var(--cardinal); }
+.land h3 a::after, .land .who a::after { content: "\00a0\2197"; font-size: .7em; opacity: .6; }
