@@ -578,3 +578,11 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 }
 #main .land h3 a:hover, #main .land .who a:hover, #main .status a:hover, #main blockquote.pull cite a:hover, #main .why p a:hover, #main .feature p a:not(.btn):hover, #main .grid-2 p a:hover, #main .img-credit a:hover, #main .tools-text p a:hover { color: var(--cardinal); text-decoration-color: var(--cardinal); }
 .land h3 a::after, .land .who a::after { content: "\00a0\2197"; font-size: .7em; opacity: .6; }
+
+/* ---------- Lab life gallery ---------- */
+.gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); transition: transform .3s ease, box-shadow .3s ease; }
+.gallery a.zoom:hover img { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.gallery figcaption { font-size: .9rem; color: var(--muted); margin-top: .5rem; }
+@media (max-width: 700px) { .gallery { grid-template-columns: 1fr; } }
