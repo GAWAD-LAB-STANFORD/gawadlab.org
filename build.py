@@ -85,7 +85,7 @@ def footer():
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="assets/logo.png" alt="Stanford Medicine · Gawad Lab">
-        <p>We invent single-cell genomics technologies, use them to understand how childhood cancers arise and resist treatment, and are building the measurements that let scientists and AI agents discover together.</p>
+        <p>We invent single-cell and cell-free genomics technologies and use them to understand how childhood cancers arise, evolve, and resist treatment.</p>
         <div class="social">
           <a href="{GITHUB_ORG}" aria-label="GitHub">{ICONS['github']}</a>
           <a href="https://scholar.google.com/citations?hl=en&user=Nbk0c_oAAAAJ" aria-label="Google Scholar">{ICONS['scholar']}</a>
