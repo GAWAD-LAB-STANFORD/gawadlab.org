@@ -13,7 +13,7 @@
         <h2>Fleets of agents, one human judgment</h2>
         <p>The model comes from James Zou's group in Stanford Biomedical Data Science. In their Virtual Lab, an AI "principal investigator" recruits specialist agents, immunology, computational biology, machine learning, holds meetings with them, and hands the human team a research plan. Set loose on a COVID-19 problem, the agents designed 92 candidate nanobodies in days; two bound new variants in the wet lab. A "devil's advocate" agent argues against the others, and a human expert reviews every design before anything is synthesized.</p>
         <p>The same group then scaled the idea to a virtual biotech company of 37,000 agents organized into departments. In under a day, at a computing cost of about $46, the agents read the literature on the lung-cancer target B7-H3, ran their own single-cell analyses, and recommended a drug design. Weeks later a pharmaceutical company reported promising trial results with the same approach, which the agents could not have known about.</p>
-        <p>Every one of these systems reasons over data someone else measured. That is the constraint, and it is where we work. An agent cannot put a patient's cells on a sequencer, and it cannot see what the assay cannot see. The genome, transcriptome, and methylome of a single cell, read together from cells that survived a child's chemotherapy, is a measurement that did not exist until recently and that no model has been trained on. Better measurement is what turns a clever agent into a correct one.</p>
+        <p>Every one of these systems reasons over data someone else measured. That is the constraint, and it is where we work. An agent cannot put cells isolated from a patient sample on a sequencer, and it cannot see what the assay cannot see. The genome, transcriptome, and methylome of a single cell, read together from cells that survived a child's chemotherapy, is a measurement that did not exist until recently and that no model has been trained on. Better measurement is what turns a clever agent into a correct one.</p>
       </div>
       <div>
         <blockquote class="pull">"It really does feel like a new era where one person plus a bunch of GPT or Claude models can really make significant, fast progress in drug discovery."<cite>Kyle Swanson, formerly of the Zou lab, in The New York Times, September 17, 2026</cite></blockquote>
@@ -27,7 +27,7 @@
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">How it works here</span>
-      <h2>The co-scientist loop, built around <em class="accent">patient cells</em></h2>
+      <h2>The co-scientist loop, built around cells isolated from <em class="accent">patient samples</em></h2>
       <p>Every cycle starts and ends with a human. The middle, where most of the time used to go, is where the agents work.</p>
     </div>
     <figure class="loop-figure">
@@ -124,7 +124,7 @@
     </div>
     <div class="why-grid">
       <div class="why"><h3>We build the measurements the models are missing</h3><p>PTA gave single cells an accurate genome. Same-cell transcriptome and methylation readouts followed, and surface proteins are next. Each new layer is a kind of data that foundation models and agent teams have never seen, and each one changes what they can get right.</p></div>
-      <div class="why"><h3>Agents write and run our analysis code</h3><p>Our variant-calling, phylogeny, and figure pipelines are now written with coding agents and reviewed by the scientists who own the question. The rule is simple: an agent can propose and run anything, and a human checks the denominator before a number leaves the lab.</p></div>
+      <div class="why"><h3>We collaborate with agents on our analysis code</h3><p>Our variant-calling, phylogeny, and figure pipelines are now built in collaboration with coding agents and reviewed by the scientists who own the question. The rule is simple: an agent can propose and run anything, and a human checks the denominator before a number leaves the lab.</p></div>
       <div class="why"><h3>Our data is built to train and test the models</h3><p>Same-cell genome, transcriptome, and methylation from thousands of primary human cells is exactly the training and ground-truth data that DNA and single-cell foundation models lack. We are generating it at scale and preparing it so that models such as AlphaGenome can be fine-tuned and tested against cells from real patients. Our papers will ship as agents, so a method can be used the day it is published.</p></div>
     </div>
   </div>
