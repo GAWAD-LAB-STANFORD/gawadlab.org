@@ -44,6 +44,12 @@
     });
   }
 
+  // Hero entrance: force the end state once the animation has had its time,
+  // so a paused timeline can never leave the headline or lede invisible.
+  setTimeout(function () {
+    document.querySelectorAll('.hero, .page-hero').forEach(function (el) { el.classList.add('anim-done'); });
+  }, 1600);
+
   // Header compacts after scrolling
   var header = document.querySelector('.site-header');
   if (header) {
