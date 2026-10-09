@@ -285,8 +285,16 @@ def build():
         shutil.copytree(dl, OUT / "downloads")
         print(f"copied downloads ({sum(1 for _ in (OUT / 'downloads').iterdir())} files)")
 
-    # Standalone WebAssembly builds of the atlas browsers (shinylive). Each is a
-    # self-contained static site, so copy it in verbatim under its own path.
+    # WebAssembly builds of the data browsers (shinylive). The R runtime is large
+    # and byte-identical for every app, so it is stored once at /shinylive/ and all
+    # the apps point at it. A visitor who opens a second browser reuses the cached
+    # runtime instead of downloading another copy of it.
+    runtime = ROOT / "shinylive"
+    if runtime.is_dir():
+        shutil.copytree(runtime, OUT / "shinylive")
+        shutil.copy2(ROOT / "shinylive-sw.js", OUT / "shinylive-sw.js")
+        mb = sum(f.stat().st_size for f in (OUT / "shinylive").rglob("*") if f.is_file()) / 1048576
+        print(f"copied shared shinylive runtime ({mb:.0f} MB, used by every app)")
     for app in ("aml-atlas", "cerebellum-atlas", "pall-resistance"):
         app_dir = ROOT / app
         if app_dir.is_dir():
