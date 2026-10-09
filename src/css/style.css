@@ -365,7 +365,7 @@ p { margin: 0 0 1em; }
 .prose h2 { margin-top: 2rem; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
-.notice { background: var(--amber-tint); border: 1px solid #F8D993; border-radius: var(--radius-sm); padding: .9rem 1.1rem; font-size: .92rem; }
+.notice { background: var(--amber-tint); border: 1px solid #F8D993; border-radius: var(--radius-sm); padding: .9rem 1.1rem; font-size: .92rem; line-height: 1.6; max-width: 100ch; margin: 0 0 2rem; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
 
 /* ---------- Why join ---------- */
