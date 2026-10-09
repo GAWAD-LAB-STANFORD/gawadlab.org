@@ -95,8 +95,8 @@ p { margin: 0 0 1em; }
 .brand img { height: 100px; width: auto; max-width: none; transition: height .25s ease; }
 .site-header.scrolled .brand img { height: 76px; }
 .site-header.scrolled .nav { min-height: 96px; }
-/* Between the breakpoint and 1560px the row only fits with a slightly smaller
-   logo. It goes back to its full 100px as soon as there is room for it. */
+/* The logo steps down where the row would not otherwise fit, and goes back to
+   its full 100px as soon as there is room for it. */
 @media (max-width: 1560px) { .brand img { height: 84px; } }
 @media (max-width: 1450px) { .brand img { height: 68px; } }
 .nav-links { display: flex; align-items: center; gap: .45rem; list-style: none; margin: 0; padding: 0; flex-wrap: nowrap; }
@@ -131,9 +131,20 @@ p { margin: 0 0 1em; }
 .nav-toggle[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
 
-/* Below this the nine links, the logo and the call to action cannot share a row
-   without touching, whatever the gap, so they become the menu instead. */
-@media (max-width: 1450px) {
+/* Smaller laptops keep the whole row rather than hiding it behind a button, which
+   is worth a little type for. Between 1280 and 1400 the labels and their pills
+   shrink just enough to fit; above 1400 nothing here applies. */
+@media (max-width: 1400px) {
+  .nav-links { gap: .4rem; }
+  .nav-links a { font-size: .92rem; padding: .5rem .55rem; }
+  .nav-links a::after { left: .55rem; right: .55rem; }
+  .nav-links .nav-cta a { padding: .5rem .85rem; }
+  .nav-links .nav-gh a { padding: .45rem .5rem; margin-left: .15rem; }
+  .nav-links .nav-gh svg { width: 24px; height: 24px; }
+}
+
+/* Below this the row cannot fit at any type size, so it becomes the menu. */
+@media (max-width: 1280px) {
   .nav-toggle { display: inline-flex; }
   .nav-links {
     display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch;
