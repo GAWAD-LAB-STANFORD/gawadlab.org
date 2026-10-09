@@ -99,12 +99,21 @@ p { margin: 0 0 1em; }
    its full 100px as soon as there is room for it. */
 @media (max-width: 1560px) { .brand img { height: 84px; } }
 @media (max-width: 1450px) { .brand img { height: 68px; } }
-.nav-links { display: flex; align-items: center; gap: .45rem; list-style: none; margin: 0; padding: 0; flex-wrap: nowrap; }
+/* The links take the whole width left over beside the logo and space themselves
+   out across it, instead of bunching at the right and leaving the slack as a
+   gap after the logo. `gap` is the floor they never close past; space-between
+   shares out whatever is left. flex-grow without shrink, so the row is laid out
+   from the labels' real width and the tiers below keep it inside the page. */
+.nav-links {
+  display: flex; align-items: center; justify-content: space-between;
+  flex: 1 0 auto; margin-left: 1.5rem;
+  gap: .45rem; list-style: none; margin-block: 0; padding: 0; flex-wrap: nowrap;
+}
 .nav-links a {
-  display: block; padding: .55rem .7rem; border-radius: 999px; font-weight: 600; font-size: 1.02rem; color: var(--ink-soft); white-space: nowrap;
+  display: block; padding: .55rem .6rem; border-radius: 999px; font-weight: 600; font-size: 1.06rem; color: var(--ink-soft); white-space: nowrap;
 }
 .nav-links a { position: relative; }
-.nav-links a::after { content: ""; position: absolute; left: 1rem; right: 1rem; bottom: .3rem; height: 2px; background: var(--cardinal); border-radius: 2px; transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
+.nav-links a::after { content: ""; position: absolute; left: .6rem; right: .6rem; bottom: .3rem; height: 2px; background: var(--cardinal); border-radius: 2px; transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
 .nav-links a:hover::after { transform: scaleX(1); }
 .nav-links a:hover { color: var(--cardinal); }
 .nav-links a.active { color: var(--cardinal); }
@@ -137,8 +146,8 @@ p { margin: 0 0 1em; }
    is worth a little type for. Between 1280 and 1400 the labels and their pills
    shrink just enough to fit; above 1400 nothing here applies. */
 @media (max-width: 1400px) {
-  .nav-links { gap: .4rem; }
-  .nav-links a { font-size: .92rem; padding: .5rem .55rem; }
+  .nav-links { gap: .4rem; margin-left: 1rem; }
+  .nav-links a { font-size: .95rem; padding: .5rem .55rem; }
   .nav-links a::after { left: .55rem; right: .55rem; }
   .nav-links .nav-cta a { padding: .5rem .85rem; }
   .nav-links .nav-gh a { padding: .45rem .5rem; margin-left: .15rem; }
@@ -150,9 +159,9 @@ p { margin: 0 0 1em; }
    here too, on a smaller logo and smaller type again. */
 @media (max-width: 1280px) {
   .brand img { height: 56px; }
-  .nav-links { gap: .25rem; }
-  .nav-links a { font-size: .84rem; padding: .4rem .42rem; }
-  .nav-links a::after { left: .42rem; right: .42rem; }
+  .nav-links { gap: .25rem; margin-left: .75rem; }
+  .nav-links a { font-size: .84rem; padding: .45rem .45rem; }
+  .nav-links a::after { left: .45rem; right: .45rem; }
   .nav-links .nav-cta a { padding: .42rem .7rem; margin-left: .25rem; }
   .nav-links .nav-gh a { padding: .35rem .4rem; margin-left: .1rem; }
   .nav-links .nav-gh svg { width: 20px; height: 20px; }
@@ -162,6 +171,7 @@ p { margin: 0 0 1em; }
    page, whatever the type size, so they become the menu. */
 @media (max-width: 1070px) {
   .brand img { height: 68px; }   /* the row is gone, so the logo gets its size back */
+  .nav-links { margin-left: 0; }  /* the menu is positioned, not in the row */
   .nav-toggle { display: inline-flex; }
   .nav-links {
     display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch;
