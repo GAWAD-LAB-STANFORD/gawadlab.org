@@ -95,7 +95,9 @@
 </section>
 
 <section class="photo-band" aria-label="Join the lab at Stanford">
-  <div class="bg" style="background-image:url('assets/campus-arcade.jpg'); background-position: center 55%"></div>
+  <!-- Two background-image declarations, as on the hero: a browser too old for
+       image-set reads the JPEG and ignores the second line. -->
+  <div class="bg" style="background-image:url('assets/campus-arcade.jpg'); background-image:image-set(url('assets/campus-arcade.webp') type('image/webp'), url('assets/campus-arcade.jpg') type('image/jpeg')); background-position: center 55%"></div>
   <div class="container">
     <div>
       <span class="eyebrow">Join us at Stanford Medicine</span>

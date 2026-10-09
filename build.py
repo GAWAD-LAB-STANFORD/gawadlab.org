@@ -161,6 +161,11 @@ def head(title, desc, page, og_image="assets/og-image.jpg"):
 <meta property="og:image" content="{SITE_URL}/{og_image}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+{'''<!-- The hero is a CSS background, which a browser only discovers once it has
+     fetched and parsed the stylesheet. Preloading it starts the download with the
+     rest of the head instead. A browser without WebP ignores this on the type and
+     picks up the JPEG from the stylesheet as before. -->
+<link rel="preload" as="image" href="assets/hero.webp" type="image/webp" fetchpriority="high">''' if page == "index.html" else ""}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -416,7 +421,7 @@ def build():
         "{{NEWS}}": news_items(news),
         "{{NEWS_RECENT}}": news_items(news[:3]),
         "{{RESOURCES}}": resource_groups(resources),
-        "{{FUNDERS}}": "\n".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" title="{esc(n)}"><img src="assets/funders/{f}" alt="{esc(n)}" width="{_dims(f)[0]}" height="{_dims(f)[1]}" loading="eager" decoding="async"></a>' for f, n, u in FUNDERS),
+        "{{FUNDERS}}": "\n".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" title="{esc(n)}"><img src="assets/funders/{f}" alt="{esc(n)}" width="{_dims(f)[0]}" height="{_dims(f)[1]}" loading="eager" decoding="async" fetchpriority="low"></a>' for f, n, u in FUNDERS),
         "{{YEAR}}": str(YEAR),
     }
     for frag in sorted((SRC / "pages").glob("*.html")):

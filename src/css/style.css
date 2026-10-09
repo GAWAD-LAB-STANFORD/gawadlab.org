@@ -142,7 +142,14 @@ p { margin: 0 0 1em; }
   min-height: min(82vh, 780px); display: flex; align-items: center;
 }
 .hero-bg {
-  position: absolute; inset: -4%; background: url("../assets/hero.jpg") center 62% / cover no-repeat;
+  position: absolute; inset: -4%; background: center 62% / cover no-repeat;
+  /* Same illustration twice. WebP is 195 KB against the JPEG's 697 KB at the same
+     2308x2400, measured at 41 dB PSNR, which is indistinguishable and sits under a
+     dark gradient besides. The plain url() is what a browser too old for image-set
+     reads; it ignores the line below, and a modern one takes the WebP. */
+  background-image: url("../assets/hero.jpg");
+  background-image: image-set(url("../assets/hero.webp") type("image/webp"),
+                              url("../assets/hero.jpg") type("image/jpeg"));
   animation: heroDrift 36s ease-in-out infinite alternate; will-change: transform;
 }
 @keyframes heroDrift { from { transform: scale(1) translate3d(0,0,0); } to { transform: scale(1.07) translate3d(-1.5%, 1%, 0); } }
