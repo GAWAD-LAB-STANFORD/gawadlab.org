@@ -81,6 +81,27 @@
     setTimeout(function () { if (document.visibilityState !== 'visible') document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) { el.classList.add('in'); }); }, 4000);
   }
 
+  // Videos marked data-play-in-view start when they reach the screen. With
+  // autoplay the browser fetches the whole file on page load however the
+  // preload attribute is set, which on the research page was 2.1 MB nobody had
+  // scrolled to yet. The poster stands in until then.
+  var vids = document.querySelectorAll('video[data-play-in-view]');
+  if (vids.length) {
+    if ('IntersectionObserver' in window) {
+      var vio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          vio.unobserve(en.target);
+          var pl = en.target.play();
+          if (pl && pl.catch) { pl.catch(function () {}); }
+        });
+      }, { rootMargin: '300px' });
+      vids.forEach(function (v) { vio.observe(v); });
+    } else {
+      vids.forEach(function (v) { var pl = v.play(); if (pl && pl.catch) { pl.catch(function () {}); } });
+    }
+  }
+
   // Lightbox for figures (a.zoom)
   var zooms = document.querySelectorAll('a.zoom');
   if (zooms.length) {
