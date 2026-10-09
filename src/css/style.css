@@ -86,12 +86,20 @@ p { margin: 0 0 1em; }
   border-bottom: 1px solid var(--border);
 }
 .nav { display: flex; align-items: center; justify-content: space-between; min-height: 132px; gap: 1rem; transition: min-height .25s ease; }
+/* The header row is the widest thing on the site: the logo, nine links, the
+   GitHub mark and the call to action. At the 1320px content width it needed
+   1388px and did not fit, which is why the links sat hard against the logo. It
+   gets its own, wider cap; the page content below is unchanged at 1320px. */
+.nav.container { width: min(1600px, 100% - 2rem); }
 .brand { flex: 0 0 auto; }
 .brand img { height: 100px; width: auto; max-width: none; transition: height .25s ease; }
 .site-header.scrolled .brand img { height: 76px; }
 .site-header.scrolled .nav { min-height: 96px; }
-@media (max-width: 1200px) { .brand img { height: 68px; } }
-.nav-links { display: flex; align-items: center; gap: .1rem; list-style: none; margin: 0; padding: 0; flex-wrap: nowrap; }
+/* Between the breakpoint and 1560px the row only fits with a slightly smaller
+   logo. It goes back to its full 100px as soon as there is room for it. */
+@media (max-width: 1560px) { .brand img { height: 84px; } }
+@media (max-width: 1450px) { .brand img { height: 68px; } }
+.nav-links { display: flex; align-items: center; gap: .45rem; list-style: none; margin: 0; padding: 0; flex-wrap: nowrap; }
 .nav-links a {
   display: block; padding: .55rem .7rem; border-radius: 999px; font-weight: 600; font-size: 1.02rem; color: var(--ink-soft); white-space: nowrap;
 }
@@ -123,7 +131,9 @@ p { margin: 0 0 1em; }
 .nav-toggle[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
 
-@media (max-width: 1200px) {
+/* Below this the nine links, the logo and the call to action cannot share a row
+   without touching, whatever the gap, so they become the menu instead. */
+@media (max-width: 1450px) {
   .nav-toggle { display: inline-flex; }
   .nav-links {
     display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch;
