@@ -58,18 +58,19 @@ APPS = {
 # Styles are self-contained, since these pages load shinylive's CSS and not the site's.
 APP_BOOT_CSS = """<style>
       #boot { position: fixed; inset: 0; z-index: 9999; background: #fff; display: grid;
-              place-content: center; justify-items: center; gap: .85rem; padding: 2rem;
+              place-content: center; justify-items: center; gap: 1.15rem; padding: 2rem;
               text-align: center; color: #3A4652; transition: opacity .4s ease;
               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
       #boot.gone { opacity: 0; pointer-events: none; }
-      .boot-app { margin: 0 0 .3rem; font-size: .78rem; font-weight: 700; letter-spacing: .12em;
-                  text-transform: uppercase; color: #8C1515; }
-      .boot-bar { width: 220px; height: 4px; border-radius: 2px; background: #FFF4DF; overflow: hidden; }
-      .boot-bar i { display: block; width: 40%; height: 100%; border-radius: 2px; background: #F6A30C;
+      .boot-app { margin: 0 0 .2rem; font-size: clamp(.84rem, 1.5vw, .98rem); font-weight: 700;
+                  letter-spacing: .13em; text-transform: uppercase; color: #8C1515; }
+      .boot-bar { width: min(360px, 76vw); height: 7px; border-radius: 4px; background: #FFF4DF; overflow: hidden; }
+      .boot-bar i { display: block; width: 40%; height: 100%; border-radius: 4px; background: #F6A30C;
                     animation: boot-slide 1.4s ease-in-out infinite; }
       @keyframes boot-slide { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
-      .boot-title { margin: 0; font-size: 1.05rem; font-weight: 600; color: #17212B; }
-      .boot-note { margin: 0; font-size: .9rem; max-width: 42ch; line-height: 1.6; }
+      .boot-title { margin: 0; font-size: clamp(1.35rem, 3.4vw, 1.9rem); font-weight: 600;
+                    line-height: 1.25; color: #17212B; }
+      .boot-note { margin: 0; font-size: clamp(1rem, 1.9vw, 1.15rem); max-width: 44ch; line-height: 1.6; }
       @media (prefers-reduced-motion: reduce) { #boot { transition: none; }
                                                 .boot-bar i { animation: none; width: 100%; } }
     </style>"""
