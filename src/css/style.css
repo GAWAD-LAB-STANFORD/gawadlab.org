@@ -219,7 +219,11 @@ p { margin: 0 0 1em; }
 
 /* ---------- Process strip (was pillars) ---------- */
 .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--ink); }
-.pillar { padding: 2rem 2rem 0 0; position: relative; }
+/* Column, so the button can be pushed to the bottom: the three cards hold
+   different amounts of text and their buttons otherwise landed at different
+   heights, 26px apart on the data page. */
+.pillar { padding: 2rem 2rem 0 0; position: relative; display: flex; flex-direction: column; }
+.pillar .actions { margin-top: auto; padding-top: 1.25rem; }
 .pillar + .pillar { padding-left: 2rem; border-left: 1px solid var(--border); }
 .pillar .num { font-family: var(--future); font-size: 4rem; line-height: 1; color: var(--amber); letter-spacing: -.03em; font-weight: 700; display: block; margin-bottom: .9rem; }
 .pillar h3 { font-family: var(--display); font-weight: 600; font-size: 1.5rem; margin-top: 0; }
@@ -300,7 +304,11 @@ p { margin: 0 0 1em; }
 @media (max-width: 800px) { .pub-compact { grid-template-columns: 1fr; } }
 
 /* ---------- People ---------- */
-.people-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0 2.5rem; }
+/* auto-fit rather than auto-fill, and a ceiling on the track, so that the two
+   current members take a fair share of the row instead of sitting in the first
+   two of four columns with the other half of the row empty. A fuller lab fills
+   the row the same way it did before. */
+.people-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 420px)); gap: 0 2.5rem; }
 .person { padding: 0 0 1.5rem; text-align: left; border-top: 1px solid var(--ink); padding-top: 1.5rem; }
 .person .portrait { position: relative; width: 175px; height: 175px; margin: 0 0 1.1rem; }
 .person .portrait::before { content: ""; position: absolute; inset: -8px 8px 8px -8px; border-radius: 42% 58% 55% 45% / 50% 40% 60% 50%; background: var(--amber-tint); transition: transform .3s ease; }
@@ -346,7 +354,9 @@ p { margin: 0 0 1em; }
 @media (max-width: 760px) { .contact-card { grid-template-columns: 1fr; } }
 
 /* ---------- Resources ---------- */
-.resource-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+/* 340px gives three columns rather than four, so the six groups fall 3 and 3
+   instead of 4 and 2 with half the second row empty. */
+.resource-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem 2.5rem; }
 .resource-group { padding: 1.25rem 0 0; border-top: 2px solid var(--ink); }
 .resource-group h3 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; }
 .resource-group h3 { padding-bottom: .5rem; border-bottom: 2px solid var(--amber); display: inline-block; }
@@ -418,13 +428,21 @@ p { margin: 0 0 1em; }
 /* ---------- Utilities ---------- */
 .prose { max-width: 70ch; }
 .prose h2 { margin-top: 2rem; }
+/* On a .container the narrower measure would otherwise replace the container's
+   width and centre itself in the viewport, so the block sat indented from every
+   other section on the page. Keep the container's width and hold the measure on
+   the children instead. */
+.container.prose { max-width: none; }
+.container.prose > * { max-width: 70ch; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
 .notice { background: var(--amber-tint); border: 1px solid #F8D993; border-radius: var(--radius-sm); padding: .9rem 1.1rem; font-size: .92rem; line-height: 1.6; max-width: 100ch; margin: 0 0 2rem; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
 
 /* ---------- Why join ---------- */
-.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+/* 280px gives four columns rather than five, so the seven reasons fall 4 and 3
+   instead of 5 and 2. */
+.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
 .why { padding: 1.25rem 0 0; border-top: 2px solid var(--ink); }
 .why h3 { font-family: var(--display); font-weight: 600; font-size: 1.2rem; }
 .why h3 { font-size: 1.02rem; margin-bottom: .3rem; }
