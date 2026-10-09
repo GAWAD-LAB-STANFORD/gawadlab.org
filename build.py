@@ -39,6 +39,109 @@ ICONS = {
 
 def esc(s): return html.escape(str(s), quote=True)
 
+# The three data browsers, in the order the Data page lists them, with the title
+# each one should carry in the browser tab.
+APPS = {
+    "pall-resistance": "Pediatric ALL Treatment Resistance",
+    "aml-atlas": "Pediatric AML Target Discovery",
+    "cerebellum-atlas": "Developing Cerebellum Atlas",
+}
+
+# A cold start of one of these browsers takes 20-140 s, measured against the live
+# site, nearly all of it webR fetching and unpacking the R runtime. What shinylive
+# shows meanwhile is a small pale grey spinner on white, with no words, so there is
+# nothing to tell a visitor whether to wait or whether the link is broken.
+#
+# The overlay cannot live inside the app's root element: React mounts the shinylive
+# shell within about a second and clears whatever is there, long before R is up. So
+# it sits over the page and takes itself away once the app has actually rendered.
+# Styles are self-contained, since these pages load shinylive's CSS and not the site's.
+APP_BOOT_CSS = """<style>
+      #boot { position: fixed; inset: 0; z-index: 9999; background: #fff; display: grid;
+              place-content: center; justify-items: center; gap: .85rem; padding: 2rem;
+              text-align: center; color: #3A4652; transition: opacity .4s ease;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      #boot.gone { opacity: 0; pointer-events: none; }
+      .boot-app { margin: 0 0 .3rem; font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+                  text-transform: uppercase; color: #8C1515; }
+      .boot-bar { width: 220px; height: 4px; border-radius: 2px; background: #FFF4DF; overflow: hidden; }
+      .boot-bar i { display: block; width: 40%; height: 100%; border-radius: 2px; background: #F6A30C;
+                    animation: boot-slide 1.4s ease-in-out infinite; }
+      @keyframes boot-slide { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
+      .boot-title { margin: 0; font-size: 1.05rem; font-weight: 600; color: #17212B; }
+      .boot-note { margin: 0; font-size: .9rem; max-width: 42ch; line-height: 1.6; }
+      @media (prefers-reduced-motion: reduce) { #boot { transition: none; }
+                                                .boot-bar i { animation: none; width: 100%; } }
+    </style>"""
+
+APP_BOOT_HTML = """<div id="boot" role="status" aria-live="polite">
+      <p class="boot-app">__APP_TITLE__</p>
+      <div class="boot-bar"><i></i></div>
+      <p class="boot-title">Loading the R environment…</p>
+      <p class="boot-note">About a minute the first time. The analysis runs entirely in
+        your browser, so nothing you do here is sent to a server.</p>
+    </div>
+    <script>
+      // Clear the overlay once the app has really rendered, not when the shell mounts.
+      // Several ways out, so a visitor can never be left staring at it: the app
+      // appears, the iframe turns out to be unreadable, four minutes pass, or they
+      // click it.
+      (function () {
+        var el = document.getElementById("boot");
+        if (!el) return;
+        var start = Date.now(), firstSeen = 0;
+        function ready() {
+          var f = document.querySelector("iframe");
+          if (!f) return false;
+          if (!firstSeen) firstSeen = Date.now();
+          try {
+            var b = f.contentDocument && f.contentDocument.body;
+            return !!b && b.innerText.trim().length > 40;
+          } catch (e) {
+            return Date.now() - firstSeen > 10000;
+          }
+        }
+        function done() {
+          el.classList.add("gone");
+          setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 400);
+        }
+        el.addEventListener("click", done);
+        var timer = setInterval(function () {
+          if (ready() || Date.now() - start > 240000) { clearInterval(timer); done(); }
+        }, 300);
+      })();
+    </script>"""
+
+
+def adapt_app_page(src, title, app):
+    """Patch one page written by shinylive::export.
+
+    Applied at build time rather than edited into the exported files, so that a
+    future re-export can be dropped into the repo without silently losing any of
+    this. Every substitution is asserted, so a shinylive upgrade that changes the
+    markup fails the build instead of quietly producing an unpatched page.
+    """
+    out = src
+    # Point at the one shared runtime at /shinylive/ instead of a per-app copy.
+    # Already the case in the files committed here, so normally a no-op.
+    out = out.replace('"./shinylive/', '"../shinylive/')
+    if '"../shinylive/' not in out:
+        raise SystemExit(f"{app}: no reference to the shared runtime in index.html")
+
+    # Every exported page is titled "Shiny App", which is what the browser tab,
+    # the history entry and any bookmark would otherwise say.
+    before = out
+    out = out.replace("<title>Shiny App</title>", f"<title>{esc(title)} · Gawad Lab</title>")
+    if out == before and f"<title>{esc(title)}" not in out:
+        raise SystemExit(f"{app}: could not set the page title")
+
+    before = out
+    out = out.replace("</body>", f"  {APP_BOOT_HTML.replace('__APP_TITLE__', esc(title))}\n  </body>", 1)
+    if out == before:
+        raise SystemExit(f"{app}: no </body> to put the loading overlay before")
+    out = out.replace("</head>", f"  {APP_BOOT_CSS}\n  </head>", 1)
+    return out
+
 def head(title, desc, page, og_image="assets/og-image.jpg"):
     full = f"{title} · Gawad Lab" if page != "index.html" else "Gawad Lab · Stanford Medicine"
     return f"""<!doctype html>
@@ -288,17 +391,20 @@ def build():
     # WebAssembly builds of the data browsers (shinylive). The R runtime is large
     # and byte-identical for every app, so it is stored once at /shinylive/ and all
     # the apps point at it. A visitor who opens a second browser reuses the cached
-    # runtime instead of downloading another copy of it.
+    # runtime instead of downloading another copy of it. adapt_app_page() then
+    # patches each exported page; see the note above it.
     runtime = ROOT / "shinylive"
     if runtime.is_dir():
         shutil.copytree(runtime, OUT / "shinylive")
         shutil.copy2(ROOT / "shinylive-sw.js", OUT / "shinylive-sw.js")
         mb = sum(f.stat().st_size for f in (OUT / "shinylive").rglob("*") if f.is_file()) / 1048576
         print(f"copied shared shinylive runtime ({mb:.0f} MB, used by every app)")
-    for app in ("aml-atlas", "cerebellum-atlas", "pall-resistance"):
+    for app, app_title in APPS.items():
         app_dir = ROOT / app
         if app_dir.is_dir():
             shutil.copytree(app_dir, OUT / app)
+            page = OUT / app / "index.html"
+            page.write_text(adapt_app_page(page.read_text(), app_title, app))
             print(f"copied {app} ({sum(1 for _ in (OUT / app).rglob('*') if _.is_file())} files)")
 
     fills = {
