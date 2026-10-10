@@ -92,7 +92,11 @@ ui <- page_navbar(
   header = tags$style(HTML(
     ".navbar .navbar-brand{font-size:1.45rem;font-weight:700}",
     ".navbar .nav-link{font-size:1.18rem;font-weight:600;padding:.5rem 1rem}",
-    ".navbar .nav-link.active{font-weight:700}")),
+    ".navbar .nav-link.active{font-weight:700}",
+    # bslib gives a table output flex: 1 0 400px, and in a column flex container
+    # the flex-basis wins over the height property, so the marker table was
+    # clamped to 742px for 803px of content and its pager fell outside the card.
+    ".html-widget-output{flex:0 0 auto !important}")),
   sidebar = sidebar(
     width = 300,
     selectizeInput("gene", "Selected gene", choices = SCOPES[[1]],
