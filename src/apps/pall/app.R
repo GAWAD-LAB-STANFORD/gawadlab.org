@@ -154,7 +154,12 @@ ui <- page_navbar(
   header = tags$style(HTML(
     ".navbar .navbar-brand{font-size:1.45rem;font-weight:700}",
     ".navbar .nav-link{font-size:1.18rem;font-weight:600;padding:.5rem 1rem}",
-    ".navbar .nav-link.active{font-weight:700}")),
+    ".navbar .nav-link.active{font-weight:700}",
+    # bslib gives a table output flex: 1 0 400px, and in a column flex container
+    # the flex-basis wins over the height property, so every table was clamped to
+    # 400px and its pager printed outside the card. Handing the basis back to
+    # auto lets each table take the height it needs.
+    ".html-widget-output{flex:0 0 auto !important}")),
   sidebar = sidebar(
     width = 300,
     conditionalPanel("input.nav == 'Drug response'",
