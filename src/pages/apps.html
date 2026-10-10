@@ -19,7 +19,7 @@
     <div class="pillar">
       <span class="num">02</span>
       <h3><em class="accent">Pediatric AML</em> target discovery</h3>
-      <p>Screen 1,704 surface proteins for marrow-sparing immunotherapy targets across 96,627 cells from 28 children with AML and 2 healthy bone-marrow donors. Set your own thresholds for efficacy, patient breadth and normal-marrow sparing and watch the candidate list narrow, then profile any target across the 49 leukemic states, normal tissue, and independent adult cohorts.</p>
+      <p>Screen 1,704 surface proteins for marrow-sparing immunotherapy targets across 96,627 cells from 28 children with AML and 2 healthy bone-marrow donors. Set your own thresholds for efficacy, patient breadth and normal-marrow sparing and watch the candidate list narrow, then profile any target across the 49 leukemic states, normal tissue, and independent adult cohorts. Any of the 21,895 genes the atlas quantifies can be mapped onto the embedding, not only the screened surface proteins.</p>
       <p class="status"><strong>Data:</strong> single-cell RNA-seq of pediatric AML and healthy marrow, with bulk validation in TARGET and Beat AML.</p>
       <div class="actions"><a class="btn btn-primary" href="aml-atlas/">Open the AML browser</a></div>
     </div>
@@ -59,6 +59,8 @@
             <span>The Beat AML public release</span></li>
         <li><a href="downloads/aml-atlas-browser-data.tar.gz">Processed tables behind this browser</a>
             <span>The 96,627-cell embedding, per-gene expression in each grid square, the 1,704-gene surfaceome screen, and the safety and combination tables. 6.4 MB.</span></li>
+        <li>Per-bin expression for all 21,895 atlas genes
+            <span>The full gene &times; grid-bin matrix the browser maps, as 343 files of 64 genes each, about 147 KB apiece. The browser fetches one only when you pick a gene it holds. Mitochondrial, ribosomal and haemoglobin genes are not in the atlas's own gene list and so are not here.</span></li>
       </ul>
     </div>
 

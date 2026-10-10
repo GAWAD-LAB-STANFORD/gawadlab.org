@@ -411,6 +411,22 @@ def build():
             shutil.copytree(app_dir, OUT / app)
             page = OUT / app / "index.html"
             page.write_text(adapt_app_page(page.read_text(), app_title, app))
+            # Genes the app fetches at runtime rather than inlining. webR cannot
+            # resolve a URL relative to the app page, so app.R carries the path
+            # root-absolute; if the app directory were ever renamed the fetch
+            # would 404 silently and every gene outside the inlined matrix would
+            # report no expression. Fail the build instead.
+            genes = app_dir / "genes"
+            if genes.is_dir():
+                need = f'GENE_BASE <- "/{app}/genes/"'
+                src = (app_dir / "app.json").read_text()
+                if need.replace('"', '\\"') not in src and need not in src:
+                    raise SystemExit(
+                        f"{app}: app.json does not compile in {need}; the "
+                        f"runtime gene fetch would 404")
+                n = sum(1 for f in genes.iterdir() if f.suffix == ".rds")
+                print(f"  {app}: {n} runtime gene files "
+                      f"({sum(f.stat().st_size for f in genes.iterdir()) / 1048576:.0f} MB)")
             print(f"copied {app} ({sum(1 for _ in (OUT / app).rglob('*') if _.is_file())} files)")
 
     fills = {
