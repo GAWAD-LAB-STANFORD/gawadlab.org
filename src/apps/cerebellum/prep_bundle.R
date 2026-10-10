@@ -49,6 +49,28 @@ build_bundle <- function(D) {
   CT_MEAN <- as_int("ct_mean|", CT, 1e4); CT_PCT <- as_int("ct_pct|", CT, 1e2)
   TP_MEAN <- as_int("tp_mean|", TP, 1e4); TP_PCT <- as_int("tp_pct|", TP, 1e2)
 
+  # The sqlite export carries a few symbols more than once -- 11 symbols over 17
+  # extra rows, the protocadherin cluster worst at PCDHA9 six times -- because
+  # several annotated features share one symbol. Every lookup in the app is a
+  # match(), which takes the first row, so the app was answering with whichever
+  # copy happened to come first: Snrpn showed 2.5% of Purkinje cells when the
+  # other copy of it showed 96.6%. The copies cannot be added, since these are
+  # means and detection rates rather than counts, so keep the best-detected copy
+  # of each. That is not a guess: the expression matrix exported alongside this
+  # has no duplicates, and for all nine of these symbols that it maps, the copy
+  # it kept is the best-detected one.
+  if (anyDuplicated(grp$gene)) {
+    keep <- order(grp$gene, -apply(CT_PCT, 1, max))
+    keep <- keep[!duplicated(grp$gene[keep])]
+    keep <- sort(keep)
+    message(sprintf("  dropped %d duplicate-symbol rows, kept the best-detected copy of each",
+                    nrow(grp) - length(keep)))
+    grp <- grp[keep, , drop = FALSE]
+    CT_MEAN <- CT_MEAN[keep, , drop = FALSE]; CT_PCT <- CT_PCT[keep, , drop = FALSE]
+    TP_MEAN <- TP_MEAN[keep, , drop = FALSE]; TP_PCT <- TP_PCT[keep, , drop = FALSE]
+    stopifnot(!anyDuplicated(grp$gene), !anyDuplicated(rownames(CT_MEAN)))
+  }
+
   # per-gene summary, so the browser never recomputes it
   ord  <- t(apply(CT_MEAN, 1, sort, decreasing = TRUE))
   summ <- data.frame(
