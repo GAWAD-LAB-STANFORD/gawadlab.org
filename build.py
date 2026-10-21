@@ -83,24 +83,46 @@ APP_BOOT_HTML = """<div id="boot" role="status" aria-live="polite">
         your browser, so nothing you do here is sent to a server.</p>
     </div>
     <script>
-      // Clear the overlay once the app has really rendered, not when the shell mounts.
-      // Several ways out, so a visitor can never be left staring at it: the app
-      // appears, the iframe turns out to be unreadable, four minutes pass, or they
-      // click it.
+      // Clear the overlay once a panel has actually DRAWN, not when the shell
+      // mounts and not when the iframe first has text in it. Shiny renders the
+      // UI chrome well before the server has produced anything, and the nav
+      // labels alone run to thousands of characters, so a text-length test
+      // reveals a fully laid-out but completely empty app and leaves it on
+      // screen for ten seconds or more, which reads as broken.
+      //
+      // Several ways out, so a visitor can never be left staring at it: a plot
+      // draws, the app has been up a minute without one, the iframe turns out
+      // to be unreadable, four minutes pass, or they click it.
       (function () {
         var el = document.getElementById("boot");
         if (!el) return;
-        var start = Date.now(), firstSeen = 0;
-        function ready() {
+        var start = Date.now(), firstSeen = 0, staged = false, drawnAt = 0;
+        var title = el.querySelector(".boot-title");
+        function doc() {
           var f = document.querySelector("iframe");
-          if (!f) return false;
+          if (!f) return null;
           if (!firstSeen) firstSeen = Date.now();
-          try {
-            var b = f.contentDocument && f.contentDocument.body;
-            return !!b && b.innerText.trim().length > 40;
-          } catch (e) {
-            return Date.now() - firstSeen > 10000;
+          try { return f.contentDocument || null; } catch (e) { return undefined; }
+        }
+        function ready() {
+          var d = doc();
+          if (d === undefined) return Date.now() - firstSeen > 10000;  // cross-origin
+          if (!d || !d.body) return false;
+          // The chrome is up: say what we are waiting for rather than repeating
+          // "loading the R environment", which by now has already happened.
+          if (!staged && d.body.innerText.trim().length > 40) {
+            staged = true;
+            if (title) title.textContent = "Drawing the first panels\u2026";
           }
+          var img = d.querySelector(".shiny-plot-output img, .shiny-image-output img");
+          if (!img || !img.naturalWidth) return false;
+          // A panel is on screen. Let Shiny settle, but do not wait on it
+          // indefinitely: other panels keep it busy and the visitor has
+          // something to look at already.
+          if (!drawnAt) drawnAt = Date.now();
+          var busy = d.documentElement.classList.contains("shiny-busy") ||
+                     d.body.classList.contains("shiny-busy");
+          return !busy || Date.now() - drawnAt > 8000;
         }
         function done() {
           el.classList.add("gone");
@@ -108,7 +130,8 @@ APP_BOOT_HTML = """<div id="boot" role="status" aria-live="polite">
         }
         el.addEventListener("click", done);
         var timer = setInterval(function () {
-          if (ready() || Date.now() - start > 240000) { clearInterval(timer); done(); }
+          if (ready() || (firstSeen && Date.now() - firstSeen > 60000) ||
+              Date.now() - start > 240000) { clearInterval(timer); done(); }
         }, 300);
       })();
     </script>"""
