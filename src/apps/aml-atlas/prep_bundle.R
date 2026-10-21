@@ -317,6 +317,7 @@ build_bundle <- function(DATA, CC = NULL, EXPR = NULL, CARRY = NULL,
     need <- c("all_genes", "all_gmax", "chunk_size")
     if (!all(need %in% names(old))) stop("--carry bundle lacks ", paste(need, collapse = "/"))
     B[need] <- old[need]
+    CARRIED_GMAT <- old
     say("CARRIED OVER from %s, not rebuilt: all_genes (%s), all_gmax (%.4f), chunk_size (%d).",
         CARRY, format(length(B$all_genes), big.mark = ","), B$all_gmax, B$chunk_size)
     say("  The genes/ chunk files on disk are assumed to match and were not touched.")
@@ -328,6 +329,28 @@ build_bundle <- function(DATA, CC = NULL, EXPR = NULL, CARRY = NULL,
   }
   qm <- quantise(M)
   B$gmat <- qm$raw; B$gmax <- qm$gmax; B$genes_mapped <- colnames(M)
+  # The CSV holds the screen genes only. When --expr is unavailable but --carry
+  # is given, bring the extra inlined columns across rather than letting them
+  # fall back to a runtime fetch. Only safe because both are quantised against
+  # the same maximum, which is asserted rather than assumed.
+  if (exists("CARRIED_GMAT", inherits = FALSE)) {
+    extra <- setdiff(colnames(CARRIED_GMAT$gmat), colnames(B$gmat))
+    if (length(extra)) {
+      if (!isTRUE(all.equal(CARRIED_GMAT$gmax, B$gmax, tolerance = 1e-12)))
+        stop("cannot carry inlined columns: the carried bundle quantised gmat ",
+             "against ", CARRIED_GMAT$gmax, " and this build against ", B$gmax)
+      shared <- intersect(colnames(CARRIED_GMAT$gmat), colnames(B$gmat))
+      if (!identical(CARRIED_GMAT$gmat[, shared, drop = FALSE],
+                     B$gmat[, shared, drop = FALSE]))
+        stop("cannot carry inlined columns: the shared genes do not match the ",
+             "carried bundle, so the two were not built from the same export")
+      B$gmat <- cbind(B$gmat, CARRIED_GMAT$gmat[, extra, drop = FALSE])
+      B$gmat <- B$gmat[, sort(colnames(B$gmat)), drop = FALSE]
+      B$genes_mapped <- colnames(B$gmat)
+      say("  carried %d inlined columns absent from the CSV: %s",
+          length(extra), paste(extra, collapse = ", "))
+    }
+  }
   say("  gmat %d bins x %s genes | gmax %.4f", nrow(B$gmat),
       format(ncol(B$gmat), big.mark = ","), B$gmax)
 
