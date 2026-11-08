@@ -1,131 +1,137 @@
 {
- "_note": "Newest first. Link to news coverage (press releases, institutional news, trade press), not to papers. Dates YYYY-MM or YYYY-MM-DD.",
- "items": [
-  {
-   "date": "2026-08",
-   "title": "Bill Evans becomes CEO of BioSkryb Genomics",
-   "text": "William E. Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, is named Chief Executive Officer of BioSkryb Genomics, the company founded to bring PTA to researchers and clinics.",
-   "link": "https://www.biospace.com/press-releases/bioskryb-genomics-names-william-e-evans-pharm-d-as-chief-executive-officer"
-  },
-  {
-   "date": "2026-03",
-   "title": "Cell-free DNA offers early warning for bloodstream infections in kids with leukemia",
-   "text": "St. Jude announces results of a prospective study, with Chuck Gawad among the authors, showing that plasma microbial cell-free DNA sequencing can detect bloodstream infections in children with high-risk leukemia days before symptoms appear.",
-   "link": "https://www.stjude.org/media-resources/news-releases/2026-medicine-science-news/cell-free-dna-offers-early-warning-for-bloodstream-infections-in-kids-with-leukemia.html"
-  },
-  {
-   "date": "2025-09",
-   "title": "Mitochondrial DNA mutations shape how leukemia starts and progresses",
-   "text": "A St. Jude release describes work with Veronica Gonzalez-Pena and Chuck Gawad showing that somatic mitochondrial DNA mutations at intermediate heteroplasmy are selected during leukemia development and may contribute to therapy resistance.",
-   "link": "https://www.stjude.org/media-resources/news-releases/2025-medicine-science-news/new-multi-disciplinary-approach-sheds-light-on-role-of-mitochondrial-dna-mutations-in-cancer.html"
-  },
-  {
-   "date": "2025-08-20",
-   "title": "Methylation and genome variants from the same single cell, licensed for commercial development",
-   "text": "GenomeWeb reports BioSkryb's exclusive license to a method invented in the lab at Stanford, co-owned with the Chan Zuckerberg Biohub, for reading DNA methylation and genomic variants from the same single cell without destroying the DNA.",
-   "link": "https://www.genomeweb.com/sequencing/bioskryb-nabs-exclusive-license-single-cell-methylation-method-stanford-cz-biohub"
-  },
-  {
-   "date": "2025-06-09",
-   "title": "BioSkryb named among the top five emerging single-cell sequencing startups",
-   "text": "Inside Precision Medicine profiles five startups shaping single-cell sequencing and includes BioSkryb Genomics, founded in 2018 on the PTA chemistry invented in the lab, noting that PTA captures more than 95% of a single cell's genome.",
-   "link": "https://www.insideprecisionmedicine.com/topics/molecular-dx/the-top-five-emerging-startups-harnessing-single-cell-sequencing/"
-  },
-  {
-   "date": "2025-04-24",
-   "title": "1Cell.Ai and BioSkryb partner on rare-cell multiomics",
-   "text": "GenomeWeb covers the partnership pairing PTA-based single-cell chemistry with 1Cell.Ai's circulating tumor cell platform to characterize DNA, RNA, and protein from individual rare cells.",
-   "link": "https://www.genomeweb.com/cancer/bioskryb-genomics-1cellai-partner-circulating-tumor-cell-analysis"
-  },
-  {
-   "date": "2025-04-18",
-   "title": "DOE Joint Genome Institute adopts PTA for single-microbe genomes",
-   "text": "A JGI science story explains how the lab's collaboration with JGI showed that PTA recovers bacterial genomes from water and soil communities that are at least 80% complete, versus under 30% with the standard method, and that JGI users can now request the capability.",
-   "link": "https://jgi.doe.gov/user-science/science-stories/revamped-amplification-method-enables-nearly-complete-single-cell"
-  },
-  {
-   "date": "2025-04",
-   "title": "Single-cell multiomics scales to thousands of cells per run",
-   "text": "GenomeWeb covers the BioSkryb and Tecan workflow that pairs 384-well ResolveOME chemistry with the Uno Single Cell Dispenser, bringing paired genome and transcriptome sequencing to thousands of cells per experiment; a collaboration with Ultima Genomics was announced the same month.",
-   "link": "https://www.genomeweb.com/sequencing/bioskryb-genomics-tecan-partner-high-throughput-single-cell-sample-prep"
-  },
-  {
-   "date": "2025-01",
-   "title": "Residual leukemia cells, sequenced one at a time, offered as a service",
-   "text": "GenomeWeb lists ResolveSEQ MRD, which pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
-   "link": "https://www.genomeweb.com/business-news/new-products-posted-genomeweb-new-england-biolabs-bioskryb-23andme-parse-biosciences"
-  },
-  {
-   "date": "2024-09",
-   "title": "PTA-based single-cell technology joins the Human Cell Atlas",
-   "text": "BioSkryb Genomics partners with the Human Cell Atlas to broaden access to single-cell genome and transcriptome sequencing for atlas-building projects.",
-   "link": "https://www.biospace.com/press-releases/bioskryb-genomics-partners-with-the-human-cell-atlas-to-advance-access-to-the-next-generation-of-single-cell-technology"
-  },
-  {
-   "date": "2024-03",
-   "title": "Whole genome and transcriptome core kits released",
-   "text": "GenomeWeb lists the ResolveDNA and ResolveOME core kits, which make PTA-based single-cell whole genome and paired genome-plus-transcriptome amplification available as standard reagents with library preparation included.",
-   "link": "https://www.genomeweb.com/new-products/bioskryb-resolvedna-and-resolveome-single-cell-core-kits/621161"
-  },
-  {
-   "date": "2024-01-16",
-   "title": "Our continuously changing cellular genomes",
-   "text": "In an essay for Genetic Engineering & Biotechnology News' Trends for 2024, Chuck Gawad argues that the genome in each of our cells keeps changing throughout life, and that accurate single-cell sequencing will show somatic mutations to be major drivers of disease well beyond cancer.",
-   "link": "https://www.genengnews.com/topics/omics/our-continuously-changing-cellular-genomes/"
-  },
-  {
-   "date": "2023-02",
-   "title": "Genome plus transcriptome from the same single cell goes commercial",
-   "text": "GenomeWeb lists the commercial launch of ResolveOME, the paired single-cell genome and full-length transcriptome method built on PTA, together with the BaseJumper analysis platform.",
-   "link": "https://www.genomeweb.com/new-products/bioskryb-genomics-resolveome-and-basejumper/600831"
-  },
-  {
-   "date": "2022-10",
-   "title": "PTA licensed for preimplantation genetic testing",
-   "text": "GenomeWeb reports that BioSkryb licensed its PTA-based amplification technology to CooperSurgical for exclusive use in preimplantation genetic testing and women's reproductive health worldwide.",
-   "link": "https://www.genomeweb.com/sample-prep/bioskryb-genomics-licenses-amplification-tech-coopersurgical"
-  },
-  {
-   "date": "2022-09",
-   "title": "Somatic mutations in single human neurons cluster in regulatory DNA",
-   "text": "GenomeWeb covers the Nature Genetics study with the Walsh and Park labs that used PTA to sequence individual human neurons and found somatic indels enriched in enhancers and promoters, accumulating with age.",
-   "link": "https://www.genomeweb.com/sequencing/regulatory-alterations-overrepresented-single-cell-sequence-data-individual-neurons"
-  },
-  {
-   "date": "2020-06-22",
-   "title": "BioSkryb and St. Jude partner on diagnostics for resistant cancer cells",
-   "text": "BioSkryb expands its license with St. Jude Children's Research Hospital to develop a first-in-class clinical diagnostic that detects and defines heterogeneous cancer cell populations as patients undergo treatment, the clinical goal at the heart of this lab's leukemia program.",
-   "link": "https://www.prnewswire.com/news-releases/single-cell-genome-sequencing-company-bioskryb-and-st-jude-childrens-research-hospital-partner-to-develop-clinical-diagnostic-solutions-to-identify-resistant-cancer-cells-as-patients-undergo-treatment-301080792.html"
-  },
-  {
-   "date": "2020-01-23",
-   "title": "GenomeWeb: startup BioSkryb eyes oncology applications for single-cell DNA sequencing",
-   "text": "GenomeWeb profiles the North Carolina startup built on PTA and its plan to bring whole-genome amplification from single cells to cancer research.",
-   "link": "https://www.genomeweb.com/sequencing/startup-bioskryb-eyes-oncology-applications-single-cell-dna-sequencing"
-  },
-  {
-   "date": "2020-01-09",
-   "title": "BioSkryb raises $11.5 million to commercialize PTA",
-   "text": "GenomeWeb reports the $11.5 million seed round led by Anzu Partners, eighteen months after Chuck Gawad and Jay West founded BioSkryb to commercialize PTA.",
-   "link": "https://www.genomeweb.com/sequencing/bioskryb-raises-115m-seed-funding"
-  },
-  {
-   "date": "2019-12-19",
-   "title": "Diagnostic test helps find bloodstream infections before they appear",
-   "text": "St. Jude reports the JAMA Oncology study, with Veronica Gonzalez-Pena and Chuck Gawad among the authors, showing that microbial cell-free DNA in plasma identified bloodstream infections in children with relapsed leukemia days before symptoms appeared.",
-   "link": "https://www.stjude.org/media-resources/news-releases/2019-medicine-science-news/diagnostic-test-helps-find-bloodstream-infections-before-they-appear.html"
-  },
-  {
-   "date": "2019-10",
-   "title": "Chuck Gawad named a Chan Zuckerberg Biohub Investigator",
-   "text": "The Chan Zuckerberg Biohub welcomes Chuck Gawad to its Investigator program, which provides unrestricted funding for early-stage, high-risk biomedical research at Stanford, UCSF, and UC Berkeley.",
-   "link": "https://biohub.org/blog/welcoming-university-nominated-investigators/"
-  },
-  {
-   "date": "2018-11",
-   "title": "NIH Director's New Innovator Award",
-   "text": "The ASCO Post reports on Chuck Gawad's NIH Director's New Innovator Award, a five-year grant to build single-cell genome sequencing tools that catalog leukemia clones and their drug sensitivities.",
-   "link": "https://ascopost.com/issues/november-25-2018/charles-gawad-receives-new-innovator-award/"
-  }
- ]
+  "_note": "Newest first. Link to news coverage (press releases, institutional news, trade press), not to papers. Dates YYYY-MM or YYYY-MM-DD.",
+  "items": [
+    {
+      "date": "2026-11",
+      "title": "Chuck Gawad presents PTA at NASA's spaceflight metagenomics workshop",
+      "text": "NASA, ESA, JAXA and COSPAR met at the Jet Propulsion Laboratory to plan metagenomics for flight operations. Chuck Gawad was invited to present PTA for two uses: keeping terrestrial organisms off other worlds, and finding DNA out there that did not come from Earth.",
+      "link": "https://sma.nasa.gov/sma-disciplines/planetary-protection/planetary-protection-workshop-iii/agenda"
+    },
+    {
+      "date": "2026-08",
+      "title": "Bill Evans becomes CEO of BioSkryb Genomics",
+      "text": "William E. Evans, former President and CEO of St. Jude Children's Research Hospital and a long-time collaborator of the lab, is named Chief Executive Officer of BioSkryb Genomics, the company founded to bring PTA to researchers and clinics.",
+      "link": "https://www.biospace.com/press-releases/bioskryb-genomics-names-william-e-evans-pharm-d-as-chief-executive-officer"
+    },
+    {
+      "date": "2026-03",
+      "title": "Cell-free DNA offers early warning for bloodstream infections in kids with leukemia",
+      "text": "St. Jude announces results of a prospective study, with Chuck Gawad among the authors, showing that plasma microbial cell-free DNA sequencing can detect bloodstream infections in children with high-risk leukemia days before symptoms appear.",
+      "link": "https://www.stjude.org/media-resources/news-releases/2026-medicine-science-news/cell-free-dna-offers-early-warning-for-bloodstream-infections-in-kids-with-leukemia.html"
+    },
+    {
+      "date": "2025-09",
+      "title": "Mitochondrial DNA mutations shape how leukemia starts and progresses",
+      "text": "A St. Jude release describes work with Veronica Gonzalez-Pena and Chuck Gawad showing that somatic mitochondrial DNA mutations at intermediate heteroplasmy are selected during leukemia development and may contribute to therapy resistance.",
+      "link": "https://www.stjude.org/media-resources/news-releases/2025-medicine-science-news/new-multi-disciplinary-approach-sheds-light-on-role-of-mitochondrial-dna-mutations-in-cancer.html"
+    },
+    {
+      "date": "2025-08-20",
+      "title": "Methylation and genome variants from the same single cell, licensed for commercial development",
+      "text": "GenomeWeb reports BioSkryb's exclusive license to a method invented in the lab at Stanford, co-owned with the Chan Zuckerberg Biohub, for reading DNA methylation and genomic variants from the same single cell without destroying the DNA.",
+      "link": "https://www.genomeweb.com/sequencing/bioskryb-nabs-exclusive-license-single-cell-methylation-method-stanford-cz-biohub"
+    },
+    {
+      "date": "2025-06-09",
+      "title": "BioSkryb named among the top five emerging single-cell sequencing startups",
+      "text": "Inside Precision Medicine profiles five startups shaping single-cell sequencing and includes BioSkryb Genomics, founded in 2018 on the PTA chemistry invented in the lab, noting that PTA captures more than 95% of a single cell's genome.",
+      "link": "https://www.insideprecisionmedicine.com/topics/molecular-dx/the-top-five-emerging-startups-harnessing-single-cell-sequencing/"
+    },
+    {
+      "date": "2025-04-24",
+      "title": "1Cell.Ai and BioSkryb partner on rare-cell multiomics",
+      "text": "GenomeWeb covers the partnership pairing PTA-based single-cell chemistry with 1Cell.Ai's circulating tumor cell platform to characterize DNA, RNA, and protein from individual rare cells.",
+      "link": "https://www.genomeweb.com/cancer/bioskryb-genomics-1cellai-partner-circulating-tumor-cell-analysis"
+    },
+    {
+      "date": "2025-04-18",
+      "title": "DOE Joint Genome Institute adopts PTA for single-microbe genomes",
+      "text": "A JGI science story explains how the lab's collaboration with JGI showed that PTA recovers bacterial genomes from water and soil communities that are at least 80% complete, versus under 30% with the standard method, and that JGI users can now request the capability.",
+      "link": "https://jgi.doe.gov/user-science/science-stories/revamped-amplification-method-enables-nearly-complete-single-cell"
+    },
+    {
+      "date": "2025-04",
+      "title": "Single-cell multiomics scales to thousands of cells per run",
+      "text": "GenomeWeb covers the BioSkryb and Tecan workflow that pairs 384-well ResolveOME chemistry with the Uno Single Cell Dispenser, bringing paired genome and transcriptome sequencing to thousands of cells per experiment; a collaboration with Ultima Genomics was announced the same month.",
+      "link": "https://www.genomeweb.com/sequencing/bioskryb-genomics-tecan-partner-high-throughput-single-cell-sample-prep"
+    },
+    {
+      "date": "2025-01",
+      "title": "Residual leukemia cells, sequenced one at a time, offered as a service",
+      "text": "GenomeWeb lists ResolveSEQ MRD, which pairs flow-sorted measurable residual disease cells with single-cell genome and transcriptome sequencing to ask why some cells survive therapy, an approach that grew out of this lab's work on persistent leukemia cells.",
+      "link": "https://www.genomeweb.com/business-news/new-products-posted-genomeweb-new-england-biolabs-bioskryb-23andme-parse-biosciences"
+    },
+    {
+      "date": "2024-09",
+      "title": "PTA-based single-cell technology joins the Human Cell Atlas",
+      "text": "BioSkryb Genomics partners with the Human Cell Atlas to broaden access to single-cell genome and transcriptome sequencing for atlas-building projects.",
+      "link": "https://www.biospace.com/press-releases/bioskryb-genomics-partners-with-the-human-cell-atlas-to-advance-access-to-the-next-generation-of-single-cell-technology"
+    },
+    {
+      "date": "2024-03",
+      "title": "Whole genome and transcriptome core kits released",
+      "text": "GenomeWeb lists the ResolveDNA and ResolveOME core kits, which make PTA-based single-cell whole genome and paired genome-plus-transcriptome amplification available as standard reagents with library preparation included.",
+      "link": "https://www.genomeweb.com/new-products/bioskryb-resolvedna-and-resolveome-single-cell-core-kits/621161"
+    },
+    {
+      "date": "2024-01-16",
+      "title": "Our continuously changing cellular genomes",
+      "text": "In an essay for Genetic Engineering & Biotechnology News' Trends for 2024, Chuck Gawad argues that the genome in each of our cells keeps changing throughout life, and that accurate single-cell sequencing will show somatic mutations to be major drivers of disease well beyond cancer.",
+      "link": "https://www.genengnews.com/topics/omics/our-continuously-changing-cellular-genomes/"
+    },
+    {
+      "date": "2023-02",
+      "title": "Genome plus transcriptome from the same single cell goes commercial",
+      "text": "GenomeWeb lists the commercial launch of ResolveOME, the paired single-cell genome and full-length transcriptome method built on PTA, together with the BaseJumper analysis platform.",
+      "link": "https://www.genomeweb.com/new-products/bioskryb-genomics-resolveome-and-basejumper/600831"
+    },
+    {
+      "date": "2022-10",
+      "title": "PTA licensed for preimplantation genetic testing",
+      "text": "GenomeWeb reports that BioSkryb licensed its PTA-based amplification technology to CooperSurgical for exclusive use in preimplantation genetic testing and women's reproductive health worldwide.",
+      "link": "https://www.genomeweb.com/sample-prep/bioskryb-genomics-licenses-amplification-tech-coopersurgical"
+    },
+    {
+      "date": "2022-09",
+      "title": "Somatic mutations in single human neurons cluster in regulatory DNA",
+      "text": "GenomeWeb covers the Nature Genetics study with the Walsh and Park labs that used PTA to sequence individual human neurons and found somatic indels enriched in enhancers and promoters, accumulating with age.",
+      "link": "https://www.genomeweb.com/sequencing/regulatory-alterations-overrepresented-single-cell-sequence-data-individual-neurons"
+    },
+    {
+      "date": "2020-06-22",
+      "title": "BioSkryb and St. Jude partner on diagnostics for resistant cancer cells",
+      "text": "BioSkryb expands its license with St. Jude Children's Research Hospital to develop a first-in-class clinical diagnostic that detects and defines heterogeneous cancer cell populations as patients undergo treatment, the clinical goal at the heart of this lab's leukemia program.",
+      "link": "https://www.prnewswire.com/news-releases/single-cell-genome-sequencing-company-bioskryb-and-st-jude-childrens-research-hospital-partner-to-develop-clinical-diagnostic-solutions-to-identify-resistant-cancer-cells-as-patients-undergo-treatment-301080792.html"
+    },
+    {
+      "date": "2020-01-23",
+      "title": "GenomeWeb: startup BioSkryb eyes oncology applications for single-cell DNA sequencing",
+      "text": "GenomeWeb profiles the North Carolina startup built on PTA and its plan to bring whole-genome amplification from single cells to cancer research.",
+      "link": "https://www.genomeweb.com/sequencing/startup-bioskryb-eyes-oncology-applications-single-cell-dna-sequencing"
+    },
+    {
+      "date": "2020-01-09",
+      "title": "BioSkryb raises $11.5 million to commercialize PTA",
+      "text": "GenomeWeb reports the $11.5 million seed round led by Anzu Partners, eighteen months after Chuck Gawad and Jay West founded BioSkryb to commercialize PTA.",
+      "link": "https://www.genomeweb.com/sequencing/bioskryb-raises-115m-seed-funding"
+    },
+    {
+      "date": "2019-12-19",
+      "title": "Diagnostic test helps find bloodstream infections before they appear",
+      "text": "St. Jude reports the JAMA Oncology study, with Veronica Gonzalez-Pena and Chuck Gawad among the authors, showing that microbial cell-free DNA in plasma identified bloodstream infections in children with relapsed leukemia days before symptoms appeared.",
+      "link": "https://www.stjude.org/media-resources/news-releases/2019-medicine-science-news/diagnostic-test-helps-find-bloodstream-infections-before-they-appear.html"
+    },
+    {
+      "date": "2019-10",
+      "title": "Chuck Gawad named a Chan Zuckerberg Biohub Investigator",
+      "text": "The Chan Zuckerberg Biohub welcomes Chuck Gawad to its Investigator program, which provides unrestricted funding for early-stage, high-risk biomedical research at Stanford, UCSF, and UC Berkeley.",
+      "link": "https://biohub.org/blog/welcoming-university-nominated-investigators/"
+    },
+    {
+      "date": "2018-11",
+      "title": "NIH Director's New Innovator Award",
+      "text": "The ASCO Post reports on Chuck Gawad's NIH Director's New Innovator Award, a five-year grant to build single-cell genome sequencing tools that catalog leukemia clones and their drug sensitivities.",
+      "link": "https://ascopost.com/issues/november-25-2018/charles-gawad-receives-new-innovator-award/"
+    }
+  ]
 }
