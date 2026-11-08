@@ -350,11 +350,40 @@ def alum_card(m):
   <div><h3>{name}</h3>{now}<p class="role">In the lab: {esc(m['role'])}{yrs}</p><p class="bio">{esc(m['bio'])}</p></div>
 </article>"""
 
+def news_shots(it):
+    """Photographs attached to a news item.
+
+    Each entry gives the thumbnail jpeg and the full-size jpeg behind the
+    click-to-enlarge link. The webp sits beside the jpeg under the same stem,
+    which is the only convention here; everything else is spelled out in
+    news.json. Every file is checked, so a typo fails the build rather than
+    shipping a broken image.
+    """
+    ims = it.get("images")
+    if not ims:
+        return ""
+    cells = []
+    for im in ims:
+        jpg, full, alt = im["src"], im["full"], im["alt"]
+        webp = jpg.rsplit(".", 1)[0] + ".webp"
+        for rel in (jpg, webp, full):
+            if not (SRC / rel).exists():
+                raise SystemExit(f"news image missing: src/{rel}")
+        w, h = _image_size(SRC / jpg)
+        cells.append(
+            f'<a class="zoom" href="{esc(full)}" title="Click to enlarge">'
+            f'<picture><source srcset="{esc(webp)}" type="image/webp">'
+            f'<img src="{esc(jpg)}" alt="{esc(alt)}" width="{w}" height="{h}" loading="lazy">'
+            f'</picture></a>')
+    return f'<div class="news-shots">{"".join(cells)}</div>'
+
+
 def news_items(items):
     out = []
     for it in items:
         title = f'<a href="{esc(it["link"])}">{esc(it["title"])}</a>' if it.get("link") else esc(it["title"])
-        out.append(f'<li><time datetime="{esc(it["date"])}">{esc(it["date"])}</time><h3>{title}</h3><p>{esc(it["text"])}</p></li>')
+        out.append(f'<li><time datetime="{esc(it["date"])}">{esc(it["date"])}</time><h3>{title}</h3>'
+                   f'<p>{esc(it["text"])}</p>{news_shots(it)}</li>')
     return "\n".join(out)
 
 def resource_groups(groups):

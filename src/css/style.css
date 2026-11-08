@@ -392,6 +392,14 @@ p { margin: 0 0 1em; }
 .timeline time { font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cardinal); }
 .timeline h3 { font-family: var(--display); font-weight: 600; font-size: 1.25rem; margin: .2rem 0 .3rem; }
 .timeline p { color: var(--ink-soft); margin: 0; }
+/* Photographs on a news item. Thumbnails are cropped to one height so a
+   portrait, a panorama and a landscape sit in the same row; the crop favours
+   the upper part of the frame, where faces are. The full frame is one click
+   away through the same lightbox the figures use. */
+.news-shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: .55rem; margin-top: .95rem; }
+.news-shots a.zoom { line-height: 0; }
+.news-shots img { width: 100%; height: 148px; object-fit: cover; object-position: 50% 32%; border-radius: var(--radius-sm); box-shadow: var(--shadow); display: block; }
+@media (max-width: 520px) { .news-shots img { height: 120px; } }
 
 /* ---------- Funders ---------- */
 .funders { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2rem 3rem; }
@@ -700,7 +708,8 @@ a.zoom:hover img { transform: scale(1.01); box-shadow: var(--shadow-hover); }
 @media (min-width: 900px) {
   .timeline-wide li { display: grid; grid-template-columns: 180px minmax(0, 1fr); column-gap: 2.5rem; align-items: start; }
   .timeline-wide li time { grid-column: 1; padding-top: .2rem; }
-  .timeline-wide li h3, .timeline-wide li p { grid-column: 2; }
+  .timeline-wide li h3, .timeline-wide li p, .timeline-wide li .news-shots { grid-column: 2; }
+  .timeline-wide li .news-shots { max-width: 78ch; }
   .timeline-wide li h3 { margin-top: 0; }
   .timeline-wide li p { max-width: 78ch; }
 }

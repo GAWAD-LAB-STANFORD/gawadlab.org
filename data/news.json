@@ -3,9 +3,31 @@
   "items": [
     {
       "date": "2026-11",
-      "title": "Chuck Gawad presents PTA at NASA's spaceflight metagenomics workshop",
-      "text": "NASA, ESA, JAXA and COSPAR met at the Jet Propulsion Laboratory to plan metagenomics for flight operations. Chuck Gawad was invited to present PTA for two uses: keeping terrestrial organisms off other worlds, and finding DNA out there that did not come from Earth.",
-      "link": "https://sma.nasa.gov/sma-disciplines/planetary-protection/planetary-protection-workshop-iii/agenda"
+      "title": "Chuck presents PTA at NASA's planetary protection workshop",
+      "text": "Spacecraft have to leave Earth without carrying our microbes, and any DNA found out there has to be told apart from what we brought along. Both come down to sequencing DNA that is barely present. NASA, ESA, JAXA and COSPAR invited Chuck to their planetary protection workshop at JPL to talk about PTA.",
+      "link": "https://sma.nasa.gov/sma-disciplines/planetary-protection/planetary-protection-workshop-iii/agenda",
+      "images": [
+        {
+          "src": "assets/nasa-jpl-rover-cg.jpg",
+          "full": "assets/nasa-jpl-rover-cg-full.jpg",
+          "alt": "Chuck in a JPL high bay, in front of a Mars rover vehicle system test bed"
+        },
+        {
+          "src": "assets/nasa-jpl-panel.jpg",
+          "full": "assets/nasa-jpl-panel-full.jpg",
+          "alt": "Chuck, at the left, on a panel with three other speakers at the workshop"
+        },
+        {
+          "src": "assets/nasa-jpl-rover.jpg",
+          "full": "assets/nasa-jpl-rover-full.jpg",
+          "alt": "The Mars rover vehicle system test bed at JPL, with its camera mast, robotic arm and six wheels"
+        },
+        {
+          "src": "assets/nasa-jpl-display.jpg",
+          "full": "assets/nasa-jpl-display-full.jpg",
+          "alt": "A rock sample in a pyramid display case, mounted against a photograph of the lunar surface"
+        }
+      ]
     },
     {
       "date": "2026-08",
